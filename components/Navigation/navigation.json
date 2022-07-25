@@ -1,0 +1,12 @@
+[
+	{
+		"label": "Home",
+		"url": "/",
+		"menues": ["main", "footer"]
+	},
+	{
+		"label": "Page",
+		"url": "/page",
+		"menues": ["main", "footer"]
+	}
+]

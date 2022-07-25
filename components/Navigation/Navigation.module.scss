@@ -1,0 +1,12 @@
+.navbar {
+	.logo {
+		color: inherit;
+	}
+
+	.item {
+		
+		&.specificPage {
+			color: inherit;
+		}
+	}
+}
