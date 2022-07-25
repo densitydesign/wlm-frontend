@@ -4,11 +4,11 @@ let width, height, margin = {}, layout = {}, _cell = 200;
 // D3 selections
 let svg, svgDefs, g, fan, snapshot, monumentGroup;
 // D3 scales
-const scaleRadius = d3.scaleSqrt().range([0, _cell]);
-const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
-const background_color = "#f1f5f1"
-// const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
-// const background_color = "#E3D1C4"
+const scaleRadius = d3.scaleSqrt().range([0, _cell-20]);
+// const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
+// const background_color = "#f1f5f1"
+const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
+const background_color = "#E3D1C4"
 const fanOpening = 225;
 let rotation;
 
@@ -56,9 +56,6 @@ const initialize = (element, data, dataExtent) => {
       .attr("stop-opacity", 1)
       .attr('offset', '0.5');
 
-  fan = g.selectAll(".fan")
-	// snapshot = fan.selectAll(".snapshot");
-	// monumentGroup = snapshot.selectAll(".monumentGroup");
 	scaleRadius.domain([0, dataExtent[1]]);
 	update(data);
 };
@@ -70,7 +67,7 @@ const update = (data) => {
   // const fanOpening = parseInt(scaleOpening(data[0][1].length))
   rotation = fanOpening / data[0][1].length
 
-  fan = fan.data(data, d=>d[0])
+  fan = g.selectAll(".fan").data(data, d=>d[0])
     .join(
       enter => enter.append("g")
           .attr("transform", (d,i)=>{
@@ -88,11 +85,11 @@ const update = (data) => {
     .join(
       enter => enter.append("g")
           .classed("snapshot", true)
-          .attr("data-snapshot", d=>d[0])
-          .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`),
-      update => update.attr("data-snapshot", d=>d[0])
-      .call(update=>update.transition(500)
-        .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`)),
+          .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`)
+          .attr("data-snapshot", d=>d[0]),
+      update => update
+        .call(update=>update.transition(500)
+          .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`)),
       exit => exit.remove()
     )
   
@@ -100,31 +97,43 @@ const update = (data) => {
     .join(
       enter => enter.append("path")
           .classed("monumentGroup", true)
+          .attr("data-group", d=>d[0])
           .attr("d", d=>drawSlice(d))
           .attr("fill", d=>scaleColor(d.group)),
       update => update
-        .call(update=>update.transition(500)
-          .attr("r", d=>scaleRadius(d.value))),
+        .call(update=>update.transition(2500)
+          .attr("d", d=>drawSlice(d))
+          .attr("fill", d=>scaleColor(d.group))),
       exit => exit.remove()
     )
     
-  snapshot.append("rect")
-    .classed("fan-separator", true)
-    .attr("x", 0)
-    .attr("y", d=> -d[1].find(d=>d.group==="mapped").outerRadius)
-    .attr("width", 0.25)
-    .attr("height", d=>d[1].find(d=>d.group==="mapped").outerRadius)
-    .attr("fill", "url(#mainGradient)")
+  snapshot.selectAll("rect").data(d=>[d], d=>d[0])
+    .enter().append("rect")
+      .classed("fan-separator", true)
+      .attr("x", 0)
+      .attr("y", d=> -d[1].find(d=>d.group==="mapped").outerRadius)
+      .attr("width", 0.25)
+      .attr("height", d=>d[1].find(d=>d.group==="mapped").outerRadius)
+      .attr("fill", "url(#mainGradient)")
 
-  fan.append("text")
-    .attr("text-anchor", "middle")
-    .attr("y", 30)
-    .text(d=>d[0])
+  fan.selectAll(".label").data(d=>[d], d=>d[0])
+    .join(
+      enter => enter.append("text")
+        .classed("label", true)
+        .attr("text-anchor", "middle")
+        .attr("y", 30)
+        .text(d=>d[0]),
+      update => update,
+      exit => exit.remove()
+    )
+    
+  
+  
 };
 
 const destroy = (element) => {
 	console.log("destroy", element);
-	// d3.select(element).selectAll("*:not(defs)").remove();
+	// d3.select(element).selectAll("*").remove();
 };
 
 export { initialize, update, destroy };
