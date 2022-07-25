@@ -11,38 +11,43 @@ export default function TestVentagli() {
 	useEffect(() => {
 		console.log("TestVentagli Mounted");
 
+    let data2 = data
+    // data2 = data.filter(
+    //   (d) => d.date.includes("-01-01 ") || d.date.includes("-06-01 ")
+    // )
+
 		let nested_data = d3.groups(
-			data,
+			data2,
 			(d) => d.area,
 			(d) => d.date
 		);
-    // limit data for dev purposes
-    nested_data = nested_data.slice(4,5)
-    // nested_data[0][1] = nested_data[0][1].slice(17,22)
+		// limit data for dev purposes
+		// nested_data = nested_data.slice(4,5)
+		// nested_data[0][1] = nested_data[0][1].slice(17,22)
 
 		// Find extent
-    const _totals = [];
-    for (const [area, snapshots] of nested_data) {
-      for (const [snapshot, groups] of snapshots) {
-        const _sum = d3.sum(groups, g=>Number(g.value))
-        _totals.push(_sum)
-      } 
-    }
-    const dataExtent = d3.extent(_totals)
-    
-    // console.log("extent totals", dataExtent)
+		const _totals = [];
+		for (const [area, snapshots] of nested_data) {
+			for (const [snapshot, groups] of snapshots) {
+				const _sum = d3.sum(groups, (g) => Number(g.value));
+				_totals.push(_sum);
+			}
+		}
+		const dataExtent = d3.extent(_totals);
+
+		// console.log("extent totals", dataExtent)
 
 		initialize(svgEl.current, nested_data, dataExtent);
 
-		return ()=>{
-		  console.log("TestVentagli unmounted");
-		  destroy(svgEl.current)
-		}
+		return () => {
+			console.log("TestVentagli unmounted");
+			destroy(svgEl.current);
+		};
 	}, []);
 
 	return (
 		<>
-			<svg className={ClassNames(styles.visualization)} ref={svgEl} />
+			<svg className={ClassNames(styles.visualization)} ref={svgEl}></svg>
 		</>
 	);
 }

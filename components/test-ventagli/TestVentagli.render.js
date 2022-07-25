@@ -1,26 +1,61 @@
 import * as d3 from "d3";
 // Values
-let width, height;
+let width, height, margin = {}, layout = {}, _cell = 200;
 // D3 selections
-let svg, g, fan, snapshot, monumentGroup;
+let svg, svgDefs, g, fan, snapshot, monumentGroup;
 // D3 scales
-const scaleRadius = d3.scaleSqrt().range([0, 150]);
-const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "orange", "#22B8B4"]); // "#F8FF0E"
-const scaleOpening = d3.scaleLinear([1,50], [45,180]);
+const scaleRadius = d3.scaleSqrt().range([0, _cell]);
+const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
+const background_color = "#f1f5f1"
+// const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
+// const background_color = "#E3D1C4"
+const fanOpening = 225;
 let rotation;
 
 const initialize = (element, data, dataExtent) => {
 	// console.log("initialize", element);
-	svg = d3.select(element);
+	svg = d3.select(element).style("background-color", background_color);
   const bbox = svg.node().getBoundingClientRect();
 	width = bbox.width;
 	height = bbox.height;
+  
+  margin.left = width % _cell / 2
+  margin.top = height % _cell / 2
+
+  layout.columns = Math.floor(width/_cell)
+  layout.rows = Math.floor(height/_cell)
+
+  console.log(margin, layout)
 
 	// destroy(element);
 	g = svg.select("g");
 	if (g.empty()) {
 		g = svg.append("g").classed("main-group", true);
 	}
+
+  // Create the svg:defs element and the main gradient definition.
+  svg.selectAll('defs').remove()
+  svgDefs = svg.append('defs');
+
+  var mainGradient = svgDefs.append('linearGradient')
+      .attr('id', 'mainGradient')
+      .attr("x1", "0%")
+      .attr("y1", "100%")
+      .attr("x2", "0%")
+      .attr("y2", "0%")
+
+  // Create the stops of the main gradient. Each stop will be assigned
+  // a class to style the stop using CSS.
+  mainGradient.append('stop')
+      .attr("stop-color", scaleColor("photographed"))
+      .attr("stop-opacity", 1)
+      .attr('offset', '0');
+
+  mainGradient.append('stop')
+      .attr("stop-color", background_color)
+      .attr("stop-opacity", 1)
+      .attr('offset', '0.5');
+
   fan = g.selectAll(".fan")
 	// snapshot = fan.selectAll(".snapshot");
 	// monumentGroup = snapshot.selectAll(".monumentGroup");
@@ -32,30 +67,32 @@ const update = (data) => {
 	console.log("update", data);
   
   data = formatData(data);
-
-  const fanOpening = parseInt(scaleOpening(data[0][1].length))
+  // const fanOpening = parseInt(scaleOpening(data[0][1].length))
   rotation = fanOpening / data[0][1].length
 
   fan = fan.data(data, d=>d[0])
     .join(
       enter => enter.append("g")
-          .attr("transform", d=>`translate(${width/2},${height/2}) rotate(-${fanOpening/2})`)
+          .attr("transform", (d,i)=>{
+            const x = i%layout.columns * _cell + _cell/2 + margin.left
+            const y = Math.floor(i/layout.columns)*_cell + _cell/2 + margin.top
+            console.log(x, y)
+            return `translate(${x},${y})`
+          })
           .classed("fan", true),
       update => update,
       exit => exit.remove()
     );
-  
-  fan.append("text").text(d=>d[0])
   
   snapshot = fan.selectAll(".snapshot").data(d=>d[1], d=>d[0])
     .join(
       enter => enter.append("g")
           .classed("snapshot", true)
           .attr("data-snapshot", d=>d[0])
-          .attr("transform", (d,i)=>"rotate("+ i*rotation +")"),
+          .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`),
       update => update.attr("data-snapshot", d=>d[0])
       .call(update=>update.transition(500)
-        .attr("transform", (d,i)=>"rotate("+ i*rotation +")")),
+        .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`)),
       exit => exit.remove()
     )
   
@@ -64,20 +101,30 @@ const update = (data) => {
       enter => enter.append("path")
           .classed("monumentGroup", true)
           .attr("d", d=>drawSlice(d))
-          .attr("stroke", "white")
-          .attr("stroke-width", 0.5)
           .attr("fill", d=>scaleColor(d.group)),
       update => update
         .call(update=>update.transition(500)
           .attr("r", d=>scaleRadius(d.value))),
       exit => exit.remove()
     )
+    
+  snapshot.append("rect")
+    .classed("fan-separator", true)
+    .attr("x", 0)
+    .attr("y", d=> -d[1].find(d=>d.group==="mapped").outerRadius)
+    .attr("width", 0.25)
+    .attr("height", d=>d[1].find(d=>d.group==="mapped").outerRadius)
+    .attr("fill", "url(#mainGradient)")
 
+  fan.append("text")
+    .attr("text-anchor", "middle")
+    .attr("y", 30)
+    .text(d=>d[0])
 };
 
 const destroy = (element) => {
 	console.log("destroy", element);
-	d3.select(element).selectAll("*").remove();
+	// d3.select(element).selectAll("*:not(defs)").remove();
 };
 
 export { initialize, update, destroy };
