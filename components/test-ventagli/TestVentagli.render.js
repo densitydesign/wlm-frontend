@@ -1,15 +1,16 @@
 import * as d3 from "d3";
 // Values
 let width, height, margin = {}, layout = {}, _cell = 200;
+const circularTicks = [100,750,2000,5000,10000];
 // D3 selections
-let svg, svgDefs, g, fan, snapshot, monumentGroup;
+let svg, svgDefs, g, fan, snapshot, monumentGroup, tick;
 // D3 scales
-const scaleRadius = d3.scaleSqrt().range([0, _cell-20]);
+const scaleRadius = d3.scaleSqrt().range([10, _cell-20]);
 // const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
 // const background_color = "#f1f5f1"
 const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
 const background_color = "#E3D1C4"
-const fanOpening = 225;
+const fanOpening = 150;
 let rotation;
 
 const initialize = (element, data, dataExtent) => {
@@ -49,14 +50,14 @@ const initialize = (element, data, dataExtent) => {
   mainGradient.append('stop')
       .attr("stop-color", scaleColor("photographed"))
       .attr("stop-opacity", 1)
-      .attr('offset', '0');
+      .attr('offset', '0.25');
 
   mainGradient.append('stop')
       .attr("stop-color", background_color)
       .attr("stop-opacity", 1)
-      .attr('offset', '0.5');
+      .attr('offset', '0.75');
 
-	scaleRadius.domain([0, dataExtent[1]]);
+	scaleRadius.domain([1, dataExtent[1]]);
 	update(data);
 };
 
@@ -112,9 +113,36 @@ const update = (data) => {
       .classed("fan-separator", true)
       .attr("x", 0)
       .attr("y", d=> -d[1].find(d=>d.group==="mapped").outerRadius)
-      .attr("width", 0.25)
+      .attr("width", 0.5)
       .attr("height", d=>d[1].find(d=>d.group==="mapped").outerRadius)
       .attr("fill", "url(#mainGradient)")
+  
+  tick = fan.selectAll(".ticks")
+    .data(circularTicks, d=>d)
+    .join(
+      enter => enter.append("g"),
+      update => update,
+      exit => exit.remove()
+    )
+  
+  tick.append("path")
+    .classed("ticks", true)
+    .attr("fill", "none")
+    .attr("stroke", "grey")
+    .attr("stroke-dasharray", "1, 2")
+    .style("mix-blend-mode","multiply")
+    .attr("d", d=>describeArc(0, 0, scaleRadius(d), -fanOpening/2, fanOpening/2))
+  
+  tick.append("text")
+    .attr("x", d=>polarToCartesian(0, 0, scaleRadius(d), fanOpening/2).x)
+    .attr("y", d=>polarToCartesian(0, 0, scaleRadius(d), fanOpening/2).y + 12)
+    .attr("font-size", 10)
+    .attr("text-anchor","middle")
+    .attr("fill", "grey")
+    .attr("stroke", "none")
+    .style("mix-blend-mode","multiply")
+    .text(d=>d.toString().includes("000") ? d.toString().replace("000","K").replace("K0","0K") : d)
+      
 
   fan.selectAll(".label").data(d=>[d], d=>d[0])
     .join(
@@ -168,10 +196,11 @@ function describeArc(x, y, radius, startAngle, endAngle){
     var end = polarToCartesian(x, y, radius, startAngle);
     var largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
     var d = [
-        "M", x, y,
-        "L", start.x, start.y,
+        "M",
+        // x, y, "L",
+        start.x, start.y,
         "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
-        "Z"
+        // "Z"
     ].join(" ");
     return d;
 }
