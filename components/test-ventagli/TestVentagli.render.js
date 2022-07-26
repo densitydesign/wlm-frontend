@@ -1,11 +1,11 @@
 import * as d3 from "d3";
 // Values
 let width, height, margin = {}, layout = {}, _cell = 200;
-const circularTicks = [100,750,2000,5000,10000,15000];
+const circularTicks = [1, 10, 50, 100, 250, 500, 750,2000,5000,10000,15000];
 // D3 selections
 let svg, svgDefs, g, fan, snapshot, monumentGroup, tick;
 // D3 scales
-const scaleRadius = d3.scaleSqrt().domain([0,20000]).range([0, _cell]);
+const scaleRadius = d3.scaleSqrt().range([0, _cell/2]);
 const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
 const background_color = "#f1f5f1"
 // const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
@@ -34,7 +34,7 @@ const initialize = (element, data, dataExtent) => {
 		g = svg.append("g").classed("main-group", true);
 	}
 
-	// scaleRadius.domain([0, dataExtent[1]]);
+	scaleRadius.domain([0, dataExtent[1]]);
 	update(data);
 };
 
@@ -110,8 +110,8 @@ const update = (data) => {
     .attr("d", d=>describeArc(0, 0, scaleRadius(d), -total_opening/2, total_opening/2))
   
   tick.append("text")
-    .attr("x", d=>polarToCartesian(0, 0, scaleRadius(d), total_opening/2).x)
-    .attr("y", d=>polarToCartesian(0, 0, scaleRadius(d), total_opening/2).y + 12)
+    .attr("x", (d,i)=>polarToCartesian(0, 0, scaleRadius(d), i%2===0?total_opening/2:-total_opening/2).x)
+    .attr("y", (d,i)=>polarToCartesian(0, 0, scaleRadius(d), total_opening/2).y + 10)
     .attr("font-size", 10)
     .attr("text-anchor","middle")
     .attr("fill", "grey")

@@ -16,7 +16,7 @@ export default function Home() {
 				<Row>
 					<Col>
 						<h1>Homepage</h1>
-						<TestVentagli />
+						{/* <TestVentagli /> */}
 					</Col>
 				</Row>
 			</Container>
