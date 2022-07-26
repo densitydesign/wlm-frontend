@@ -1,11 +1,11 @@
 import * as d3 from "d3";
 // Values
 let width, height, margin = {}, layout = {}, _cell = 200;
-const circularTicks = [100,750,2000,5000,10000];
+const circularTicks = [100,750,2000,5000,10000,15000];
 // D3 selections
 let svg, svgDefs, g, fan, snapshot, monumentGroup, tick;
 // D3 scales
-const scaleRadius = d3.scaleSqrt().range([10, _cell-20]);
+const scaleRadius = d3.scaleSqrt().domain([0,20000]).range([0, _cell]);
 // const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
 // const background_color = "#f1f5f1"
 const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
@@ -34,30 +34,7 @@ const initialize = (element, data, dataExtent) => {
 		g = svg.append("g").classed("main-group", true);
 	}
 
-  // Create the svg:defs element and the main gradient definition.
-  svg.selectAll('defs').remove()
-  svgDefs = svg.append('defs');
-
-  var mainGradient = svgDefs.append('linearGradient')
-      .attr('id', 'mainGradient')
-      .attr("x1", "0%")
-      .attr("y1", "100%")
-      .attr("x2", "0%")
-      .attr("y2", "0%")
-
-  // Create the stops of the main gradient. Each stop will be assigned
-  // a class to style the stop using CSS.
-  mainGradient.append('stop')
-      .attr("stop-color", scaleColor("photographed"))
-      .attr("stop-opacity", 1)
-      .attr('offset', '0.25');
-
-  mainGradient.append('stop')
-      .attr("stop-color", background_color)
-      .attr("stop-opacity", 1)
-      .attr('offset', '0.75');
-
-	scaleRadius.domain([1, dataExtent[1]]);
+	// scaleRadius.domain([0, dataExtent[1]]);
 	update(data);
 };
 
@@ -67,6 +44,7 @@ const update = (data) => {
   data = formatData(data);
   // const fanOpening = parseInt(scaleOpening(data[0][1].length))
   rotation = fanOpening / data[0][1].length
+  const total_opening = fanOpening + data[0][1].length
 
   fan = g.selectAll(".fan").data(data, d=>d[0])
     .join(
@@ -74,8 +52,7 @@ const update = (data) => {
           .attr("transform", (d,i)=>{
             const x = i%layout.columns * _cell + _cell/2 + margin.left
             const y = Math.floor(i/layout.columns)*_cell + _cell/2 + margin.top
-            console.log(x, y)
-            return `translate(${x},${y})`
+            return `translate(${x},${y}) rotate(${0})`
           })
           .classed("fan", true),
       update => update,
@@ -86,11 +63,13 @@ const update = (data) => {
     .join(
       enter => enter.append("g")
           .classed("snapshot", true)
-          .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`)
-          .attr("data-snapshot", d=>d[0]),
+          .attr("transform", (d,i)=>`rotate(${-total_opening/2 + i*rotation + i})`)
+          .attr("data-snapshot", d=>d[0])
+      ,
       update => update
-        .call(update=>update.transition(500)
-          .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`)),
+        // .call(update=>update.transition(500)
+        //   .attr("transform", (d,i)=>`rotate(${-fanOpening/2 + i*rotation})`))
+      ,
       exit => exit.remove()
     )
   
@@ -107,18 +86,15 @@ const update = (data) => {
           .attr("fill", d=>scaleColor(d.group))),
       exit => exit.remove()
     )
-    
-  snapshot.selectAll("rect").data(d=>[d], d=>d[0])
-    .enter().append("rect")
-      .classed("fan-separator", true)
-      .attr("x", 0)
-      .attr("y", d=> -d[1].find(d=>d.group==="mapped").outerRadius)
-      .attr("width", 0.5)
-      .attr("height", d=>d[1].find(d=>d.group==="mapped").outerRadius)
-      .attr("fill", "url(#mainGradient)")
   
   tick = fan.selectAll(".ticks")
-    .data(circularTicks, d=>d)
+    .data(d=>{
+      const last = d[1][d[1].length-1]
+      const max = last[1].find(d=>d.group==="mapped").value
+      const _right = circularTicks.filter(d=>d<=max).length +1
+      const _left = Math.max(0, _right-5)
+      return circularTicks.slice(_left,_right)
+    }, d=>d)
     .join(
       enter => enter.append("g"),
       update => update,
@@ -131,11 +107,11 @@ const update = (data) => {
     .attr("stroke", "grey")
     .attr("stroke-dasharray", "1, 2")
     .style("mix-blend-mode","multiply")
-    .attr("d", d=>describeArc(0, 0, scaleRadius(d), -fanOpening/2, fanOpening/2))
+    .attr("d", d=>describeArc(0, 0, scaleRadius(d), -total_opening/2, total_opening/2))
   
   tick.append("text")
-    .attr("x", d=>polarToCartesian(0, 0, scaleRadius(d), fanOpening/2).x)
-    .attr("y", d=>polarToCartesian(0, 0, scaleRadius(d), fanOpening/2).y + 12)
+    .attr("x", d=>polarToCartesian(0, 0, scaleRadius(d), total_opening/2).x)
+    .attr("y", d=>polarToCartesian(0, 0, scaleRadius(d), total_opening/2).y + 12)
     .attr("font-size", 10)
     .attr("text-anchor","middle")
     .attr("fill", "grey")
@@ -149,14 +125,12 @@ const update = (data) => {
       enter => enter.append("text")
         .classed("label", true)
         .attr("text-anchor", "middle")
-        .attr("y", 30)
+        .attr("font-size", 12)
+        .attr("y", 20)
         .text(d=>d[0]),
       update => update,
       exit => exit.remove()
     )
-    
-  
-  
 };
 
 const destroy = (element) => {
