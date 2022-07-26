@@ -6,10 +6,10 @@ const circularTicks = [100,750,2000,5000,10000,15000];
 let svg, svgDefs, g, fan, snapshot, monumentGroup, tick;
 // D3 scales
 const scaleRadius = d3.scaleSqrt().domain([0,20000]).range([0, _cell]);
-// const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
-// const background_color = "#f1f5f1"
-const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
-const background_color = "#E3D1C4"
+const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#C3C5C3", "#F8FF0E", "#22B8B4"]); // "#F8FF0E"
+const background_color = "#f1f5f1"
+// const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
+// const background_color = "#E3D1C4"
 const fanOpening = 150;
 let rotation;
 
@@ -44,7 +44,7 @@ const update = (data) => {
   data = formatData(data);
   // const fanOpening = parseInt(scaleOpening(data[0][1].length))
   rotation = fanOpening / data[0][1].length
-  const total_opening = fanOpening + data[0][1].length
+  const total_opening = fanOpening + data[0][1].length -1
 
   fan = g.selectAll(".fan").data(data, d=>d[0])
     .join(
