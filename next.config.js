@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // basePath: '/wlm-frontend'
+  basePath: '/wlm-frontend'
 }
 
 module.exports = nextConfig
