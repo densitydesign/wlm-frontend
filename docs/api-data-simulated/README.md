@@ -1,0 +1,1 @@
+This folder is used to simulate api calls. Put here data generated with scripts.
