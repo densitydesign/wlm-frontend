@@ -1,10 +1,8 @@
 import Head from "next/head";
-import Link from "next/link";
 import { Col, Container, Row } from "react-bootstrap";
 import styles from "../styles/index.module.scss";
 import Navigation from "../components/Navigation/Navigation";
-import TestVentagli from "../components/test-ventagli";
-import MapVentagli from "../components/MapVentagli";
+import VisualizationController from "../components/VisualizationController";
 
 export default function Home() {
 	return (
@@ -16,9 +14,7 @@ export default function Home() {
 			<Container fluid>
 				<Row>
 					<Col>
-						<h1>Homepage</h1>
-						{/* <TestVentagli /> */}
-						<MapVentagli/>
+						<VisualizationController/>
 					</Col>
 				</Row>
 			</Container>

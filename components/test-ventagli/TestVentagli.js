@@ -1,49 +1,37 @@
 import styles from "./TestVentagli.module.scss";
 import * as d3 from "d3";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ClassNames from "classnames";
-import { initialize, destroy } from "./TestVentagli.render";
-import data from "./timeline-regional-incremental.json";
+import { initialize, update } from "./TestVentagli.render";
 
-export default function TestVentagli() {
+export default function TestVentagli({data}) {
 	const svgEl = useRef();
+	const [extent, setExtent] = useState()
 
 	useEffect(() => {
-		console.log("TestVentagli Mounted");
-
-    let data2 = data
-    // data2 = data.filter(
-    //   (d) => d.date.includes("-01-01 ") || d.date.includes("-06-01 ")
-    // )
-
-		let nested_data = d3.groups(
-			data2,
-			(d) => d.area,
-			(d) => d.date
-		);
-		// limit data for dev purposes
-		// nested_data = nested_data.slice(4,5)
-		// nested_data[0][1] = nested_data[0][1].slice(17,22)
-
-		// Find extent
-		const _totals = [];
-		for (const [area, snapshots] of nested_data) {
-			for (const [snapshot, groups] of snapshots) {
-				const _sum = d3.sum(groups, (g) => Number(g.value));
-				_totals.push(_sum);
-			}
-		}
-		const dataExtent = d3.extent(_totals);
-
-		// console.log("extent totals", dataExtent)
-
-		initialize(svgEl.current, nested_data, dataExtent);
-
-		return () => {
-			console.log("TestVentagli unmounted");
-			destroy(svgEl.current);
-		};
+		let extents = []
+		//calculate data extent
+		data.forEach(d=>{
+			const areaName = d[0]
+			const snapshots = d[1]
+			snapshots.forEach(dd=>{
+				const date = dd[0]
+				const groups = dd[1]
+				const extent = d3.extent(groups, g=>g.valueIncremental)
+				extents.push(...extent)
+			})
+		})
+		const temp_extent = d3.extent(extents)
+		setExtent(d3.extent(temp_extent))
+		initialize(svgEl.current, data, temp_extent);
 	}, []);
+
+	useEffect(()=>{
+		if (!data || !extent) {
+			return
+		}
+		update(data, extent)
+	}, [data])
 
 	return (
 		<>
