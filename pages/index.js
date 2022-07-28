@@ -10,7 +10,7 @@ export default function Home() {
 			<Head>
 				<title>Home</title>
 			</Head>
-      <Navigation/>
+      {/* <Navigation/> */}
 			<Container fluid>
 				<Row>
 					<Col>

@@ -4,23 +4,27 @@ let width,
 	height,
 	margin = {},
 	layout = {},
-	_cell = 200;
-const circularTicks = [100, 500, 1000, 5000, 10000, 15000];
+	_cell = 150,
+	_duration = 300;
+const circularTicks = [1, 100, 500, 1000, 2000, 5000, 10000, 15000];
 // D3 selections
-let svg, g, fan, snapshot, monumentGroup, tick;
+let svg, g, fan, snapshot, monumentGroup, tickBg, tick;
 // D3 scales
-const scaleRadius = d3.scaleSqrt().range([0, _cell * 0.5]);
+const scaleRadius = d3.scaleSqrt().range([0, _cell * 0.75]);
+
 const scaleColor = d3.scaleOrdinal(
 	["mapped", "authorized", "photographed"],
 	["#C3C5C3", "#F8FF0E", "#22B8B4"]
 ); // "#F8FF0E"
-const background_color = "#f1f5f1";
+const background_color = "#ECE5E0";
+
 // const scaleColor = d3.scaleOrdinal(["mapped", "authorized", "photographed"], ["#F1F1F1", "#FDD666", "#009EB6"]); // "#F8FF0E"
 // const background_color = "#E3D1C4"
+
 let fanOpening = 150;
 let rotation;
 
-const initialize = (element, data, extent) => {
+const initialize = (element, data, extent, slice) => {
 	// console.log("initialize", element);
 	svg = d3.select(element).style("background-color", background_color);
 	const bbox = svg.node().getBoundingClientRect();
@@ -29,8 +33,12 @@ const initialize = (element, data, extent) => {
 
 	margin.left = (width % _cell) / 2;
 	margin.top = (height % _cell) / 2;
+	margin.top = 0;
 	layout.columns = Math.floor(width / _cell);
-	layout.rows = Math.floor(height / _cell);
+	// layout.rows = Math.floor(height / _cell);
+
+	height = Math.ceil(data.length / layout.columns) * _cell + _cell / 2;
+	svg.style("height", height);
 
 	// destroy(element);
 	g = svg.select("g");
@@ -38,11 +46,14 @@ const initialize = (element, data, extent) => {
 		g = svg.append("g").classed("main-group", true);
 	}
 
-	update(data, extent);
+	update(data, extent, slice);
 };
 
-const update = (data, extent) => {
-	console.log("update", data);
+const update = (data, extent, slice) => {
+	// console.log("update", data);
+	// if (slice) {
+	// 	console.log("viz render slice", slice);
+	// }
 
 	scaleRadius.domain([0, extent[1]]);
 	data = addRadiiData(data);
@@ -67,16 +78,64 @@ const update = (data, extent) => {
 				update.call((update) =>
 					update
 						.transition()
-						.duration(500)
+						.duration(_duration)
 						.attr("transform", (d, i) => gridPosition(d, i))
 				),
+			(exit) => exit.remove()
+		);
+
+	tickBg = fan
+		.selectAll(".tickBg")
+		.data(
+			(d) => dataTick(d),
+			(d) => d
+		)
+		.join(
+			(enter) =>
+				enter
+					.append("g")
+					.attr("data-tickBg", (d) => d)
+					.classed("tickBg", true),
+			(update) => update,
+			(exit) => exit.remove()
+		);
+
+	tickBg
+		.selectAll(".tickBackground")
+		.data(
+			(d) => [d],
+			(d) => d
+		)
+		.join(
+			(enter) =>
+				enter
+					.append("path")
+					.attr("d", (d) => {
+						const r = scaleRadius(d);
+						const start = -total_opening / 2;
+						const end = total_opening / 2;
+						return describeArc(0, 0, r, start, end);
+					})
+					.attr("fill", "url(#tick-background)")
+					.classed("tickBackground", true),
+			(update) =>
+				update.attr("d", (d) => {
+					const r = scaleRadius(d);
+					const start = -total_opening / 2;
+					const end = total_opening / 2;
+					return describeArc(0, 0, r, start, end);
+				}),
 			(exit) => exit.remove()
 		);
 
 	snapshot = fan
 		.selectAll(".snapshot")
 		.data(
-			(d) => d[1],
+			(d) => {
+				let _left = slice ? slice[0] : 0;
+				let _right = slice ? slice[1] : d[1].length;
+				return d[1].slice(_left, _right);
+			},
 			(d) => d[0]
 		)
 		.join(
@@ -86,14 +145,26 @@ const update = (data, extent) => {
 					.classed("snapshot", true)
 					.attr(
 						"transform",
-						(d, i) => `rotate(${-total_opening / 2 + i * rotation + i})`
+						(d, i) =>
+							`rotate(${-total_opening / 2 + (i - 1) * rotation + (i - 1)})`
 					)
-					.attr("data-snapshot", (d) => d[0]),
+					.style("opacity", 0)
+					.attr("data-snapshot", (d) => d[0])
+					.call((enter) =>
+						enter
+							.transition()
+							.duration(_duration)
+							.style("opacity", 1)
+							.attr(
+								"transform",
+								(d, i) => `rotate(${-total_opening / 2 + i * rotation + i})`
+							)
+					),
 			(update) =>
 				update.call((update) =>
 					update
 						.transition()
-						.duration(500)
+						.duration(_duration)
 						.attr(
 							"transform",
 							(d, i) => `rotate(${-total_opening / 2 + i * rotation + i})`
@@ -103,10 +174,11 @@ const update = (data, extent) => {
 				exit.call((exit) =>
 					exit
 						.transition()
-						.duration(500)
+						.duration(_duration)
 						.attr(
 							"transform",
-							(d, i) => `rotate(${-total_opening / 2 + (i-1) * rotation + (i-1)})`
+							(d, i) =>
+								`rotate(${-total_opening / 2 + (i - 1) * rotation + (i - 1)})`
 						)
 						.style("opacity", 0)
 						.remove()
@@ -229,7 +301,7 @@ const update = (data, extent) => {
 					.classed("label", true)
 					.attr("text-anchor", "middle")
 					.attr("font-size", 12)
-					.attr("y", 50)
+					.attr("y", 20)
 					.text((d) => d[0]),
 			(update) => update,
 			(exit) => exit.remove()
@@ -366,25 +438,41 @@ function drawSlice(d) {
 	return path;
 }
 
-function gridPosition(d, i) {
-	const x = (i % layout.columns) * _cell + _cell / 2 + margin.left;
-	const y = Math.floor(i / layout.columns) * _cell + _cell / 2 + margin.top;
-	return `translate(${x},${y}) rotate(${0})`;
+function gridPosition(d, i, random = false) {
+	if (random) {
+		const x = width * 0.1 + Math.random() * width * 0.8;
+		const y = height * 0.1 + Math.random() * height * 0.8;
+		return `translate(${x}, ${y})`;
+	} else {
+		const x = (i % layout.columns) * _cell + _cell / 2 + margin.left;
+		const y = Math.floor(i / layout.columns) * _cell + _cell / 2 + _cell/2;
+		return `translate(${x},${y}) rotate(${0})`;
+	}
 }
 
 function dataTick(d) {
 	const last = d[1][d[1].length - 1];
 	const max = last[1].find((d) => d.group === "mapped").valueIncremental;
-	const _right = circularTicks.filter((d) => d <= max).length + 1;
+	const offset_right = -1;
+	const _right = circularTicks.filter((d) => d <= max).length + offset_right;
 	const _left = Math.max(0, _right - 4);
 	const dataTicks = circularTicks.slice(_left, _right);
+	dataTicks.push(max);
 	return dataTicks;
 }
 
 function calcTickLabel(d) {
-	return d.toString().includes("000")
-		? d.toString().replace("000", "K").replace("K0", "0K")
-		: d;
+	if (d === 1) {
+		return "";
+	} else if (d >= 1000) {
+		d = (d / 1000).toFixed(1);
+		return d + "K";
+	} else {
+		return d;
+	}
+	// return d.toString().includes("000")
+	// 	? d.toString().replace("000", "K").replace("K0", "0K")
+	// 	: d;
 }
 
 export {
