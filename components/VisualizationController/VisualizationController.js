@@ -32,7 +32,9 @@ export default function VisualizationController() {
 			const ventagli = values[1];
 			const codeKey = "COD_REG"
 			const labelKey = "DEN_REG"
-			setData({ ventagli, geographies, codeKey, labelKey });
+			const max = d3.max(ventagli, d=>d[1][d[1].length-1][1][0].valueIncremental)
+			const extent = [0, max]
+			setData({ ventagli, geographies, codeKey, labelKey, extent });
 		});
 	}, []);
 

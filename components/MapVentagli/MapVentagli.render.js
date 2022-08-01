@@ -1,21 +1,9 @@
 import * as d3 from "d3";
-import { colors } from "../../utils/ventagli.utils";
+import { collisionRadius, colors, drawVentaglio } from "../../utils/ventagli.utils";
 
-let svg,
-	width,
-	height,
-	bgRect,
-	projection,
-	render,
-	zoom,
-	g,
-	g_geographies,
-	area,
-	g_ventagli,
-	ventaglio,
-	simulation,
-  collisionRadius = 35,
-	centroids;
+let svg, width, height, bgRect, projection, render, zoom, g, g_geographies, area, g_ventagli, ventaglio, simulation, centroids;
+
+const scaleRadius = d3.scaleSqrt().range([1, collisionRadius * 2]);
 
 const initialize = (element, data) => {
 	console.log("initialize", data);
@@ -29,11 +17,7 @@ const initialize = (element, data) => {
 		bgRect = svg.append("rect").classed("bgRect", true);
 	}
 
-	bgRect
-		.attr("fill", colors.lightBlue)
-		.attr("width", width)
-		.attr("height", height)
-		.attr("pointer-events", "none");
+	bgRect.attr("fill", colors.lightBlue).attr("width", width).attr("height", height).attr("pointer-events", "none");
 
 	g = svg.select(".main-g");
 	if (g.empty()) {
@@ -95,7 +79,9 @@ const initialize = (element, data) => {
 };
 
 const update = (data) => {
-	console.log("update");
+	console.log("update", data.extent);
+	scaleRadius.domain(data.extent);
+	data.ventagli = addRadiiData(data.ventagli);
 
 	area = g_geographies
 		.selectAll(".area")
@@ -112,18 +98,34 @@ const update = (data) => {
 	ventaglio = g_ventagli
 		.selectAll(".ventaglio")
 		.data(data.ventagli, (d) => d[0])
-		.join("g")
-		.attr("class", "ventaglio");
+		.join(
+			(enter) =>
+				enter
+					.append("g")
+					.attr("class", "ventaglio")
+					.each(function (d) {
+						drawVentaglio(d, d3.select(this));
+					}),
+			(update) =>
+				update.each(function (d) {
+					drawVentaglio(d, d3.select(this));
+				}),
+			(exit) => exit
+		);
 
-	ventaglio
-		.selectAll(".collisionArea")
-		.data((d) => [d])
-		.join("circle")
-		.attr("class", "collisionArea")
-		.attr("r", collisionRadius);
+	// ventaglio
+	// 	.selectAll(".collisionArea")
+	// 	.data((d) => [d])
+	// 	.join("circle")
+	// 	.attr("class", "collisionArea")
+	// 	.attr("stroke-width", "var(--stroke-width)")
+	// 	.attr("r", collisionRadius);
 
 	simulation.nodes(data.ventagli);
-	simulation.alpha(1).restart();
+	simulation.alpha(1);
+	simulation.tick(120);
+	ticked();
+	// simulation.restart();
 };
 
 export { initialize, update };
@@ -173,3 +175,22 @@ simulation = d3
 	.force("collide", d3.forceCollide().radius(collisionRadius))
 	.on("tick", ticked)
 	.stop();
+
+function addRadiiData(data) {
+	data.forEach((area) => {
+		area[1].forEach((snapshot) => {
+			const photographed = snapshot[1].find((d) => d.group === "photographed");
+			photographed.innerRadius = 0;
+			photographed.outerRadius = scaleRadius(photographed.valueIncremental);
+			const authorized = snapshot[1].find((d) => d.group === "authorized");
+			authorized.innerRadius = photographed.outerRadius;
+			authorized.outerRadius = scaleRadius(authorized.valueIncremental);
+			const mapped = snapshot[1].find((d) => d.group === "mapped");
+			if (mapped) {
+				mapped.innerRadius = authorized.outerRadius;
+				mapped.outerRadius = scaleRadius(mapped.valueIncremental);
+			}
+		});
+	});
+	return data;
+}
