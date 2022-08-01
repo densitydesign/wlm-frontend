@@ -11,13 +11,7 @@ export default function Home() {
 				<title>Home</title>
 			</Head>
       {/* <Navigation/> */}
-			<Container fluid>
-				<Row>
-					<Col>
-						<VisualizationController/>
-					</Col>
-				</Row>
-			</Container>
+			<VisualizationController/>
 		</>
 	);
 }

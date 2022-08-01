@@ -1,2 +1,7 @@
 @import "./custom.bootstrap.scss";
 @import "./variables.scss";
+
+html {
+	--stroke-width: 1;
+	--label-size: 10;
+}

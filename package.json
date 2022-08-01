@@ -19,7 +19,8 @@
     "react": "18.2.0",
     "react-bootstrap": "^2.4.0",
     "react-dom": "18.2.0",
-    "sass": "^1.54.0"
+    "sass": "^1.54.0",
+    "topojson-client": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "8.20.0",
