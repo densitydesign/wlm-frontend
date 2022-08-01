@@ -12,7 +12,7 @@ const colors = {
 	mapped: "#C3C5C3",
 };
 
-const collisionRadius = 25;
+const collisionRadius = 35;
 const fanOpening = 150;
 let rotation;
 
@@ -22,6 +22,14 @@ const drawVentaglio = (datum, ventaglio) => {
 
 	rotation = fanOpening / data[0][1].length;
 
+	ventaglio
+		.selectAll(".collisionArea")
+		.data((d) => [d])
+		.join("circle")
+		.attr("class", "collisionArea")
+		.attr("stroke-width", "var(--stroke-width)")
+		.attr("r", collisionRadius);
+
 	const snapshot = ventaglio
 		.selectAll(".snapshot")
 		.data(
@@ -30,7 +38,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		)
 		.join("g")
 		.attr("class", "snapshot")
-		.attr("transform", (d, i) => `rotate(${-fanOpening / 2 + rotation * i})`);
+		.attr("transform", (d, i) => ` rotate(${-fanOpening / 2 + rotation * i})`);
 
 	const monStatus = snapshot
 		.selectAll(".status")
@@ -54,9 +62,9 @@ const drawVentaglio = (datum, ventaglio) => {
 		.data((d) => [d[0]])
 		.join("text")
 		.attr("text-anchor", "middle")
-    .attr("font-size","var(--label-size)")
+		.attr("font-size", "var(--label-size)")
 		.attr("class", "label")
-    .attr("y", "var(--label-size)")
+		.attr("y", "var(--label-size)")
 		.text((d) => d);
 };
 
@@ -98,7 +106,7 @@ function drawSlice(d) {
 	if (d.innerRadius === 0) {
 		const radius = d.outerRadius;
 		const startAngle = 0;
-		const endAngle = rotation-1;
+		const endAngle = rotation - 1;
 		const start = polarToCartesian(x, y, d.outerRadius, endAngle);
 		const end = polarToCartesian(x, y, d.outerRadius, startAngle);
 		const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
@@ -106,14 +114,14 @@ function drawSlice(d) {
 	} else {
 		const outerRadius = d.outerRadius;
 		const outerStartAngle = 0;
-		const outerEndAngle = rotation-1;
+		const outerEndAngle = rotation - 1;
 		const outerStart = polarToCartesian(x, y, outerRadius, outerEndAngle);
 		const outerEnd = polarToCartesian(x, y, outerRadius, outerStartAngle);
 		const outerLargeArcFlag = outerEndAngle - outerStartAngle <= 180 ? "0" : "1";
 
 		const innerRadius = d.innerRadius;
 		const innerStartAngle = 0;
-		const innerEndAngle = rotation-1;
+		const innerEndAngle = rotation - 1;
 		const innerStart = polarToCartesian(x, y, innerRadius, innerEndAngle);
 		const innerEnd = polarToCartesian(x, y, innerRadius, innerStartAngle);
 		const innerLargeArcFlag = innerEndAngle - innerStartAngle <= 180 ? "0" : "1";

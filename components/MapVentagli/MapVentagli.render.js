@@ -113,14 +113,6 @@ const update = (data) => {
 			(exit) => exit
 		);
 
-	// ventaglio
-	// 	.selectAll(".collisionArea")
-	// 	.data((d) => [d])
-	// 	.join("circle")
-	// 	.attr("class", "collisionArea")
-	// 	.attr("stroke-width", "var(--stroke-width)")
-	// 	.attr("r", collisionRadius);
-
 	simulation.nodes(data.ventagli);
 	simulation.alpha(1);
 	simulation.tick(120);
