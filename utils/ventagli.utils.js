@@ -64,7 +64,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("text-anchor", "middle")
 		.attr("font-size", "var(--label-size)")
 		.attr("class", "label")
-		.attr("y", "var(--label-size)")
+		// .attr("y", "var(--label-size)")
 		.text((d) => d);
 };
 
