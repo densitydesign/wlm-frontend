@@ -6,7 +6,7 @@ let svg, width, height, bgRect, projection, render, zoom, g, g_geographies, area
 const scaleRadius = d3.scaleSqrt().range([1, collisionRadius * 2]);
 
 const initialize = (element, data) => {
-	console.log("initialize", data);
+	// console.log("initialize", data);
 	svg = d3.select(element);
 	const bbox = svg.node().getBoundingClientRect();
 	width = bbox.width;
@@ -16,7 +16,6 @@ const initialize = (element, data) => {
 	if (bgRect.empty()) {
 		bgRect = svg.append("rect").classed("bgRect", true);
 	}
-
 	bgRect.attr("fill", colors.lightBlue).attr("width", width).attr("height", height).attr("pointer-events", "none");
 
 	g = svg.select(".main-g");
@@ -33,6 +32,8 @@ const initialize = (element, data) => {
 	if (g_ventagli.empty()) {
 		g_ventagli = g.append("g").classed("g_ventagli", true);
 	}
+
+	return
 
 	projection = d3
 		.geoMercator()
@@ -79,7 +80,7 @@ const initialize = (element, data) => {
 };
 
 const update = (data) => {
-	console.log("update", data.extent);
+	console.log("update");
 	scaleRadius.domain(data.extent);
 	data.ventagli = addRadiiData(data.ventagli);
 
