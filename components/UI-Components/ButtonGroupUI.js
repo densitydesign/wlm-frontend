@@ -3,12 +3,12 @@ import classNames from "classnames";
 
 export default function ButtonGroupUI({ label, items }) {
 	return (
-		<div className={classNames("d-flex", "justify-content-start", "align-items-center")}>
+		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-3")}>
 			{label && <span>{label}</span>}
 			<ButtonGroup className={classNames("ms-3")} aria-label="Basic example">
 				{items.map((btn, i) => (
 					<Button key={i} size="sm" onClick={(e) => btn.onClickAction(e)}>
-						{btn.label}
+						{btn.content}
 					</Button>
 				))}
 			</ButtonGroup>
@@ -18,8 +18,8 @@ export default function ButtonGroupUI({ label, items }) {
 
 ButtonGroupUI.defaultProps = {
 	items: [
-		{ label: "btn", onClickAction: (value) => console.warn("No function specified for onClickAction. Value:", value) },
-		{ label: "btn", onClickAction: (value) => console.warn("No function specified for onClickAction. Value:", value) },
-		{ label: "btn", onClickAction: (value) => console.warn("No function specified for onClickAction. Value:", value) },
+		{ content: "btn", onClickAction: (value) => console.warn("No function specified for onClickAction. Value:", value) },
+		{ content: "btn", onClickAction: (value) => console.warn("No function specified for onClickAction. Value:", value) },
+		{ content: "btn", onClickAction: (value) => console.warn("No function specified for onClickAction. Value:", value) },
 	],
 };

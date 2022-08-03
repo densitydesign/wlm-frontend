@@ -1,43 +1,45 @@
-import { Dropdown } from "react-bootstrap";
+import { Button, Dropdown } from "react-bootstrap";
 import classNames from "classnames";
 import { useState } from "react";
+import { BsXLg as CloseIcon } from "react-icons/bs";
 
-export default function DropdownUI({ label, items, transferSelection, defaultLabel }) {
-	const defaultValue = { label: defaultLabel };
-	const [selection, setSelection] = useState(defaultValue);
+export default function DropdownUI({ label, items, value, setValue, defaultLabel, disabled }) {
+	// const [selection, setSelection] = useState();
 	return (
-		<div className={classNames("d-flex", "justify-content-start", "align-items-center")}>
+		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-3")}>
 			{label && <span>{label}</span>}
-			<Dropdown className={classNames("ms-3")} >
-				<Dropdown.Toggle variant="success" id="dropdown-basic" size="sm">
-					{selection.label}
+			<Dropdown className={classNames({ "ms-2": label })}>
+				<Dropdown.Toggle id="dropdown-basic" size="sm" disabled={disabled}>
+					{value && value.label}
+					{!value && defaultLabel}
 				</Dropdown.Toggle>
 
-				<Dropdown.Menu>
+				<Dropdown.Menu style={{ maxHeight: "50vh", overflowY: "auto" }}>
 					{items.map((d, i) => (
 						<Dropdown.Item
 							key={i}
 							eventKey={i}
 							onClick={() => {
-								setSelection(d);
-								transferSelection(d);
+								setValue(d);
 							}}
 						>
 							{d.label}
 						</Dropdown.Item>
 					))}
-					<Dropdown.Divider />
-					<Dropdown.Item
-						eventKey={items.length}
-						onClick={() => {
-							setSelection(defaultValue);
-							transferSelection(null);
-						}}
-					>
-						None
-					</Dropdown.Item>
 				</Dropdown.Menu>
 			</Dropdown>
+			{(value) && (
+				<Button
+					className="ms-1"
+					size="sm"
+					onClick={() => {
+						setValue(undefined);
+					}}
+					disabled={disabled}
+				>
+					<CloseIcon />
+				</Button>
+			)}
 		</div>
 	);
 }

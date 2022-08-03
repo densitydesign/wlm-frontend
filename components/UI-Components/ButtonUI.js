@@ -3,9 +3,9 @@ import classNames from "classnames";
 
 export default function ButtonUI({ label, onClickAction, content }) {
 	return (
-		<div className={classNames("d-flex", "justify-content-start", "align-items-center")}>
+		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-3")}>
 			{label && <span>{label}</span>}
-			<Button className={classNames("ms-3")} size="sm" onClick={(event) => onClickAction(event)}>
+			<Button className={classNames({"ms-3": label})} size="sm" onClick={(event) => onClickAction(event)}>
 				{content}
 			</Button>
 		</div>
