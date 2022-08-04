@@ -13,6 +13,13 @@ let _regionsList = [],
 	_provincesList = [],
 	_municipalitiesList = [];
 
+const _typologiesList = [
+	{ label: "All monuments" },
+	{ label: "Fortificazioni" },
+	{ label: "Quasi tutti" },
+	{ label: "Una piccola parte" },
+];
+
 export default function VisualizationController() {
 	const { asPath, basePath } = useRouter();
 
@@ -22,15 +29,29 @@ export default function VisualizationController() {
 	const [regionsList, setRegionsList] = useState([]);
 	const [provincesList, setProvincesList] = useState([]);
 	const [municipalitiesList, setMunicipalitiesList] = useState([]);
-	const [typologiesList, setTypologiesList] = useState([{ label: "All monuments" }]);
+	const [typologiesList, setTypologiesList] = useState([]);
 
-	const [selectedArea, setselectedArea] = useState();
+	const [selectedArea, setSelectedArea] = useState();
+	const [selectedRegion, setSelectedRegion] = useState();
+	const [selectedProvince, setSelectedProvince] = useState();
+	const [selectedMunicipality, setSelectedMunicipality] = useState();
 	const [typology, setTypology] = useState();
 	const [dateFrom, setDateFrom] = useState();
 	const [dateTo, setDateTo] = useState();
 
-	// Load data
+	// Decode URL and load data
 	useEffect(() => {
+		// Decode URL
+		const paramString = asPath.split("#")[1];
+		// console.log(paramString);
+		let vizParameters = {};
+		if (paramString) {
+			vizParameters = Object.fromEntries(
+				paramString.split("&").map((d) => d.split("=").map((dd) => decodeURIComponent(dd)))
+			);
+			// console.log("vizParameters", vizParameters);
+		}
+
 		// fetch initial geography
 		const geoReg = d3.json(`${basePath}/api-data-simulated/geometries/Reg01012022_WGS84_topoJSON.json`);
 		const geoProv = d3.json(`${basePath}/api-data-simulated/geometries/ProvCM01012022_WGS84_topoJSON.json`);
@@ -40,6 +61,9 @@ export default function VisualizationController() {
 		const _data = d3.json(`${basePath}/api-data-simulated/interval-12months.aggregation-region.json`);
 
 		Promise.all([geoReg, geoProv, geoCom, _data]).then(([regionsTopo, provincesTopo, municipalitiesTopo, ventagli]) => {
+			const fetchedTypologiesList = _typologiesList;
+			setTypologiesList(fetchedTypologiesList);
+
 			let _key = Object.keys(regionsTopo.objects)[0];
 			const geographiesRegions = feature(regionsTopo, regionsTopo.objects[_key]);
 			_regionsList = geographiesRegions.features.map((d) => ({
@@ -88,96 +112,117 @@ export default function VisualizationController() {
 			};
 			setGeographies(geographies);
 
+			if (vizParameters) {
+				const {
+					selectedAreaType,
+					selectedAreaLabel,
+					selectedRegion,
+					selectedProvince,
+					selectedMunicipality,
+					typology,
+					dateFrom,
+					dateTo,
+				} = vizParameters;
+				if (selectedRegion) {
+					setSelectedRegion(_regionsList.find((d) => d.label === selectedRegion));
+				}
+				if (selectedProvince) {
+					setSelectedProvince(_provincesList.find((d) => d.label === selectedProvince));
+				}
+				if (selectedMunicipality) {
+					setSelectedMunicipality(_municipalitiesList.find((d) => d.label === selectedMunicipality));
+				}
+				if (typology) {
+					// console.log("typology", typology);
+					const correspondingType = fetchedTypologiesList.find((d) => d.label === typology);
+					// console.log("correspondingType", correspondingType);
+					setTypology(correspondingType);
+				}
+				if (dateFrom) setDateFrom(dateFrom);
+				if (dateTo) setDateTo(dateTo);
+			}
+			setData(ventagli);
 			const codeKey = "COD_REG";
 			const labelKey = "DEN_REG";
-
-			// setData({ ventagli, geographies: geographiesRegions, codeKey, labelKey, extent });
-			setData(ventagli);
 		});
 	}, []);
 
-	const setSelection = useCallback(() => {
-		if (selectedArea) {
-			switch (selectedArea.type) {
-				case "region":
-					let arr = _provincesList.filter((d) => d.codeRegion === selectedArea.code);
-					arr = arr.sort(function (a, b) {
-						var textA = a.label.toUpperCase();
-						var textB = b.label.toUpperCase();
-						return textA < textB ? -1 : textA > textB ? 1 : 0;
-					});
-					setProvincesList(arr);
-					break;
-				case "province":
-					let arr2 = _municipalitiesList.filter((d) => d.codeProvince === selectedArea.code);
-					arr2 = arr2.sort(function (a, b) {
-						var textA = a.label.toUpperCase();
-						var textB = b.label.toUpperCase();
-						return textA < textB ? -1 : textA > textB ? 1 : 0;
-					});
-					setMunicipalitiesList(arr2);
-					break;
-				case "municipality":
-					console.log("is municipality");
-					break;
-			}
-		} else {
-			// reset selection
-			setProvincesList([]);
-			setMunicipalitiesList([]);
+	useEffect(() => {
+		if (selectedRegion) {
+			let arr = _provincesList.filter((d) => d.codeRegion === selectedRegion.code);
+			arr = arr.sort(function (a, b) {
+				var textA = a.label.toUpperCase();
+				var textB = b.label.toUpperCase();
+				return textA < textB ? -1 : textA > textB ? 1 : 0;
+			});
+			setProvincesList(arr);
 		}
-	}, [selectedArea]);
+	}, [selectedRegion]);
 
 	useEffect(() => {
-		setSelection();
-	}, [selectedArea]);
+		if (selectedProvince) {
+			let arr2 = _municipalitiesList.filter((d) => d.codeProvince === selectedProvince.code);
+			arr2 = arr2.sort(function (a, b) {
+				var textA = a.label.toUpperCase();
+				var textB = b.label.toUpperCase();
+				return textA < textB ? -1 : textA > textB ? 1 : 0;
+			});
+			setMunicipalitiesList(arr2);
+		}
+	}, [selectedProvince]);
 
 	useEffect(() => {
 		const parameters = {};
-		if (selectedArea) {
-			parameters.selectedArea = selectedArea.label + "_" + selectedArea.code + "_" + selectedArea.type;
+		if (selectedRegion) {
+			parameters.selectedRegion = encodeURIComponent(selectedRegion.label);
+		}
+		if (selectedProvince) {
+			parameters.selectedProvince = encodeURIComponent(selectedProvince.label);
+		}
+		if (selectedMunicipality) {
+			parameters.selectedMunicipality = encodeURIComponent(selectedMunicipality.label);
 		}
 		if (typology) {
-			parameters.typology = typology.label;
+			parameters.typology = encodeURIComponent(typology.label);
 		}
 		if (dateFrom) {
-			parameters.dateFrom = dateFrom;
+			parameters.dateFrom = encodeURIComponent(dateFrom);
 		}
 		if (dateTo) {
-			parameters.dateTo = dateTo;
+			parameters.dateTo = encodeURIComponent(dateTo);
 		}
 		const temp = [];
 		for (const key in parameters) {
 			temp.push(key + "=" + parameters[key]);
 		}
-		const hashUrl = temp.join("&");
-		window.location.hash = hashUrl;
-
-		// router.replace(url, as, options)
-
-		// const hash = asPath.split("#")[1];
-		// console.log(hash);
-		// https://nextjs.org/docs/api-reference/next/router#routerreplace
-		// window.location.hash = `k=${d3.event.transform.k.toFixed(3)}&x=${d3.event.transform.x.toFixed(3)}&y=${d3.event.transform.y.toFixed(3)}`
-	}, [selectedArea, typology, dateFrom, dateTo]);
+		const hashUrl = "#" + temp.join("&");
+		location.replace(hashUrl);
+	}, [selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo]);
 
 	return (
 		<Container className={classNames(styles.vizController)} fluid>
 			<Row className={classNames("h-100")}>
 				<Col className={classNames("h-100")} md={3} xl={3}>
 					<ToolbarUI
-						regions={{ items: regionsList, setSelection: setselectedArea, disabled: !regionsList.length }}
-						provinces={{ items: provincesList, setSelection: setselectedArea, disabled: !provincesList.length }}
+						regions={{ items: regionsList, setSelection: setSelectedArea, disabled: !regionsList.length }}
+						selectedRegion={selectedRegion}
+						setSelectedRegion={setSelectedRegion}
+						provinces={{ items: provincesList, setSelection: setSelectedArea, disabled: !provincesList.length }}
+						selectedProvince={selectedProvince}
+						setSelectedProvince={setSelectedProvince}
 						municipalities={{
 							items: municipalitiesList,
-							setSelection: setselectedArea,
+							setSelection: setSelectedArea,
 							disabled: !municipalitiesList.length,
 						}}
-						setSelectedArea={setselectedArea}
+						selectedMunicipality={selectedMunicipality}
+						setSelectedMunicipality={setSelectedMunicipality}
+						typologiesList={typologiesList}
 						typology={typology}
 						setTypology={setTypology}
-						typologiesList={typologiesList}
+						dateFrom={dateFrom}
 						setDateFrom={setDateFrom}
+						dateTo={dateTo}
 						setDateTo={setDateTo}
 					/>
 				</Col>

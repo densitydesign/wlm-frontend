@@ -5,43 +5,73 @@ import styles from "./UI-Components.module.scss";
 import NavMenu from "../NavMenu";
 import { useEffect, useMemo, useState } from "react";
 
-const maxDate = "2022-07-31";
-
 export default function ToolbarUI({
 	regions,
+	selectedRegion,
+	setSelectedRegion,
+
 	provinces,
+	selectedProvince,
+	setSelectedProvince,
+
 	municipalities,
-	setSelectedArea,
+	selectedMunicipality,
+	setSelectedMunicipality,
+	
+	typologiesList,
 	typology,
 	setTypology,
-	typologiesList,
+	
+	dateFrom,
 	setDateFrom,
+
+	dateTo,
 	setDateTo,
 }) {
-	const [region, setRegion] = useState();
-	const [province, setProvince] = useState();
-	const [municipality, setMunicipality] = useState();
 
-	const _selected = useMemo(() => {
-		if (municipality) {
-			// console.log(municipality, province, region);
-			return municipality;
-		} else if (province) {
-			// console.log(province, region);
-			return province;
-		} else if (region) {
-			// console.log(region);
-			return region;
-		} else {
-			// console.log("No area is selected");
-			return undefined;
-		}
-	}, [region, province, municipality]);
+	// const [region, setRegion] = useState();
+	// const [province, setProvince] = useState();
+	// const [municipality, setMunicipality] = useState();
 
-	useEffect(() => {
-		// console.log("_selected", _selected);
-		setSelectedArea(_selected);
-	}, [region, province, municipality]);
+	// useEffect(() => {
+	// 	// console.log("selected area", selectedArea);
+	// 	if (selectedArea && (!region && !province && !municipality)) {
+	// 		// console.log("selected area is", selectedArea);
+	// 		switch (selectedArea.type) {
+	// 			case "region":
+	// 				// console.log(selectedArea.type)
+	// 				setRegion(selectedArea);
+	// 				break;
+	// 			case "province":
+	// 				setProvince(selectedArea);
+	// 				break;
+	// 			case "municipality":
+	// 				setMunicipality(selectedArea);
+	// 				break;
+	// 		}
+	// 	}
+	// });
+
+	// const _selected = useMemo(() => {
+	// 	if (municipality) {
+	// 		// console.log(municipality, province, region);
+	// 		return municipality;
+	// 	} else if (province) {
+	// 		// console.log(province, region);
+	// 		return province;
+	// 	} else if (region) {
+	// 		// console.log(region);
+	// 		return region;
+	// 	} else {
+	// 		// console.log("No area is selected");
+	// 		return undefined;
+	// 	}
+	// }, [region, province, municipality]);
+
+	// useEffect(() => {
+	// 	// console.log("_selected", _selected);
+	// 	setSelectedArea(_selected);
+	// }, [region, province, municipality]);
 
 	return (
 		<div className={styles.toolBar}>
@@ -50,31 +80,31 @@ export default function ToolbarUI({
 			<DropdownUI
 				label="Region"
 				items={regions.items}
-				value={region}
-				setValue={setRegion}
+				value={selectedRegion}
+				setValue={setSelectedRegion}
 				// transferSelection={regions.setSelection}
 				defaultLabel="Select a region"
-				disabled={regions.disabled || province}
+				disabled={regions.disabled || selectedProvince}
 			/>
 			<DropdownUI
 				label="Province"
 				items={provinces.items}
-				value={province}
-				setValue={setProvince}
+				value={selectedProvince}
+				setValue={setSelectedProvince}
 				defaultLabel="Select a province"
-				disabled={provinces.disabled || municipality}
+				disabled={provinces.disabled || selectedMunicipality}
 			/>
 			<DropdownUI
 				label="Municipality"
 				items={municipalities.items}
-				value={municipality}
-				setValue={setMunicipality}
+				value={selectedMunicipality}
+				setValue={setSelectedMunicipality}
 				defaultLabel="Select a municipality"
-				disabled={municipalities.disabled || true}
+				disabled={municipalities.disabled}
 			/>
 			<DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={false} />
-			<DatePickerUI label="From" transferSelection={setDateFrom} />
-			<DatePickerUI label="To" transferSelection={setDateTo} initialDate={maxDate} />
+			<DatePickerUI label="From" value={dateFrom} transferSelection={setDateFrom} />
+			<DatePickerUI label="To" value={dateTo} transferSelection={setDateTo} />
 			<h6>What's new</h6>
 			<p>[Recap here]</p>
 			<h6>Timeline</h6>

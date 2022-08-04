@@ -1,7 +1,7 @@
 import { Form } from "react-bootstrap";
 import classNames from "classnames";
 
-export default function DatePickerUI({ label, initialDate, transferSelection }) {
+export default function DatePickerUI({ label, value, transferSelection }) {
 	return (
 		<Form.Group
 			controlId="date"
@@ -14,7 +14,7 @@ export default function DatePickerUI({ label, initialDate, transferSelection }) 
 				type="date"
 				name="date"
 				placeholder="Pick a date"
-				defaultValue={initialDate}
+				value={value}
 				size="sm"
 				onChange={(e) => transferSelection(e.target.value)}
 			/>
@@ -23,7 +23,7 @@ export default function DatePickerUI({ label, initialDate, transferSelection }) 
 }
 
 DatePickerUI.defaultProps = {
-	initialDate: "2012-01-01",
+	value: "2012-01-01",
 	transferSelection: (value) =>
 		console.warn("No function specified for rtansferring the selection to parent. Value:", value),
 };
