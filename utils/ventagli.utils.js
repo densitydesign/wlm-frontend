@@ -7,6 +7,7 @@ const colors = {
 	onWikidata: "#C3C5C3",
 	inContest: "#F8FF0E",
 	photographed: "#22B8B4",
+	interactive: "#FF004D",
 
 	authorized: "#F8FF0E",
 	mapped: "#C3C5C3",
