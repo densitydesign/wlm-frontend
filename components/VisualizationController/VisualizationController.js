@@ -147,7 +147,7 @@ export default function VisualizationController() {
 	}, []);
 
 	useEffect(() => {
-		let arr = []
+		let arr = [];
 		if (selectedRegion) {
 			arr = _provincesList.filter((d) => d.codeRegion === selectedRegion.code);
 			arr = arr.sort(function (a, b) {
@@ -155,8 +155,8 @@ export default function VisualizationController() {
 				var textB = b.label.toUpperCase();
 				return textA < textB ? -1 : textA > textB ? 1 : 0;
 			});
-			setProvincesList(arr);
 		}
+		setProvincesList(arr);
 	}, [selectedRegion]);
 
 	useEffect(() => {
