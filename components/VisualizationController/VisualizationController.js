@@ -31,7 +31,6 @@ export default function VisualizationController() {
 	const [municipalitiesList, setMunicipalitiesList] = useState([]);
 	const [typologiesList, setTypologiesList] = useState([]);
 
-	const [selectedArea, setSelectedArea] = useState();
 	const [selectedRegion, setSelectedRegion] = useState();
 	const [selectedProvince, setSelectedProvince] = useState();
 	const [selectedMunicipality, setSelectedMunicipality] = useState();
@@ -148,8 +147,9 @@ export default function VisualizationController() {
 	}, []);
 
 	useEffect(() => {
+		let arr = []
 		if (selectedRegion) {
-			let arr = _provincesList.filter((d) => d.codeRegion === selectedRegion.code);
+			arr = _provincesList.filter((d) => d.codeRegion === selectedRegion.code);
 			arr = arr.sort(function (a, b) {
 				var textA = a.label.toUpperCase();
 				var textB = b.label.toUpperCase();
@@ -160,15 +160,16 @@ export default function VisualizationController() {
 	}, [selectedRegion]);
 
 	useEffect(() => {
+		let arr2 = [];
 		if (selectedProvince) {
-			let arr2 = _municipalitiesList.filter((d) => d.codeProvince === selectedProvince.code);
+			arr2 = _municipalitiesList.filter((d) => d.codeProvince === selectedProvince.code);
 			arr2 = arr2.sort(function (a, b) {
 				var textA = a.label.toUpperCase();
 				var textB = b.label.toUpperCase();
 				return textA < textB ? -1 : textA > textB ? 1 : 0;
 			});
-			setMunicipalitiesList(arr2);
 		}
+		setMunicipalitiesList(arr2);
 	}, [selectedProvince]);
 
 	useEffect(() => {
@@ -204,17 +205,13 @@ export default function VisualizationController() {
 			<Row className={classNames("h-100")}>
 				<Col className={classNames("h-100")} md={3} xl={3}>
 					<ToolbarUI
-						regions={{ items: regionsList, setSelection: setSelectedArea, disabled: !regionsList.length }}
+						regions={{ items: regionsList, disabled: !regionsList.length }}
 						selectedRegion={selectedRegion}
 						setSelectedRegion={setSelectedRegion}
-						provinces={{ items: provincesList, setSelection: setSelectedArea, disabled: !provincesList.length }}
+						provinces={{ items: provincesList, disabled: !provincesList.length }}
 						selectedProvince={selectedProvince}
 						setSelectedProvince={setSelectedProvince}
-						municipalities={{
-							items: municipalitiesList,
-							setSelection: setSelectedArea,
-							disabled: !municipalitiesList.length,
-						}}
+						municipalities={{ items: municipalitiesList, disabled: !municipalitiesList.length }}
 						selectedMunicipality={selectedMunicipality}
 						setSelectedMunicipality={setSelectedMunicipality}
 						typologiesList={typologiesList}
@@ -227,7 +224,18 @@ export default function VisualizationController() {
 					/>
 				</Col>
 				<Col className={classNames("h-100")}>
-					{data && geographies && <MapVentagli ventagli={data} geographies={geographies} selectedArea={selectedArea} />}
+					{data && geographies && (
+						<MapVentagli
+							ventagli={data}
+							geographies={geographies}
+							selectedRegion={selectedRegion}
+							selectedProvince={selectedProvince}
+							selectedMunicipality={selectedMunicipality}
+							typology={typology}
+							dateFrom={dateFrom}
+							dateTo={dateTo}
+						/>
+					)}
 					{/* {data && <TestVentagli data={data} slice={slice} />} */}
 				</Col>
 			</Row>
