@@ -4,13 +4,13 @@ let width,
 	height,
 	margin = {},
 	layout = {},
-	_cell = 150,
-	_duration = 300;
+	_cell = 175,
+	_duration = 500;
 const circularTicks = [1, 100, 500, 1000, 2000, 5000, 10000, 15000];
 // D3 selections
 let svg, g, fan, snapshot, monumentGroup, tickBg, tick;
 // D3 scales
-const scaleRadius = d3.scaleSqrt().range([0, _cell * 0.75]);
+const scaleRadius = d3.scaleSqrt().range([1, _cell * 0.5]);
 
 const scaleColor = d3.scaleOrdinal(
 	["mapped", "authorized", "photographed"],
@@ -33,11 +33,14 @@ const initialize = (element, data, extent, slice) => {
 
 	margin.left = (width % _cell) / 2;
 	margin.top = (height % _cell) / 2;
-	margin.top = 0;
+	// margin.top = _cell / 2 /2;
 	layout.columns = Math.floor(width / _cell);
 	// layout.rows = Math.floor(height / _cell);
 
-	height = Math.ceil(data.length / layout.columns) * _cell + _cell / 2;
+	height = Math.max(
+		Math.ceil(data.length / layout.columns) * _cell + margin.top,
+		720 - 24
+	);
 	svg.style("height", height);
 
 	// destroy(element);
@@ -50,12 +53,12 @@ const initialize = (element, data, extent, slice) => {
 };
 
 const update = (data, extent, slice) => {
-	// console.log("update", data);
+	console.log("update", data);
 	// if (slice) {
 	// 	console.log("viz render slice", slice);
 	// }
 
-	scaleRadius.domain([0, extent[1]]);
+	scaleRadius.domain([1, extent[1]]);
 	data = addRadiiData(data);
 
 	let this_fanOpening = fanOpening;
@@ -102,10 +105,7 @@ const update = (data, extent, slice) => {
 
 	tickBg
 		.selectAll(".tickBackground")
-		.data(
-			(d) => [d],
-			(d) => d
-		)
+		.data((d) => [d])
 		.join(
 			(enter) =>
 				enter
@@ -165,6 +165,7 @@ const update = (data, extent, slice) => {
 					update
 						.transition()
 						.duration(_duration)
+						.style("opacity", 1)
 						.attr(
 							"transform",
 							(d, i) => `rotate(${-total_opening / 2 + i * rotation + i})`
@@ -242,7 +243,7 @@ const update = (data, extent, slice) => {
 						return describeArc(0, 0, r, start, end);
 					})
 					.attr("fill", "none")
-					.attr("stroke", "grey")
+					.attr("stroke", "#aaa")
 					.attr("stroke-dasharray", "1, 2")
 					.style("mix-blend-mode", "multiply")
 					.classed("axis", true),
@@ -323,8 +324,10 @@ function addRadiiData(data) {
 			authorized.innerRadius = photographed.outerRadius;
 			authorized.outerRadius = scaleRadius(authorized.valueIncremental);
 			const mapped = snapshot[1].find((d) => d.group === "mapped");
-			mapped.innerRadius = authorized.outerRadius;
-			mapped.outerRadius = scaleRadius(mapped.valueIncremental);
+			if (mapped) {
+				mapped.innerRadius = authorized.outerRadius;
+				mapped.outerRadius = scaleRadius(mapped.valueIncremental);
+			}
 		});
 	});
 	return data;
@@ -445,17 +448,17 @@ function gridPosition(d, i, random = false) {
 		return `translate(${x}, ${y})`;
 	} else {
 		const x = (i % layout.columns) * _cell + _cell / 2 + margin.left;
-		const y = Math.floor(i / layout.columns) * _cell + _cell / 2 + _cell/2;
+		const y = Math.floor(i / layout.columns) * _cell + _cell / 2 + margin.top;
 		return `translate(${x},${y}) rotate(${0})`;
 	}
 }
 
 function dataTick(d) {
 	const last = d[1][d[1].length - 1];
-	const max = last[1].find((d) => d.group === "mapped").valueIncremental;
+	const max = last[1][0].valueIncremental;
 	const offset_right = -1;
 	const _right = circularTicks.filter((d) => d <= max).length + offset_right;
-	const _left = Math.max(0, _right - 4);
+	const _left = Math.max(0, _right - 3);
 	const dataTicks = circularTicks.slice(_left, _right);
 	dataTicks.push(max);
 	return dataTicks;

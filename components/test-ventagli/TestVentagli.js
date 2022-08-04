@@ -30,15 +30,15 @@ export default function TestVentagli({ data, slice }) {
 		// console.log(sorted)
 		const temp_extent = d3.extent(extents);
 		setExtent(d3.extent(temp_extent));
-		initialize(svgEl.current, sorted, temp_extent, slice);
+		initialize(svgEl.current, sorted, temp_extent);
 	}, []);
 
-	useEffect(() => {
-		if (!data || !extent) {
-			return;
-		}
-		update(data, extent, slice);
-	}, [data, slice]);
+	// useEffect(() => {
+	// 	if (!data || !extent) {
+	// 		return;
+	// 	}
+	// 	update(data, extent, slice);
+	// }, [data, slice]);
 
 	return (
 		<>
