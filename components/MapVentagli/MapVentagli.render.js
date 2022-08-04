@@ -136,6 +136,7 @@ const update = (data) => {
 
 	if (data.selectedRegion) {
 		region
+			.attr("opacity", 0.65)
 			.filter((d) => d.properties.DEN_REG === data.selectedRegion.label)
 			.attr("stroke", (d) => colors.interactive)
 			.attr("fill", "transparent")
@@ -159,6 +160,7 @@ const update = (data) => {
 
 	if (data.selectedProvince) {
 		province
+			.attr("opacity", 0.65)
 			.filter((d) => d.properties.DEN_UTS === data.selectedProvince.label)
 			.attr("stroke", (d) => colors.interactive)
 			.attr("fill", "transparent")
@@ -179,13 +181,13 @@ const update = (data) => {
 			.attr("stroke-linejoin", "round")
 			.attr("d", (d) => render(d));
 
-			if (data.selectedMunicipality) {
-				municipality
+		if (data.selectedMunicipality) {
+			municipality
 				.filter((d) => d.properties.COMUNE === data.selectedMunicipality.label)
 				.attr("stroke", (d) => colors.interactive)
 				// .attr("fill", "transparent")
 				.raise();
-			}
+		}
 	}
 
 	return;
