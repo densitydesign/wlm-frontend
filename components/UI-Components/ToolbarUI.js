@@ -3,7 +3,6 @@ import { BsDownload, BsFillPlayFill, BsArrowRepeat } from "react-icons/bs";
 import classNames from "classnames";
 import styles from "./UI-Components.module.scss";
 import NavMenu from "../NavMenu";
-import { useEffect, useMemo, useState } from "react";
 
 export default function ToolbarUI({
 	regions,
@@ -28,50 +27,6 @@ export default function ToolbarUI({
 	dateTo,
 	setDateTo,
 }) {
-
-	// const [region, setRegion] = useState();
-	// const [province, setProvince] = useState();
-	// const [municipality, setMunicipality] = useState();
-
-	// useEffect(() => {
-	// 	// console.log("selected area", selectedArea);
-	// 	if (selectedArea && (!region && !province && !municipality)) {
-	// 		// console.log("selected area is", selectedArea);
-	// 		switch (selectedArea.type) {
-	// 			case "region":
-	// 				// console.log(selectedArea.type)
-	// 				setRegion(selectedArea);
-	// 				break;
-	// 			case "province":
-	// 				setProvince(selectedArea);
-	// 				break;
-	// 			case "municipality":
-	// 				setMunicipality(selectedArea);
-	// 				break;
-	// 		}
-	// 	}
-	// });
-
-	// const _selected = useMemo(() => {
-	// 	if (municipality) {
-	// 		// console.log(municipality, province, region);
-	// 		return municipality;
-	// 	} else if (province) {
-	// 		// console.log(province, region);
-	// 		return province;
-	// 	} else if (region) {
-	// 		// console.log(region);
-	// 		return region;
-	// 	} else {
-	// 		// console.log("No area is selected");
-	// 		return undefined;
-	// 	}
-	// }, [region, province, municipality]);
-
-	// useEffect(() => {
-	// 	// console.log("_selected", _selected);
-	// 	setSelectedArea(_selected);
-	// }, [region, province, municipality]);
 
 	return (
 		<div className={styles.toolBar}>
