@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 
 const colors = {
+	blueJeans: "#0978AB",
 	lightBlue: "#DDF7FF",
 	terrain: "#ECE5E0",
 	white: "#ffffff",
