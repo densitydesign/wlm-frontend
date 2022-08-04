@@ -60,7 +60,7 @@ export default function ToolbarUI({
 			<DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={false} />
 			<DatePickerUI label="From" value={dateFrom} transferSelection={setDateFrom} />
 			<DatePickerUI label="To" value={dateTo} transferSelection={setDateTo} />
-			<h6>What's new</h6>
+			<h6>What&apos;s new</h6>
 			<p>[Recap here]</p>
 			<h6>Timeline</h6>
 			<div className={classNames("d-flex", "justify-content-between")}>
