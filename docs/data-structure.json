@@ -1,0 +1,59 @@
+{
+  "data": [
+    {
+      "code": 3,
+      "label": "Lombardia",
+      "type": "region",
+      "history": [
+        {
+          "date": "2012-01-30",
+          "groups": [
+            {
+              "label": "onWIki",
+              "value": 2345
+            },
+            {
+              "label": "inContest",
+              "value": 2345
+            },
+            {
+              "label": "photographed",
+              "value": 2345
+            }
+          ]
+        },
+        {
+          "date": "2012-09-30",
+          "groups": [
+            {
+              "label": "onWIki",
+              "value": 2345
+            },
+            {
+              "label": "inContest",
+              "value": 2345
+            },
+            {
+              "label": "photographed",
+              "value": 2345
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "extent": [
+    {
+      "label": "onWIkidata",
+      "value": ["min", "max"]
+    },
+    {
+      "label": "inContest",
+      "value": ["min", "max"]
+    },
+    {
+      "label": "photographed",
+      "value": ["min", "max"]
+    }
+  ]
+}
