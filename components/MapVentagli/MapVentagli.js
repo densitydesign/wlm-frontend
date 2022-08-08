@@ -4,28 +4,17 @@ import classNames from "classnames";
 import { useRef, useEffect, useMemo } from "react";
 import { initialize, update } from "./MapVentagli.render";
 
-export default function MapVentagli({
-	ventagli,
-	geographies,
-	selectedRegion,
-	selectedProvince,
-	selectedMunicipality,
-	typology,
-	dateFrom,
-	dateTo,
-}) {
+export default function MapVentagli({ ventagli, lvl4, lvl6, lvl8, selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }) {
 	const svgEl = useRef();
-
-	const extent = useMemo(() => {
-		const max = d3.max(ventagli, (d) => d[1][d[1].length - 1][1][0].valueIncremental);
-		return (extent = [0, max]);
-	}, [ventagli]);
+	const { data, extent } = ventagli;
 
 	useEffect(() => {
 		const data_for_viz = {
-			ventagli,
+			data,
 			extent,
-			geographies,
+			lvl4,
+			lvl6,
+			lvl8,
 			selectedRegion,
 			selectedProvince,
 			selectedMunicipality,
@@ -33,15 +22,17 @@ export default function MapVentagli({
 			dateFrom,
 			dateTo,
 		};
-		// console.log(JSON.stringify(data_for_viz, null, 4));
+		// console.log("Mounted", data_for_viz);
 		initialize(svgEl.current, data_for_viz);
 	}, []);
 
 	useEffect(() => {
 		const data_for_viz = {
-			ventagli,
+			data,
 			extent,
-			geographies,
+			lvl4,
+			lvl6,
+			lvl8,
 			selectedRegion,
 			selectedProvince,
 			selectedMunicipality,
@@ -49,7 +40,7 @@ export default function MapVentagli({
 			dateFrom,
 			dateTo,
 		};
-		// console.log(data_for_viz);
+		// console.log("update",data_for_viz);
 		update(data_for_viz);
 	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality]);
 

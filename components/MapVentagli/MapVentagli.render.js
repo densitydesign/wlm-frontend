@@ -1,5 +1,9 @@
 import * as d3 from "d3";
+import { group } from "d3";
+import { Duration } from "luxon";
 import { collisionRadius, colors, drawVentaglio } from "../../utils/ventagli.utils";
+
+const t_duration = 350;
 
 let svg,
 	width,
@@ -18,25 +22,18 @@ let svg,
 	municipality,
 	g_ventagli,
 	ventaglio,
-	simulation,
-	centroids;
+	simulation;
 
-const scaleRadius = d3.scaleSqrt().range([1, collisionRadius * 2]);
+let _x,
+	_y,
+	_k = 1;
 
-const initialize = (element, data) => {
-	console.log("initialize", data);
+const scaleRadius = d3.scaleSqrt().range([0, 70]);
 
-	const {
-		ventagli,
-		extent,
-		geographies,
-		selectedRegion,
-		selectedProvince,
-		selectedMunicipality,
-		typology,
-		dateFrom,
-		dateTo,
-	} = data;
+const initialize = (element, viz_data) => {
+	// console.log("initialize", viz_data);
+
+	const { data, extent, lvl4, lvl6, lvl8, selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo } = viz_data;
 
 	svg = d3.select(element);
 	const bbox = svg.node().getBoundingClientRect();
@@ -59,9 +56,9 @@ const initialize = (element, data) => {
 		g_geographies = g.append("g").classed("g_geographies", true);
 	}
 
-	g_municipalities = g_geographies.select(".municipalities");
-	if (g_municipalities.empty()) {
-		g_municipalities = g_geographies.append("g").classed("municipalities", true);
+	g_regions = g_geographies.select(".regions");
+	if (g_regions.empty()) {
+		g_regions = g_geographies.append("g").classed("regions", true);
 	}
 
 	g_provinces = g_geographies.select(".provinces");
@@ -69,32 +66,27 @@ const initialize = (element, data) => {
 		g_provinces = g_geographies.append("g").classed("provinces", true);
 	}
 
-	g_regions = g_geographies.select(".regions");
-	if (g_regions.empty()) {
-		g_regions = g_geographies.append("g").classed("regions", true);
+	g_municipalities = g_geographies.select(".municipalities");
+	if (g_municipalities.empty()) {
+		g_municipalities = g_geographies.append("g").classed("municipalities", true);
 	}
 
 	g_ventagli = g.select(".g_ventagli");
 	if (g_ventagli.empty()) {
 		g_ventagli = g.append("g").classed("g_ventagli", true);
 	}
+	ventaglio = g_ventagli.selectAll(".ventaglio");
 
 	projection = d3
 		.geoMercator()
 		// .scale(1 / (2 * Math.PI))
 		// .translate([0, 0])
-		.fitSize([width, height], geographies.regions);
+		.fitSize([width, height], {
+			type: "FeatureCollection",
+			features: lvl4,
+		});
 
 	render = d3.geoPath(projection);
-
-	centroids = {};
-	// for (const adminLevel in geographies) {
-	// 	centroids[adminLevel] = geographies[adminLevel].features.map((d) => {
-	// 		const key = d.properties[data.labelKey];
-	// 		const centroid = render.centroid(d);
-	// 		return { area: key, centroid: centroid };
-	// 	});
-	// }
 
 	zoom = d3
 		.zoom()
@@ -104,8 +96,9 @@ const initialize = (element, data) => {
 			[width, height],
 		])
 		.on("zoom", ({ transform }) => zoomed(transform));
-	const initialCenter = [12 + 30 / 60, 42 + 30 / 60];
-	const initialScale = 1;
+
+	// const initialCenter = [12 + 30 / 60, 42 + 30 / 60];
+	// const initialScale = 1;
 	svg.call(zoom).call(
 		zoom.transform,
 		d3.zoomIdentity
@@ -115,16 +108,17 @@ const initialize = (element, data) => {
 		// .scale(-1)
 	);
 
-	update(data);
+	update(viz_data);
 };
 
-const update = (data) => {
-	console.log("update");
-	scaleRadius.domain(data.extent);
+const update = (viz_data) => {
+	// console.log("update", viz_data);
+
+	scaleRadius.domain([0, viz_data.extent[0].value[1]]);
 
 	region = g_regions
 		.selectAll(".region")
-		.data(data.geographies.regions.features, (d) => d.properties.DEN_REG)
+		.data(viz_data.lvl4, (d) => d.properties.code)
 		.join("path")
 		.attr("class", "region")
 		.attr("fill", colors.terrain)
@@ -134,68 +128,41 @@ const update = (data) => {
 		.attr("stroke-linejoin", "round")
 		.attr("d", (d) => render(d));
 
-	if (data.selectedRegion) {
-		region
-			.attr("opacity", 0.65)
-			.filter((d) => d.properties.DEN_REG === data.selectedRegion.label)
-			.attr("stroke", (d) => colors.interactive)
-			.attr("fill", "transparent")
-			.raise();
+	province = g_provinces
+		.selectAll(".province")
+		.data(viz_data.lvl6, (d) => d.properties.code)
+		.join("path")
+		.attr("class", "province")
+		.attr("fill", colors.terrain)
+		.attr("stroke", colors.white)
+		.attr("stroke-width", "var(--stroke-width)")
+		.attr("stroke-linecap", "round")
+		.attr("stroke-linejoin", "round")
+		.attr("d", (d) => render(d));
 
-		province = g_provinces
-			.selectAll(".province")
-			.data(
-				data.geographies.provinces.features.filter((d) => d.properties.COD_REG === data.selectedRegion.code),
-				(d) => d.properties.COD_UTS
-			)
-			.join("path")
-			.attr("class", "province")
-			.attr("fill", colors.terrain)
-			.attr("stroke", colors.white)
-			.attr("stroke-width", "var(--stroke-width)")
-			.attr("stroke-linecap", "round")
-			.attr("stroke-linejoin", "round")
-			.attr("d", (d) => render(d));
-	}
+	municipality = g_municipalities
+		.selectAll(".municipality")
+		.data(viz_data.lvl8, (d) => d.properties.code)
+		.join("path")
+		.attr("class", "municipality")
+		.attr("fill", colors.terrain)
+		.attr("stroke", colors.white)
+		.attr("stroke-width", "var(--stroke-width)")
+		.attr("stroke-linecap", "round")
+		.attr("stroke-linejoin", "round")
+		.attr("d", (d) => render(d));
 
-	if (data.selectedProvince) {
-		province
-			.attr("opacity", 0.65)
-			.filter((d) => d.properties.DEN_UTS === data.selectedProvince.label)
-			.attr("stroke", (d) => colors.interactive)
-			.attr("fill", "transparent")
-			.raise();
+	let geoFeaturesArr;
 
-		municipality = g_municipalities
-			.selectAll(".municipality")
-			.data(
-				data.geographies.municipalities.features.filter((d) => d.properties.COD_UTS === data.selectedProvince.code),
-				(d) => d.properties.COMUNE
-			)
-			.join("path")
-			.attr("class", "municipality")
-			.attr("fill", colors.terrain)
-			.attr("stroke", colors.white)
-			.attr("stroke-width", "var(--stroke-width)")
-			.attr("stroke-linecap", "round")
-			.attr("stroke-linejoin", "round")
-			.attr("d", (d) => render(d));
+	if (viz_data.selectedMunicipality) geoFeaturesArr = viz_data.lvl8;
+	else if (viz_data.selectedProvince) geoFeaturesArr = viz_data.lvl8;
+	else if (viz_data.selectedRegion) geoFeaturesArr = viz_data.lvl6;
+	else geoFeaturesArr = viz_data.lvl4;
+	viz_data.data = compileVentagliData(viz_data.data, geoFeaturesArr);
 
-		if (data.selectedMunicipality) {
-			municipality
-				.filter((d) => d.properties.COMUNE === data.selectedMunicipality.label)
-				.attr("stroke", (d) => colors.interactive)
-				// .attr("fill", "transparent")
-				.raise();
-		}
-	}
-
-	return;
-
-	data.ventagli = compileVentagliData(data.ventagli);
 	ventaglio = g_ventagli
 		.selectAll(".ventaglio")
-		.data(data.ventagli, (d) => d[0])
+		.data(viz_data.data, (d) => d.code)
 		.join(
 			(enter) =>
 				enter
@@ -208,14 +175,40 @@ const update = (data) => {
 				update.each(function (d) {
 					drawVentaglio(d, d3.select(this));
 				}),
-			(exit) => exit
+			(exit) => exit.transition().duration(t_duration).style("opacity", 0).remove()
 		);
 
-	simulation.nodes(data.ventagli);
+	// if (data.selectedRegion) {
+	// 	region
+	// 		.attr("opacity", 0.65)
+	// 		.filter((d) => d.properties.DEN_REG === data.selectedRegion.label)
+	// 		.attr("stroke", (d) => colors.interactive)
+	// 		.attr("fill", "transparent")
+	// 		.raise();
+	// }
+
+	// if (data.selectedProvince) {
+	// 	province
+	// 		.attr("opacity", 0.65)
+	// 		.filter((d) => d.properties.DEN_UTS === data.selectedProvince.label)
+	// 		.attr("stroke", (d) => colors.interactive)
+	// 		.attr("fill", "transparent")
+	// 		.raise();
+
+	// 	if (data.selectedMunicipality) {
+	// 		municipality
+	// 			.filter((d) => d.properties.COMUNE === data.selectedMunicipality.label)
+	// 			.attr("stroke", (d) => colors.interactive)
+	// 			// .attr("fill", "transparent")
+	// 			.raise();
+	// 	}
+	// }
+
+	simulation.nodes(viz_data.data);
+	// simulation.tick(120);
+	// ticked();
 	simulation.alpha(1);
-	simulation.tick(120);
-	ticked();
-	// simulation.restart();
+	simulation.restart();
 };
 
 export { initialize, update };
@@ -223,33 +216,20 @@ export { initialize, update };
 function zoomed(transform) {
 	g.attr("transform", transform);
 	const { x, y, k } = transform;
+	_x = x;
+	_y = y;
+	_k = k;
+	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / k})`);
 	document.documentElement.style.setProperty("--stroke-width", 1 / k);
-	document.documentElement.style.setProperty("--label-size", 10 / k);
-	// const tiles = tile(transform);
 
-	// if (showTiles) {
-	//   image = image.data(tiles, d => d).join("image")
-	//     .attr("xlink:href", d => url(...d))
-	//     .attr("x", ([x]) => (x + tiles.translate[0]) * tiles.scale)
-	//     .attr("y", ([, y]) => (y + tiles.translate[1]) * tiles.scale)
-	//     .attr("width", tiles.scale)
-	//     .attr("height", tiles.scale);
-	// }
-
-	// projection
-	// 	.scale(transform.k / (2 * Math.PI))
-	// 	.translate([transform.x, transform.y]);
-
-	// path.attr("d", render(geometries));
-
-	// point
-	//   .attr("cx", d=>render.centroid(d)[0])
-	//   .attr("cy", d=>render.centroid(d)[1])
+	// simulation.force("collide").radius((d) => getRadius(d, 0.75) / _k);
+	simulation.alpha(1);
+	simulation.restart();
 }
 
 // simulation
 const ticked = () => {
-	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y})`);
+	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / _k})`);
 };
 simulation = d3
 	.forceSimulation()
@@ -261,34 +241,38 @@ simulation = d3
 		"y",
 		d3.forceY((d) => d.y)
 	)
-	// .force("charge", d3.forceManyBody())
-	.force("collide", d3.forceCollide().radius(collisionRadius))
+	// .force(
+	// 	"collide",
+	// 	d3.forceCollide().radius((d) => getRadius(d, 0.75) / _k)
+	// )
 	.on("tick", ticked)
 	.stop();
 
-function compileVentagliData(data) {
-	ventagli.forEach((v) => {});
-
+function compileVentagliData(data, arr) {
 	data.forEach((area) => {
-		const temp = centroids.find((d) => d.area === area[0]);
+		const temp = arr.find((d) => d.properties.code === area.code);
 		if (temp) {
-			area.x = temp.centroid[0];
-			area.y = temp.centroid[1];
+			const centroid = projection(temp.properties.centroid.coordinates);
+			area.x = centroid[0];
+			area.y = centroid[1];
 		}
 
-		area[1].forEach((snapshot) => {
-			const photographed = snapshot[1].find((d) => d.group === "photographed");
-			photographed.innerRadius = 0;
-			photographed.outerRadius = scaleRadius(photographed.valueIncremental);
-			const authorized = snapshot[1].find((d) => d.group === "authorized");
-			authorized.innerRadius = photographed.outerRadius;
-			authorized.outerRadius = scaleRadius(authorized.valueIncremental);
-			const mapped = snapshot[1].find((d) => d.group === "mapped");
-			if (mapped) {
-				mapped.innerRadius = authorized.outerRadius;
-				mapped.outerRadius = scaleRadius(mapped.valueIncremental);
-			}
+		area.history.forEach((date) => {
+			date.groups = date.groups.sort((a, b) => {
+				return a.value - b.value;
+			});
+			date.groups.forEach((group, i) => {
+				// console.log(group);
+				group.innerRadius = i === 0 ? 0 : date.groups[i - 1].outerRadius;
+				group.outerRadius = scaleRadius(group.value);
+			});
 		});
+		// console.log(area.history);
 	});
 	return data;
+}
+
+function getRadius(d, k) {
+	const radius = d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius * k;
+	return radius;
 }

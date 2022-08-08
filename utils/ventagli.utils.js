@@ -5,16 +5,13 @@ const colors = {
 	lightBlue: "#DDF7FF",
 	terrain: "#ECE5E0",
 	white: "#ffffff",
-	onWikidata: "#C3C5C3",
+	onWIki: "#C3C5C3",
 	inContest: "#F8FF0E",
 	photographed: "#22B8B4",
 	interactive: "#FF004D",
-
-	authorized: "#F8FF0E",
-	mapped: "#C3C5C3",
 };
 
-const collisionRadius = 35;
+const collisionRadius = 70;
 const fanOpening = 150;
 let rotation;
 
@@ -22,52 +19,56 @@ const drawVentaglio = (datum, ventaglio) => {
 	// console.log("drawing ventagli", [datum], ventaglio);
 	const data = [datum];
 
-	rotation = fanOpening / data[0][1].length;
+	rotation = fanOpening / data[0].history.length;
 
-	ventaglio
-		.selectAll(".collisionArea")
-		.data((d) => [d])
-		.join("circle")
-		.attr("class", "collisionArea")
-		.attr("stroke-width", "var(--stroke-width)")
-		.attr("r", collisionRadius);
+	// ventaglio
+	// 	.selectAll(".collisionArea")
+	// 	.data((d) => [d], d=>d.code)
+	// 	.join("circle")
+	// 	.attr("class", "collisionArea")
+	// 	.attr("stroke-width", "var(--stroke-width)")
+	// 	.attr("r", d=>d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius);
 
 	const snapshot = ventaglio
 		.selectAll(".snapshot")
 		.data(
-			(d) => d[1],
-			(d) => d[0]
+			(d) => d.history,
+			(d) => d.code
 		)
 		.join("g")
 		.attr("class", "snapshot")
-		.attr("transform", (d, i) => ` rotate(${-fanOpening / 2 + rotation * i})`);
+		.attr("transform", (d, i) => `rotate(${-fanOpening / 2 + rotation * i})`);
 
 	const monStatus = snapshot
 		.selectAll(".status")
 		.data(
-			(d) => d[1],
-			(d) => d.group
+			(d) => d.groups,
+			(d) => d.label
 		)
 		.join(
 			(enter) =>
 				enter
 					.append("path")
 					.attr("class", "status")
-					.attr("fill", (d) => colors[d.group])
+					.attr("fill", (d) => colors[d.label])
 					.attr("d", (d) => drawSlice(d)),
-			(update) => update.attr("fill", (d) => colors[d.group]).attr("d", (d) => drawSlice(d)),
+			(update) => update.attr("fill", (d) => colors[d.label]).attr("d", (d) => drawSlice(d)),
 			(exit) => exit
 		);
 
 	ventaglio
 		.selectAll(".label")
-		.data((d) => [d[0]])
+		.data(
+			(d) => [d.label],
+			(d) => d
+		)
 		.join("text")
 		.attr("text-anchor", "middle")
 		.attr("font-size", "var(--label-size)")
 		.attr("class", "label")
-		// .attr("y", "var(--label-size)")
-		.text((d) => d);
+		.attr("y", 8)
+		.text((d) => d)
+		.raise();
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
