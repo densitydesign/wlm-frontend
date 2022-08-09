@@ -3,27 +3,48 @@ import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
 
-const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setState) => {
+const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue) => {
 	// console.log("fetching data...");
 	let dataUrl = apiBaseUrl;
+	let parentDataUrl = apiBaseUrl;
 
 	if (selectedMunicipality) {
 		// in municipality
 		// console.log("municipality", selectedMunicipality.label, "aggregated values");
 		dataUrl += `/api/municipality/${selectedMunicipality.code}/wlm/`;
+		parentDataUrl += `/api/municipality/${selectedMunicipality.code}/wlm/`;
 	} else if (selectedProvince) {
 		// municipalities in province
 		// console.log("municipalities in", selectedProvince.label, "province");
 		dataUrl += `/api/province/${selectedProvince.code}/wlm-areas/`;
+		parentDataUrl += `/api/province/${selectedProvince.code}/wlm/`;
 	} else if (selectedRegion) {
 		// provinces in region
 		// console.log("provinces in", selectedRegion.label, "region");
 		dataUrl += `/api/region/${selectedRegion.code}/wlm-areas/`;
+		parentDataUrl += `/api/region/${selectedRegion.code}/wlm/`;
 	} else {
 		// no area selected, do all italian regions
 		console.log("all Italian regions");
 		console.info("No endopoint for retrieving all italian regions at once");
-		setState({
+		setDataValue({
+			data: [],
+			extent: [
+				{
+					label: "onWIki",
+					value: [0, 1302],
+				},
+				{
+					label: "inContest",
+					value: [0, 365],
+				},
+				{
+					label: "photographed",
+					value: [0, 324],
+				},
+			],
+		});
+		setParentDataValue({
 			data: [],
 			extent: [
 				{
@@ -47,10 +68,10 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		const _df = DateTime.fromISO(dateFrom);
 		const _dt = DateTime.fromISO(dateTo);
 		const i = Interval.fromDateTimes(_df, _dt);
-		let max_steps = 30,
+		let max_steps = 15,
 			step_size,
 			step_unit;
-		if (Math.ceil(i.length("days") / 1) <= max_steps) {
+		if (Math.ceil(i.length("days") / 1) <= 31) {
 			step_unit = "days";
 			step_size = 1;
 		} else if (Math.ceil(i.length("days") / 5) <= max_steps) {
@@ -86,9 +107,11 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 
 		const searchParams = new URLSearchParams(parameters).toString();
 		dataUrl += "?" + searchParams;
+		parentDataUrl += "?" + searchParams;
 
-		return json(dataUrl).then((data) => {
-			setState(data);
+		Promise.all([json(dataUrl), json(parentDataUrl)]).then(([data, parentData]) => {
+			setDataValue(data);
+			setParentDataValue(parentData);
 		});
 	}
 };

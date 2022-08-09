@@ -10,17 +10,20 @@ import MapVentagli from "../MapVentagli/MapVentagli";
 import { feature } from "topojson-client";
 import { fetchData } from "../../utils/fetchData.utils";
 
-let _regionsList = [],
-	_provincesList = [],
-	_municipalitiesList = [];
+// let _regionsList = [],
+// 	_provincesList = [],
+// 	_municipalitiesList = [];
 
 const _typologiesList = [{ label: "All monuments" }, { label: "Fortificazioni" }, { label: "Quasi tutti" }, { label: "Una piccola parte" }];
 
 export default function VisualizationController() {
-	const { asPath, basePath } = useRouter();
+	const { asPath } = useRouter();
 
 	const [loading, setLoading] = useState(true); // changes will trigger initial data fetching and rendering
 	const [ventagli, setVentagli] = useState();
+	const [parentData, setParentData] = useState();
+	const [filterData, setFilterData] = useState();
+
 	// uses OSM admin levels for future compatibility
 	const [lvl4, setLvl4] = useState([]); // Regions
 	const [lvl6, setLvl6] = useState([]); // Provinces
@@ -141,6 +144,7 @@ export default function VisualizationController() {
 		}
 	}, [selectedProvince]);
 
+	// Set parameters and fetch data
 	useEffect(() => {
 		const parameters = {};
 		const parametersFetchData = {};
@@ -176,9 +180,46 @@ export default function VisualizationController() {
 		location.replace(hashUrl);
 
 		if (!loading) {
-			fetchData(parametersFetchData, setVentagli);
+			fetchData(parametersFetchData, setVentagli, setParentData);
 		}
 	}, [selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo, loading]);
+
+	useEffect(() => {
+		if (parentData) {
+			const _filterData = parentData.extent.map((d) => ({ label: d.label, active: d.active || true }));
+			setFilterData(_filterData);
+		}
+	}, [parentData]);
+
+	const filteredVentagli = useMemo(() => {
+		console.log("filteredVentagli Memo")
+		if (filterData && ventagli) {
+			// console.log("filterData", filterData);
+			// console.log("ventagli", ventagli);
+			const newVentagli = JSON.parse(JSON.stringify(ventagli));
+			filterData
+				.filter((f) => !f.active)
+				.forEach((f) => {
+					console.log("Remove",f.label)
+					// remove from data
+					newVentagli.data.forEach((area) => {
+						area.history.forEach((date) => {
+							const arr = date.groups;
+							const elm = arr.find((e) => e.label === f.label);
+							const index = arr.indexOf(elm);
+							if (index > -1) arr.splice(index, 1);
+						});
+					});
+					//remove from extent
+					const elm = newVentagli.extent.find((e) => e.label === f.label);
+					const index = newVentagli.extent.indexOf(elm);
+					if (index > -1) newVentagli.extent.splice(index, 1);
+				});
+			return newVentagli;
+		} else {
+			return undefined
+		}
+	}, [filterData, ventagli]);
 
 	return (
 		<Container className={classNames(styles.vizController)} fluid>
@@ -201,13 +242,16 @@ export default function VisualizationController() {
 						setDateFrom={setDateFrom}
 						dateTo={dateTo}
 						setDateTo={setDateTo}
+						parentData={parentData}
+						filterData={filterData}
+						setFilterData={setFilterData}
 					/>
 				</Col>
 				<Col className={classNames("h-100")}>
 					<>
-						{!loading && ventagli && (
+						{!loading && filteredVentagli && (
 							<MapVentagli
-								ventagli={ventagli}
+								ventagli={filteredVentagli}
 								lvl4={lvl4}
 								lvl6={lvl6}
 								lvl8={lvl8}

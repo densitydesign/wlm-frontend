@@ -3,6 +3,7 @@ import { BsDownload, BsFillPlayFill, BsArrowRepeat } from "react-icons/bs";
 import classNames from "classnames";
 import styles from "./UI-Components.module.scss";
 import NavMenu from "../NavMenu";
+import WhatsNew from "../WhatsNew";
 
 export default function ToolbarUI({
 	regions,
@@ -16,18 +17,21 @@ export default function ToolbarUI({
 	municipalities,
 	selectedMunicipality,
 	setSelectedMunicipality,
-	
+
 	typologiesList,
 	typology,
 	setTypology,
-	
+
 	dateFrom,
 	setDateFrom,
 
 	dateTo,
 	setDateTo,
-}) {
 
+	parentData,
+	filterData,
+	setFilterData,
+}) {
 	return (
 		<div className={styles.toolBar}>
 			<NavMenu />
@@ -57,11 +61,10 @@ export default function ToolbarUI({
 				defaultLabel="Select a municipality"
 				disabled={municipalities.disabled}
 			/>
-			{/* <DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={false} /> */}
+			<DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={true} />
 			<DatePickerUI label="From" value={dateFrom} transferSelection={setDateFrom} />
 			<DatePickerUI label="To" value={dateTo} transferSelection={setDateTo} />
-			<h6>What&apos;s new</h6>
-			<p>[Recap will go here]</p>
+			{parentData && filterData && <WhatsNew data={parentData} filterData={filterData} setFilterData={setFilterData} />}
 			<h6>Timeline</h6>
 			<div className={classNames("d-flex", "justify-content-between")}>
 				<ButtonGroupUI

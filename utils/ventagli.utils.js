@@ -39,7 +39,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("class", "snapshot")
 		.attr("transform", (d, i) => `rotate(${-fanOpening / 2 + rotation * i})`);
 
-	const monStatus = snapshot
+	snapshot
 		.selectAll(".status")
 		.data(
 			(d) => d.groups,
@@ -53,7 +53,7 @@ const drawVentaglio = (datum, ventaglio) => {
 					.attr("fill", (d) => colors[d.label])
 					.attr("d", (d) => drawSlice(d)),
 			(update) => update.attr("fill", (d) => colors[d.label]).attr("d", (d) => drawSlice(d)),
-			(exit) => exit
+			(exit) => exit.remove()
 		);
 
 	ventaglio
