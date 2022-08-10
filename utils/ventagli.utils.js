@@ -82,7 +82,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("text-anchor", "middle")
 		.attr("font-size", "var(--label-size)")
 		.attr("class", "label")
-		.attr("y", 8)
+		.attr("y", 12)
 		.text((d) => d)
 		.raise();
 
@@ -96,7 +96,7 @@ const drawVentaglio = (datum, ventaglio) => {
 			(enter) =>
 				enter
 					.append("g")
-					.attr("data-tick", (d) => d.label)
+					.attr("data-tick", (d,i) => d.label)
 					.classed("tick", true),
 			(update) => update,
 			(exit) => exit.remove()
@@ -238,7 +238,17 @@ function drawSlice(d) {
 }
 
 function dataTick(d) {
-	return d.history.slice(-1)[0].groups.map((d, i) => ({ ...d, index: i }));
+	const data = []
+	const temp = []
+	d.history.slice(-1)[0].groups.forEach((g,i)=>{
+		const value = g.value
+		const group = {...g, index: i}
+		if (temp.indexOf(value) < 0) {
+			temp.push(value)
+			data.push(group)
+		}
+	})
+	return data
 }
 
 export { colors, collisionRadius, drawVentaglio };
