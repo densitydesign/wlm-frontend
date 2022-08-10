@@ -158,6 +158,7 @@ const update = (viz_data) => {
 	else if (viz_data.selectedProvince) geoFeaturesArr = viz_data.lvl8;
 	else if (viz_data.selectedRegion) geoFeaturesArr = viz_data.lvl6;
 	else geoFeaturesArr = viz_data.lvl4;
+
 	viz_data.data = compileVentagliData(viz_data.data, geoFeaturesArr);
 
 	ventaglio = g_ventagli
@@ -256,10 +257,7 @@ function compileVentagliData(data, arr) {
 			area.x = centroid[0];
 			area.y = centroid[1];
 		}
-
 		area.history.forEach((date) => {
-			// reverse array order so that larger is always rendered behind: [onWIki, inContest, photographed]
-			date.groups = date.groups.reverse();
 			date.groups.forEach((group, i) => {
 				group.innerRadius = i === 0 ? 0 : date.groups[i - 1].outerRadius;
 				group.outerRadius = scaleRadius(group.value);

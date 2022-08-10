@@ -110,6 +110,11 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		parentDataUrl += "?" + searchParams;
 
 		Promise.all([json(dataUrl), json(parentDataUrl)]).then(([data, parentData]) => {
+			data.data.forEach((area) => {
+				area.history.forEach((date) => {
+					date.groups.reverse();
+				});
+			});
 			setDataValue(data);
 			setParentDataValue(parentData);
 		});
