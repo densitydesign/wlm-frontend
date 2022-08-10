@@ -27,40 +27,40 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		// no area selected, do all italian regions
 		console.log("all Italian regions");
 		console.info("No endopoint for retrieving all italian regions at once");
-		setDataValue({
-			data: [],
-			extent: [
-				{
-					label: "onWIki",
-					value: [0, 1302],
-				},
-				{
-					label: "inContest",
-					value: [0, 365],
-				},
-				{
-					label: "photographed",
-					value: [0, 324],
-				},
-			],
-		});
-		setParentDataValue({
-			data: [],
-			extent: [
-				{
-					label: "onWIki",
-					value: [0, 1302],
-				},
-				{
-					label: "inContest",
-					value: [0, 365],
-				},
-				{
-					label: "photographed",
-					value: [0, 324],
-				},
-			],
-		});
+		// setDataValue({
+		// 	data: [],
+		// 	extent: [
+		// 		{
+		// 			label: "onWIki",
+		// 			value: [0, 1302],
+		// 		},
+		// 		{
+		// 			label: "inContest",
+		// 			value: [0, 365],
+		// 		},
+		// 		{
+		// 			label: "photographed",
+		// 			value: [0, 324],
+		// 		},
+		// 	],
+		// });
+		// setParentDataValue({
+		// 	data: [],
+		// 	extent: [
+		// 		{
+		// 			label: "onWIki",
+		// 			value: [0, 1302],
+		// 		},
+		// 		{
+		// 			label: "inContest",
+		// 			value: [0, 365],
+		// 		},
+		// 		{
+		// 			label: "photographed",
+		// 			value: [0, 324],
+		// 		},
+		// 	],
+		// });
 		dataUrl = undefined;
 	}
 

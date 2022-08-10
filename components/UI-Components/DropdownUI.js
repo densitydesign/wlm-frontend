@@ -9,7 +9,7 @@ export default function DropdownUI({ label, items, value, setValue, defaultLabel
 	return (
 		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-2")}>
 			{label && <span>{label}</span>}
-			<Dropdown className={classNames({ "ms-2": label })}>
+			<Dropdown className={classNames({ "ms-1": label })}>
 				<Dropdown.Toggle className={classNames(styles.btnWlm)} id="dropdown-basic" size="sm" disabled={disabled}>
 					{value && value.label}
 					{!value && defaultLabel}

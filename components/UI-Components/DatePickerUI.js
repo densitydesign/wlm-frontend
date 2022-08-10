@@ -10,7 +10,7 @@ export default function DatePickerUI({ label, value, transferSelection }) {
 		>
 			{label && <Form.Label>{label}</Form.Label>}
 			<Form.Control
-				className="ms-3"
+				className={classNames({ "ms-1": label })}
 				type="date"
 				name="date"
 				placeholder="Pick a date"

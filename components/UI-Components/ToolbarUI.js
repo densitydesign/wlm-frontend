@@ -4,6 +4,7 @@ import classNames from "classnames";
 import styles from "./UI-Components.module.scss";
 import NavMenu from "../NavMenu";
 import WhatsNew from "../WhatsNew";
+import AreaChart from "../AreaChart";
 
 export default function ToolbarUI({
 	regions,
@@ -33,7 +34,7 @@ export default function ToolbarUI({
 	setFilterData,
 }) {
 	return (
-		<div className={styles.toolBar}>
+		<div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
 			<NavMenu />
 			<h6>Monuments</h6>
 			<DropdownUI
@@ -78,9 +79,9 @@ export default function ToolbarUI({
 					]}
 					disabled={true}
 				/>
-				<ButtonUI label="Save" content={<BsDownload />} disabled={true}/>
+				<ButtonUI label="Save" content={<BsDownload />} disabled={true} />
 			</div>
-			<p>[Timeline will go here]</p>
+			{parentData && <AreaChart data={parentData} filterData={filterData} />}
 		</div>
 	);
 }

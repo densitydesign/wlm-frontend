@@ -5,7 +5,7 @@ export default function ButtonGroupUI({ label, items, disabled }) {
 	return (
 		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-2")}>
 			{label && <span>{label}</span>}
-			<ButtonGroup className={classNames("ms-3")} aria-label="Basic example">
+			<ButtonGroup className={classNames({ "ms-1": label })} aria-label="Basic example">
 				{items.map((btn, i) => (
 					<Button key={i} size="sm" onClick={(e) => btn.onClickAction(e)} disabled={disabled}>
 						{btn.content}

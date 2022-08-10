@@ -227,7 +227,7 @@ export default function VisualizationController() {
 	return (
 		<Container className={classNames(styles.vizController)} fluid>
 			<Row className={classNames("h-100")}>
-				<Col className={classNames("h-100")} md={3} xl={3}>
+				<Col className={classNames("h-100", "pe-0")} md={3} xl={3}>
 					<ToolbarUI
 						regions={{ items: regionsList, disabled: !regionsList.length }}
 						selectedRegion={selectedRegion}
