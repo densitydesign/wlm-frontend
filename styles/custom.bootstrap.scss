@@ -2,9 +2,22 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 
+// $theme-colors: (
+//     "primary": #DDF7FF,
+//     "blue-jeans": #0978AB,
+// );
+
 $theme-colors: (
-    "primary": #DDF7FF,
-    "blue-jeans": #0978AB,
+	"primary": #ddf7ff,
+	"blue-jeans": #0978ab,
+	"lightBlue": #ddf7ff,
+	"terrain": #ece5e0,
+	"terrain-dark": #f1e2d6,
+	"white": #ffffff,
+	"onWIki": #c3c5c3,
+	"inContest": #f8ff0e,
+	"photographed": #22b8b4,
+	"interactive": #ff004d,
 );
 
 @import "~bootstrap/scss/bootstrap.scss";

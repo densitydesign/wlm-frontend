@@ -31,9 +31,7 @@ let _x,
 const scaleRadius = d3.scaleSqrt().range([0, 70]);
 
 const initialize = (element, viz_data) => {
-	// console.log("initialize", viz_data);
-
-	const { data, extent, lvl4, lvl6, lvl8, selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo } = viz_data;
+	const { lvl4 } = viz_data;
 
 	svg = d3.select(element);
 	const bbox = svg.node().getBoundingClientRect();
@@ -97,28 +95,32 @@ const initialize = (element, viz_data) => {
 		])
 		.on("zoom", ({ transform }) => zoomed(transform));
 
-	// const initialCenter = [12 + 30 / 60, 42 + 30 / 60];
-	// const initialScale = 1;
-	svg.call(zoom).call(
-		zoom.transform,
-		d3.zoomIdentity
-		// .translate(width / 2, height / 2)
-		// .scale(-initialScale)
-		// .translate(...projection(initialCenter))
-		// .scale(-1)
-	);
+	svg.call(zoom);
 
 	update(viz_data);
 };
 
 const update = (viz_data) => {
 	// console.log("update", viz_data);
+	const {
+		data,
+		extent,
+		lvl4,
+		lvl6,
+		lvl8,
+		selectedRegion,
+		selectedProvince,
+		selectedMunicipality,
+		setSelectedRegion,
+		setSelectedProvince,
+		setSelectedMunicipality,
+	} = viz_data;
 
-	scaleRadius.domain([0, viz_data.extent[0].value[1]]);
+	scaleRadius.domain([0, d3.max(extent.map((d) => d.value[1]))]);
 
 	region = g_regions
 		.selectAll(".region")
-		.data(viz_data.lvl4, (d) => d.properties.code)
+		.data(lvl4, (d) => d.properties.code)
 		.join("path")
 		.attr("class", "region")
 		.attr("fill", colors.terrain)
@@ -126,11 +128,17 @@ const update = (viz_data) => {
 		.attr("stroke-width", "var(--stroke-width)")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-linejoin", "round")
-		.attr("d", (d) => render(d));
+		.attr("d", (d) => render(d))
+		.on("click", (event, d) => {
+			event.stopPropagation();
+			const { code, label } = d.properties;
+			const selected = { code, label };
+			setSelectedRegion(selected);
+		});
 
 	province = g_provinces
 		.selectAll(".province")
-		.data(viz_data.lvl6, (d) => d.properties.code)
+		.data(lvl6, (d) => d.properties.code)
 		.join("path")
 		.attr("class", "province")
 		.attr("fill", colors.terrain)
@@ -138,11 +146,17 @@ const update = (viz_data) => {
 		.attr("stroke-width", "var(--stroke-width)")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-linejoin", "round")
-		.attr("d", (d) => render(d));
+		.attr("d", (d) => render(d))
+		.on("click", (event, d) => {
+			event.stopPropagation();
+			const { code, label } = d.properties;
+			const selected = { code, label };
+			setSelectedProvince(selected);
+		});
 
 	municipality = g_municipalities
 		.selectAll(".municipality")
-		.data(viz_data.lvl8, (d) => d.properties.code)
+		.data(lvl8, (d) => d.properties.code)
 		.join("path")
 		.attr("class", "municipality")
 		.attr("fill", colors.terrain)
@@ -150,20 +164,26 @@ const update = (viz_data) => {
 		.attr("stroke-width", "var(--stroke-width)")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-linejoin", "round")
-		.attr("d", (d) => render(d));
+		.attr("d", (d) => render(d))
+		.on("click", (event, d) => {
+			event.stopPropagation();
+			const { code, label } = d.properties;
+			const selected = { code, label };
+			setSelectedMunicipality(selected);
+		});
 
 	let geoFeaturesArr;
 
-	if (viz_data.selectedMunicipality) geoFeaturesArr = viz_data.lvl8;
-	else if (viz_data.selectedProvince) geoFeaturesArr = viz_data.lvl8;
-	else if (viz_data.selectedRegion) geoFeaturesArr = viz_data.lvl6;
-	else geoFeaturesArr = viz_data.lvl4;
+	if (selectedMunicipality) geoFeaturesArr = lvl8;
+	else if (selectedProvince) geoFeaturesArr = lvl8;
+	else if (selectedRegion) geoFeaturesArr = lvl6;
+	else geoFeaturesArr = lvl4;
 
-	viz_data.data = compileVentagliData(viz_data.data, geoFeaturesArr);
+	data = compileVentagliData(data, geoFeaturesArr);
 
 	ventaglio = g_ventagli
 		.selectAll(".ventaglio")
-		.data(viz_data.data, (d) => d.code)
+		.data(data, (d) => d.code)
 		.join(
 			(enter) =>
 				enter
@@ -179,33 +199,30 @@ const update = (viz_data) => {
 			(exit) => exit.transition().duration(t_duration).style("opacity", 0).remove()
 		);
 
-	// if (data.selectedRegion) {
-	// 	region
-	// 		.attr("opacity", 0.65)
-	// 		.filter((d) => d.properties.DEN_REG === data.selectedRegion.label)
-	// 		.attr("stroke", (d) => colors.interactive)
-	// 		.attr("fill", "transparent")
-	// 		.raise();
-	// }
+	if (selectedMunicipality) {
+		region.attr("opacity", 0.5);
+		province.attr("opacity", 0.5);
+		municipality
+			.attr("opacity", 0.5)
+			.filter((d) => d.properties.code === selectedMunicipality.code)
+			.attr("opacity", 1)
+			.each(zoomToArea);
+	} else if (selectedProvince) {
+		region.attr("opacity", 0.5);
+		province
+			.attr("opacity", 0.5)
+			.filter((d) => d.properties.code === selectedProvince.code)
+			.attr("opacity", 1)
+			.each(zoomToArea);
+	} else if (selectedRegion) {
+		region
+			.attr("opacity", 0.5)
+			.filter((d) => d.properties.code === selectedRegion.code)
+			.attr("opacity", 1)
+			.each(zoomToArea);
+	}
 
-	// if (data.selectedProvince) {
-	// 	province
-	// 		.attr("opacity", 0.65)
-	// 		.filter((d) => d.properties.DEN_UTS === data.selectedProvince.label)
-	// 		.attr("stroke", (d) => colors.interactive)
-	// 		.attr("fill", "transparent")
-	// 		.raise();
-
-	// 	if (data.selectedMunicipality) {
-	// 		municipality
-	// 			.filter((d) => d.properties.COMUNE === data.selectedMunicipality.label)
-	// 			.attr("stroke", (d) => colors.interactive)
-	// 			// .attr("fill", "transparent")
-	// 			.raise();
-	// 	}
-	// }
-
-	simulation.nodes(viz_data.data);
+	simulation.nodes(data);
 	// simulation.tick(120);
 	// ticked();
 	simulation.alpha(1);
@@ -226,6 +243,22 @@ function zoomed(transform) {
 	// simulation.force("collide").radius((d) => getRadius(d, 0.75) / _k);
 	simulation.alpha(1);
 	simulation.restart();
+}
+
+function zoomToArea(d) {
+	const [[x0, y0], [x1, y1]] = render.bounds(d);
+	// const newScale = Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
+	const newScale = 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height);
+	svg
+		.transition()
+		.duration(t_duration * 3)
+		.call(
+			zoom.transform,
+			d3.zoomIdentity
+				.translate(width / 2, height / 2)
+				.scale(newScale)
+				.translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
+		);
 }
 
 // simulation

@@ -259,8 +259,11 @@ export default function VisualizationController() {
 								lvl6={lvl6}
 								lvl8={lvl8}
 								selectedRegion={selectedRegion}
+								setSelectedRegion={setSelectedRegion}
 								selectedProvince={selectedProvince}
+								setSelectedProvince={setSelectedProvince}
 								selectedMunicipality={selectedMunicipality}
+								setSelectedMunicipality={setSelectedMunicipality}
 								typology={typology}
 								dateFrom={dateFrom}
 								dateTo={dateTo}

@@ -6,11 +6,21 @@
 	svg {
 		width: 100%;
 		height: 100%;
-	}
 
-	:global .collisionArea {
-		fill: transparent;
-		stroke: blue;
-		opacity: 0.25;
+		:global .collisionArea {
+			fill: transparent;
+			stroke: blue;
+			opacity: 0.25;
+		}
+
+		:global .region,
+		:global .province,
+		:global .municipality {
+			cursor: pointer;
+			&:hover {
+				fill: var(--bs-terrain-dark);
+				opacity: 1;
+			}
+		}
 	}
 }

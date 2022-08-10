@@ -4,7 +4,21 @@ import classNames from "classnames";
 import { useRef, useEffect, useMemo } from "react";
 import { initialize, update } from "./MapVentagli.render";
 
-export default function MapVentagli({ ventagli, lvl4, lvl6, lvl8, selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }) {
+export default function MapVentagli({
+	ventagli,
+	lvl4,
+	lvl6,
+	lvl8,
+	selectedRegion,
+	selectedProvince,
+	selectedMunicipality,
+	setSelectedRegion,
+	setSelectedProvince,
+	setSelectedMunicipality,
+	typology,
+	dateFrom,
+	dateTo,
+}) {
 	const svgEl = useRef();
 	const { data, extent } = ventagli;
 
@@ -18,6 +32,9 @@ export default function MapVentagli({ ventagli, lvl4, lvl6, lvl8, selectedRegion
 			selectedRegion,
 			selectedProvince,
 			selectedMunicipality,
+			setSelectedRegion,
+			setSelectedProvince,
+			setSelectedMunicipality,
 			typology,
 			dateFrom,
 			dateTo,
@@ -36,6 +53,9 @@ export default function MapVentagli({ ventagli, lvl4, lvl6, lvl8, selectedRegion
 			selectedRegion,
 			selectedProvince,
 			selectedMunicipality,
+			setSelectedRegion,
+			setSelectedProvince,
+			setSelectedMunicipality,
 			typology,
 			dateFrom,
 			dateTo,
