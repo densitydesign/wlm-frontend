@@ -1,0 +1,5 @@
+.toolBar {
+  --margin-top: calc(var(--bs-gutter-x) * 0.5);
+	height: calc(100% - (var(--margin-top) * 2));
+	margin-top: var(--margin-top);
+}
