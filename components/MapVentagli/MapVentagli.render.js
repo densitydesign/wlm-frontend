@@ -258,16 +258,13 @@ function compileVentagliData(data, arr) {
 		}
 
 		area.history.forEach((date) => {
-			date.groups = date.groups.sort((a, b) => {
-				return a.value - b.value;
-			});
+			// reverse array order so that larger is always rendered behind: [onWIki, inContest, photographed]
+			date.groups = date.groups.reverse();
 			date.groups.forEach((group, i) => {
-				// console.log(group);
 				group.innerRadius = i === 0 ? 0 : date.groups[i - 1].outerRadius;
 				group.outerRadius = scaleRadius(group.value);
 			});
 		});
-		// console.log(area.history);
 	});
 	return data;
 }
