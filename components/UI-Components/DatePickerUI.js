@@ -5,7 +5,7 @@ export default function DatePickerUI({ label, value, transferSelection }) {
 	return (
 		<Form.Group
 			controlId="date"
-			className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-3")}
+			className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-2")}
 			
 		>
 			{label && <Form.Label>{label}</Form.Label>}

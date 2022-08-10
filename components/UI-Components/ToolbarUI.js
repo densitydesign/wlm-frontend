@@ -76,8 +76,9 @@ export default function ToolbarUI({
 						{ content: "2X", onClickAction: (e) => console.log(e) },
 						{ content: <BsArrowRepeat />, onClickAction: (e) => console.log(e) },
 					]}
+					disabled={true}
 				/>
-				<ButtonUI label="Save" content={<BsDownload />} />
+				<ButtonUI label="Save" content={<BsDownload />} disabled={true}/>
 			</div>
 			<p>[Timeline will go here]</p>
 		</div>

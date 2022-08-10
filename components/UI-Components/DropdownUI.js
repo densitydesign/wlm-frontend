@@ -7,7 +7,7 @@ import styles from "./UI-Components.module.scss"
 export default function DropdownUI({ label, items, value, setValue, defaultLabel, disabled }) {
 	// const [selection, setSelection] = useState();
 	return (
-		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-3")}>
+		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-2")}>
 			{label && <span>{label}</span>}
 			<Dropdown className={classNames({ "ms-2": label })}>
 				<Dropdown.Toggle className={classNames(styles.btnWlm)} id="dropdown-basic" size="sm" disabled={disabled}>
