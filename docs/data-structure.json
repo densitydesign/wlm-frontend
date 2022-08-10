@@ -9,7 +9,7 @@
           "date": "2012-01-30",
           "groups": [
             {
-              "label": "onWIki",
+              "label": "photographed",
               "value": 2345
             },
             {
@@ -17,7 +17,7 @@
               "value": 2345
             },
             {
-              "label": "photographed",
+              "label": "onWiki",
               "value": 2345
             }
           ]
@@ -26,7 +26,7 @@
           "date": "2012-09-30",
           "groups": [
             {
-              "label": "onWIki",
+              "label": "photographed",
               "value": 2345
             },
             {
@@ -34,7 +34,7 @@
               "value": 2345
             },
             {
-              "label": "photographed",
+              "label": "onWiki",
               "value": 2345
             }
           ]
@@ -44,7 +44,7 @@
   ],
   "extent": [
     {
-      "label": "onWIkidata",
+      "label": "photographed",
       "value": ["min", "max"]
     },
     {
@@ -52,7 +52,7 @@
       "value": ["min", "max"]
     },
     {
-      "label": "photographed",
+      "label": "onWikidata",
       "value": ["min", "max"]
     }
   ]
