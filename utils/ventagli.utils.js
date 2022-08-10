@@ -29,6 +29,22 @@ const drawVentaglio = (datum, ventaglio) => {
 	// 	.attr("stroke-width", "var(--stroke-width)")
 	// 	.attr("r", d=>d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius);
 
+	ventaglio
+		.selectAll(".tickBg")
+		.data(
+			(d) => dataTick(d).slice(-1),
+			(d) => d.label
+		)
+		.join("path")
+		.attr("d", (d) => {
+			const r = d.outerRadius;
+			const start = -fanOpening / 2;
+			const end = fanOpening / 2;
+			return describeArc(0, 0, r, start, end);
+		})
+		.attr("fill", "url(#tick-background)")
+		.classed("tickBg", true);
+
 	const snapshot = ventaglio
 		.selectAll(".snapshot")
 		.data(
@@ -69,6 +85,66 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("y", 8)
 		.text((d) => d)
 		.raise();
+
+	const tick = ventaglio
+		.selectAll(".tick")
+		.data(
+			(d) => dataTick(d),
+			(d) => d.label
+		)
+		.join(
+			(enter) =>
+				enter
+					.append("g")
+					.attr("data-tick", (d) => d.label)
+					.classed("tick", true),
+			(update) => update,
+			(exit) => exit.remove()
+		)
+		.raise();
+
+	tick
+		.selectAll(".axis")
+		.data(
+			(d) => [d],
+			(d) => d
+		)
+		.join("path")
+		.classed("axis", true)
+		.attr("d", (d) => {
+			const r = d.outerRadius;
+			const start = -fanOpening / 2;
+			const end = fanOpening / 2;
+			return describeArc(0, 0, r, start, end);
+		})
+		.attr("fill", "none")
+		.attr("stroke", "#aaa")
+		.attr("stroke-dasharray", "1, 2")
+		.style("mix-blend-mode", "multiply");
+
+	tick
+		.selectAll(".axisLabel")
+		.data(
+			(d) => [d],
+			(d) => d
+		)
+		.join("text")
+		.classed("axisLabel", true)
+		.attr("fill", "#aaa")
+		.attr("font-size", "var(--small-label-size)")
+		.attr("x", (d) => {
+			const r = d.outerRadius;
+			let a = fanOpening / 2;
+			a = d.index % 2 === 0 ? a : -a;
+			return polarToCartesian(0, 0, r, a).x;
+		})
+		.attr("y", (d) => {
+			const r = d.outerRadius;
+			const a = fanOpening / 2;
+			return polarToCartesian(0, 0, r, a).y + 10;
+		})
+		.attr("text-anchor", "middle")
+		.text((d) => d.value);
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -159,6 +235,10 @@ function drawSlice(d) {
 		].join(" ");
 	}
 	return path;
+}
+
+function dataTick(d) {
+	return d.history.slice(-1)[0].groups.map((d, i) => ({ ...d, index: i }));
 }
 
 export { colors, collisionRadius, drawVentaglio };
