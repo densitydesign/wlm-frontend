@@ -37,17 +37,26 @@ export default function WhatsNew({ data, filterData, setFilterData }) {
 function Group({ group, max, filterData, setFilterData }) {
 	const initialStatus = filterData.find((f) => group.label === f.label).active;
 	const [checked, setChecked] = useState(initialStatus);
+
 	const amount = useMemo(() => {
 		return group.value[1] - group.value[0];
 	}, [group]);
+
 	const barWidth = useMemo(() => {
 		return (amount / max) * 100;
 	}, [amount, max]);
+
 	useEffect(() => {
 		const newFilterData = [...filterData]
     newFilterData.find((f) => group.label === f.label).active = checked
 		setFilterData(newFilterData);
 	}, [checked]);
+
+	useEffect(()=>{
+		const newStatus = filterData.find((f) => group.label === f.label).active;
+		setChecked(newStatus)
+	}, [filterData])
+
 	return (
 		<div className={classNames(styles.group)}>
 			<input name={group.label} type="checkbox" checked={checked} onChange={() => setChecked(!checked)} />

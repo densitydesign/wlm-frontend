@@ -144,6 +144,20 @@ export default function VisualizationController() {
 		}
 	}, [selectedProvince]);
 
+	useEffect(() => {
+		if (parentData) {
+			const _filterData = parentData.extent.map((d) => {
+				let active = true;
+				if (filterData) active = filterData.find((f) => f.label === d.label).active;
+				return {
+					label: d.label,
+					active: active,
+				};
+			});
+			setFilterData(_filterData);
+		}
+	}, [parentData]);
+
 	// Set parameters and fetch data
 	useEffect(() => {
 		const parameters = {};
@@ -184,23 +198,12 @@ export default function VisualizationController() {
 		}
 	}, [selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo, loading]);
 
-	useEffect(() => {
-		if (parentData) {
-			const _filterData = parentData.extent.map((d) => ({ label: d.label, active: d.active || true }));
-			setFilterData(_filterData);
-		}
-	}, [parentData]);
-
 	const filteredVentagli = useMemo(() => {
-		console.log("filteredVentagli Memo")
 		if (filterData && ventagli) {
-			// console.log("filterData", filterData);
-			// console.log("ventagli", ventagli);
 			const newVentagli = JSON.parse(JSON.stringify(ventagli));
 			filterData
 				.filter((f) => !f.active)
 				.forEach((f) => {
-					console.log("Remove",f.label)
 					// remove from data
 					newVentagli.data.forEach((area) => {
 						area.history.forEach((date) => {
@@ -217,7 +220,7 @@ export default function VisualizationController() {
 				});
 			return newVentagli;
 		} else {
-			return undefined
+			return undefined;
 		}
 	}, [filterData, ventagli]);
 
