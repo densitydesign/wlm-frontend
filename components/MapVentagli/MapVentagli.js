@@ -68,7 +68,7 @@ export default function MapVentagli({
 		<div className={classNames(styles.map)}>
 			<svg ref={svgEl}>
 				<linearGradient id="tick-background" x1="50%" y1="0%" x2="50%" y2="100%">
-					<stop offset="0%" stopColor="rgb(255,255,255)" stopOpacity="0.5" />
+					<stop offset="0%" stopColor="rgb(255,255,255)" stopOpacity="0.75" />
 					<stop offset="100%" stopColor="rgb(255,255,255)" stopOpacity="0" />
 				</linearGradient>
 			</svg>

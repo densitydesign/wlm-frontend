@@ -39,14 +39,20 @@ const drawVentaglio = (datum, ventaglio) => {
 		)
 		.join("circle")
 		.attr("class", "bubble")
-		.attr("fill", "var(--bs-onWIki)")
-		.attr("r", 2.5)
+		.attr("fill", (d) => {
+			const groups = d.history.slice(-1)[0].groups;
+			groups.forEach((g, i) => (g.valueDelta = i == 0 ? g.value : g.value - groups[i - 1].value));
+			const predominant = groups.reduce((prev, current) => (prev.valueDelta > current.valueDelta ? prev : current));
+			return colors[predominant.label];
+		})
+		.attr("stroke", "#fff")
+		.attr("r", 4)
 		.attr("display", "none");
 
 	ventaglio
 		.selectAll(".tickBg")
 		.data(
-			(d) => dataTick(d).slice(-1),
+			(d) => dataTick(d).slice(0,1),
 			(d) => d.code
 		)
 		.join("path")
@@ -94,62 +100,62 @@ const drawVentaglio = (datum, ventaglio) => {
 		)
 		.join("text")
 		.attr("text-anchor", "middle")
-		.attr("font-size", "var(--label-size)")
+		.attr("font-size", 10)
 		.attr("class", "label")
-		.attr("y", 15)
+		.attr("y", 1 * 12)
 		.text((d) => d.label)
 		.each(wrap)
 		.raise();
 
 	function wrap(d) {
-		const width = d.maxRadius * 2.5
-		const padding = 0
+		const width = d.maxRadius * 2.5;
+		const padding = 0;
 		var self = d3.select(this),
 			textLength = self.node().getComputedTextLength(),
 			text = self.text();
 		while (textLength > width && text.length > 0) {
 			text = text.slice(0, -1);
 			text = text.trim();
-			self.text(text+".");
+			self.text(text + ".");
 			textLength = self.node().getComputedTextLength();
 		}
 	}
 
-	const tick = ventaglio
+	let g_ticks = ventaglio.select(".ticks");
+	if (g_ticks.empty()) {
+		g_ticks = ventaglio.append("g").classed("ticks", true);
+	}
+	g_ticks.raise();
+
+	const tick = g_ticks
 		.selectAll(".tick")
 		.data(
 			(d) => dataTick(d),
 			(d) => d.label + d.value
 		)
-		.join(
-			(enter) =>
-				enter
-					.append("g")
-					.attr("data-tick", (d, i) => d.label)
-					.classed("tick", true),
-			(update) => update,
-			(exit) => exit.remove()
-		)
+		.join("g")
+		.attr("data-tick", (d, i) => d.label + d.value)
+		.classed("tick", true)
 		.raise();
 
-	tick
-		.selectAll(".axis")
-		.data(
-			(d) => [d],
-			(d) => d
-		)
-		.join("path")
-		.classed("axis", true)
-		.attr("d", (d) => {
-			const r = d.outerRadius;
-			const start = -fanOpening / 2;
-			const end = fanOpening / 2;
-			return describeArc(0, 0, r, start, end);
-		})
-		.attr("fill", "none")
-		.attr("stroke", "#aaa")
-		.attr("stroke-dasharray", "1, 2")
-		.style("mix-blend-mode", "multiply");
+	// tick
+	// 	.selectAll(".axis")
+	// 	.data(
+	// 		(d) => [d],
+	// 		(d) => d
+	// 	)
+	// 	.join("path")
+	// 	.classed("axis", true)
+	// 	.attr("d", (d) => {
+	// 		const r = d.outerRadius;
+	// 		const start = -fanOpening / 2;
+	// 		const end = fanOpening / 2;
+	// 		return describeArc(0, 0, r, start, end);
+	// 	})
+	// 	.attr("fill", "none")
+	// 	.attr("stroke", "#aaa")
+	// 	.attr("stroke-dasharray", "1, 2")
+	// 	.style("mix-blend-mode", "multiply");
 
 	tick
 		.selectAll(".axisLabel")
@@ -160,7 +166,8 @@ const drawVentaglio = (datum, ventaglio) => {
 		.join("text")
 		.classed("axisLabel", true)
 		.attr("fill", "#aaa")
-		.attr("font-size", "var(--small-label-size)")
+		.attr("font-size", 7)
+		.attr("font-weight", "bold")
 		.attr("x", (d) => {
 			const r = d.outerRadius;
 			let a = fanOpening / 2;
@@ -170,10 +177,10 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("y", (d) => {
 			const r = d.outerRadius;
 			const a = fanOpening / 2;
-			return polarToCartesian(0, 0, r, a).y + 8;
+			return polarToCartesian(0, 0, r, a).y + 7;
 		})
-		.attr("text-anchor", "middle")
-		.text((d) => d.value);
+		.attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
+		.text((d) => (d.value !== 1 ? d.value : ""));
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -269,14 +276,34 @@ function drawSlice(d) {
 function dataTick(d) {
 	const data = [];
 	const temp = [];
-	d.history.slice(-1)[0].groups.forEach((g, i) => {
-		const value = g.value;
+	const groups = d.history.slice(-1)[0].groups;
+	for (let i = groups.length - 1; i >= 0; i--) {
+		const g = groups[i];
+		const outerRadius = g.outerRadius;
 		const group = { ...g, index: i };
-		if (temp.indexOf(value) < 0) {
-			temp.push(value);
+		const delta = 7;
+		const similarElment = temp.find((d) => {
+			return d >= outerRadius - delta && d <= outerRadius + delta;
+		});
+
+		if (!similarElment) {
+			temp.push(outerRadius);
 			data.push(group);
 		}
-	});
+	}
+	// groups.forEach((g, i) => {
+	// 	const outerRadius = g.outerRadius;
+	// 	const group = { ...g, index: i };
+	// 	const delta = 7;
+	// 	const similarElment = temp.find((d) => {
+	// 		return d >= outerRadius - delta && d <= outerRadius + delta;
+	// 	});
+
+	// 	if (!similarElment) {
+	// 		temp.push(outerRadius);
+	// 		data.push(group);
+	// 	}
+	// });
 	return data;
 }
 

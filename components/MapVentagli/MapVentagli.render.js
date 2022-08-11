@@ -31,7 +31,8 @@ let _x,
 const scaleRadius = d3
 	.scalePow()
 	.exponent(1 / 4)
-	.range([0, 50]);
+	// .domain([0, 5000])
+	.range([0, 60]);
 
 const initialize = (element, viz_data) => {
 	const { lvl4 } = viz_data;
@@ -45,7 +46,11 @@ const initialize = (element, viz_data) => {
 	if (bgRect.empty()) {
 		bgRect = svg.append("rect").classed("bgRect", true);
 	}
-	bgRect.attr("fill", colors.lightBlue).attr("width", "100%").attr("height", "100%").attr("pointer-events", "none");
+	bgRect
+		.attr("fill", colors.lightBlue)
+		.attr("width", "100%")
+		.attr("height", "100%")
+		.attr("pointer-events", "none");
 
 	g = svg.select(".main-g");
 	if (g.empty()) {
@@ -309,7 +314,7 @@ function getRadius(d, k) {
 }
 
 function handleOverlappings(selection) {
-	console.log("handleOverlappings", selection);
+	// console.log("handleOverlappings", selection);
 	selection.classed("overlapping", false);
 	selection.selectAll(".bubble").attr("display", "none");
 	selection.selectAll(".snapshot").attr("display", "block");
@@ -322,7 +327,7 @@ function handleOverlappings(selection) {
 			const elm_e = this;
 			if (e === d) return;
 			const _dist = dist([d.x, d.y], [e.x, e.y]);
-			const _threshold = ((d.maxRadius + e.maxRadius) / _k) * 0.75;
+			const _threshold = ((d.maxRadius + e.maxRadius) / _k) * 0.7;
 			if (_dist < _threshold) {
 				// console.log(d.label, e.label);
 				const selected_d = d3.select(elm_d);
