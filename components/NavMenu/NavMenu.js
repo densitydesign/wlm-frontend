@@ -27,6 +27,14 @@ HairyMenu.displayName = "HairyMenu";
 
 export default function NavMenu() {
 	const { basePath } = useRouter();
+	const router = useRouter();
+
+	const forceNavigation = (e, href) => {
+		e.preventDefault();
+		router.push(href);
+		router.reload();
+	};
+
 	return (
 		<Dropdown className={classNames("mb-2")} autoClose={true}>
 			<Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
@@ -36,9 +44,9 @@ export default function NavMenu() {
 			</Dropdown.Toggle>
 
 			<Dropdown.Menu className={classNames("w-100")}>
-				<Link href={`/`} passHref>
-					<Dropdown.Item>Map</Dropdown.Item>
-				</Link>
+				<Dropdown.Item href={`/`} onClick={(e) => forceNavigation(e, `/`)}>
+					Map
+				</Dropdown.Item>
 				<Link href={`/list`} passHref>
 					<Dropdown.Item>List</Dropdown.Item>
 				</Link>
@@ -47,15 +55,24 @@ export default function NavMenu() {
 				</Link>
 				<Dropdown.Item href="https://www.wikimedia.it/wiki-loves-monuments/">WikiLovesMonuments</Dropdown.Item>
 				<Dropdown.Header>Contests</Dropdown.Header>
-				<Link href={`/#selectedRegion=Umbria&dateFrom=2022-09-01&dateTo=2022-09-30`} passHref>
-					<Dropdown.Item>2022: Castelli e fortificazioni</Dropdown.Item>
-				</Link>
-				<Link href={`/#selectedRegion=Umbria&dateFrom=2021-09-01&dateTo=2021-09-30`} passHref>
-					<Dropdown.Item>Concorso 2021</Dropdown.Item>
-				</Link>
-				<Link href={`/#selectedRegion=Umbria&dateFrom=2020-09-01&dateTo=2020-09-30`} passHref>
-					<Dropdown.Item>Concorso 2020</Dropdown.Item>
-				</Link>
+				<Dropdown.Item
+					href={`/#selectedRegion=Umbria&dateFrom=2022-09-01&dateTo=2022-09-30`}
+					onClick={(e) => forceNavigation(e, `/#selectedRegion=Umbria&dateFrom=2022-09-01&dateTo=2022-09-30`)}
+				>
+					2022: Castelli e fortificazioni
+				</Dropdown.Item>
+				<Dropdown.Item
+					href={`/#selectedRegion=Umbria&dateFrom=2021-09-01&dateTo=2021-09-30`}
+					onClick={(e) => forceNavigation(e, `/#selectedRegion=Umbria&dateFrom=2021-09-01&dateTo=2021-09-30`)}
+				>
+					Concorso 2021
+				</Dropdown.Item>
+				<Dropdown.Item
+					href={`/#selectedRegion=Umbria&dateFrom=2020-09-01&dateTo=2020-09-30`}
+					onClick={(e) => forceNavigation(e, `/#selectedRegion=Umbria&dateFrom=2020-09-01&dateTo=2020-09-30`)}
+				>
+					Concorso 2020
+				</Dropdown.Item>
 			</Dropdown.Menu>
 		</Dropdown>
 	);
