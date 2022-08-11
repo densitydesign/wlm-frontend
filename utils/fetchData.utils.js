@@ -27,40 +27,6 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		// no area selected, do all italian regions
 		console.log("all Italian regions");
 		console.info("No endopoint for retrieving all italian regions at once");
-		// setDataValue({
-		// 	data: [],
-		// 	extent: [
-		// 		{
-		// 			label: "onWIki",
-		// 			value: [0, 1302],
-		// 		},
-		// 		{
-		// 			label: "inContest",
-		// 			value: [0, 365],
-		// 		},
-		// 		{
-		// 			label: "photographed",
-		// 			value: [0, 324],
-		// 		},
-		// 	],
-		// });
-		// setParentDataValue({
-		// 	data: [],
-		// 	extent: [
-		// 		{
-		// 			label: "onWIki",
-		// 			value: [0, 1302],
-		// 		},
-		// 		{
-		// 			label: "inContest",
-		// 			value: [0, 365],
-		// 		},
-		// 		{
-		// 			label: "photographed",
-		// 			value: [0, 324],
-		// 		},
-		// 	],
-		// });
 		dataUrl = undefined;
 	}
 
@@ -115,6 +81,13 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 					date.groups.reverse();
 				});
 			});
+			data.data.sort((a,b)=>{
+				const value_a = a.history.slice(-1)[0].groups.slice(-1)[0].value
+				a.maxValue = value_a
+				const value_b = b.history.slice(-1)[0].groups.slice(-1)[0].value
+				b.maxValue = value_b
+				return value_b - value_a
+			})
 			setDataValue(data);
 			setParentDataValue(parentData);
 		});

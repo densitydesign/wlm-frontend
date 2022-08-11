@@ -7,10 +7,24 @@
 		width: 100%;
 		height: 100%;
 
-		:global .collisionArea {
-			fill: transparent;
-			stroke: blue;
-			opacity: 0.25;
+		:global .ventaglio {
+			:global .collisionArea {
+				fill: var(--bs-interactive);
+				opacity: 0.5;
+				mix-blend-mode: color-burn;
+				cursor: pointer;
+				&:hover {
+					opacity: 1;
+				}
+			}
+		}
+
+		:global .overlapping {
+			&:hover {
+				:global .label {
+					display: block;
+				}
+			}
 		}
 
 		:global .region,

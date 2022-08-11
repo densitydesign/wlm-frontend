@@ -23,17 +23,31 @@ const drawVentaglio = (datum, ventaglio) => {
 
 	// ventaglio
 	// 	.selectAll(".collisionArea")
-	// 	.data((d) => [d], d=>d.code)
+	// 	.data(
+	// 		(d) => [d],
+	// 		(d) => d.code
+	// 	)
 	// 	.join("circle")
 	// 	.attr("class", "collisionArea")
-	// 	.attr("stroke-width", "var(--stroke-width)")
-	// 	.attr("r", d=>d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius);
+	// 	.attr("r", (d) => d.maxRaius || d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius);
+
+	ventaglio
+		.selectAll(".bubble")
+		.data(
+			(d) => [d],
+			(d) => d.code
+		)
+		.join("circle")
+		.attr("class", "bubble")
+		.attr("fill", "var(--bs-onWIki)")
+		.attr("r", 2.5)
+		.attr("display", "none");
 
 	ventaglio
 		.selectAll(".tickBg")
 		.data(
 			(d) => dataTick(d).slice(-1),
-			(d) => d.label
+			(d) => d.code
 		)
 		.join("path")
 		.attr("d", (d) => {
@@ -49,7 +63,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.selectAll(".snapshot")
 		.data(
 			(d) => d.history,
-			(d) => d.code
+			(d) => d.date
 		)
 		.join("g")
 		.attr("class", "snapshot")
@@ -75,28 +89,43 @@ const drawVentaglio = (datum, ventaglio) => {
 	ventaglio
 		.selectAll(".label")
 		.data(
-			(d) => [d.label],
-			(d) => d
+			(d) => [d],
+			(d) => d.code
 		)
 		.join("text")
 		.attr("text-anchor", "middle")
 		.attr("font-size", "var(--label-size)")
 		.attr("class", "label")
-		.attr("y", 12)
-		.text((d) => d)
+		.attr("y", 15)
+		.text((d) => d.label)
+		.each(wrap)
 		.raise();
+
+	function wrap(d) {
+		const width = d.maxRadius * 2.5
+		const padding = 0
+		var self = d3.select(this),
+			textLength = self.node().getComputedTextLength(),
+			text = self.text();
+		while (textLength > width && text.length > 0) {
+			text = text.slice(0, -1);
+			text = text.trim();
+			self.text(text+".");
+			textLength = self.node().getComputedTextLength();
+		}
+	}
 
 	const tick = ventaglio
 		.selectAll(".tick")
 		.data(
 			(d) => dataTick(d),
-			(d) => d.label
+			(d) => d.label + d.value
 		)
 		.join(
 			(enter) =>
 				enter
 					.append("g")
-					.attr("data-tick", (d,i) => d.label)
+					.attr("data-tick", (d, i) => d.label)
 					.classed("tick", true),
 			(update) => update,
 			(exit) => exit.remove()
@@ -141,7 +170,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("y", (d) => {
 			const r = d.outerRadius;
 			const a = fanOpening / 2;
-			return polarToCartesian(0, 0, r, a).y + 10;
+			return polarToCartesian(0, 0, r, a).y + 8;
 		})
 		.attr("text-anchor", "middle")
 		.text((d) => d.value);
@@ -238,17 +267,17 @@ function drawSlice(d) {
 }
 
 function dataTick(d) {
-	const data = []
-	const temp = []
-	d.history.slice(-1)[0].groups.forEach((g,i)=>{
-		const value = g.value
-		const group = {...g, index: i}
+	const data = [];
+	const temp = [];
+	d.history.slice(-1)[0].groups.forEach((g, i) => {
+		const value = g.value;
+		const group = { ...g, index: i };
 		if (temp.indexOf(value) < 0) {
-			temp.push(value)
-			data.push(group)
+			temp.push(value);
+			data.push(group);
 		}
-	})
-	return data
+	});
+	return data;
 }
 
 export { colors, collisionRadius, drawVentaglio };
