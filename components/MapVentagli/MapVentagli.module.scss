@@ -8,7 +8,9 @@
 		height: 100%;
 
 		:global .ventaglio {
+			cursor: pointer;
 			:global .collisionArea {
+				display: none;
 				fill: var(--bs-interactive);
 				opacity: 0.5;
 				mix-blend-mode: color-burn;

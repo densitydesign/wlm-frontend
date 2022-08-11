@@ -34,7 +34,7 @@ let _x,
 
 const scaleRadius = d3
 	.scalePow()
-	.exponent(1 / 2)
+	.exponent(1 / 3)
 	// .domain([0, 5000])
 	.range([0, 60]);
 
@@ -232,6 +232,24 @@ const update = (viz_data) => {
 		.join("g")
 		.attr("class", "ventaglio")
 		.classed("overlapping", false)
+		.on("click", (event, d) => {
+			if (mode === "municipality") {
+				console.log("Clicked.", d);
+				setSelectedMunicipality(undefined);
+			} else if (mode === "province") {
+				const { code, label } = d;
+				const selected = { code, label };
+				setSelectedMunicipality(selected);
+			} else if (mode === "region") {
+				const { code, label } = d;
+				const selected = { code, label };
+				setSelectedProvince(selected);
+			} else {
+				const { code, label } = d;
+				const selected = { code, label };
+				setSelectedRegion(selected);
+			}
+		})
 		.each(function (d) {
 			drawVentaglio(d, d3.select(this));
 		});
@@ -329,29 +347,30 @@ function handleOverlappings(selection) {
 	selection.selectAll(".tickBg").attr("display", "block");
 	selection.selectAll(".tick").attr("display", "block");
 	selection.selectAll(".label").attr("display", "block");
+
 	selection.each(function (d) {
 		const elm_d = this;
 		selection.each(function (e) {
 			const elm_e = this;
 			if (e === d) return;
 			const _dist = dist([d.x, d.y], [e.x, e.y]);
-			const _threshold = ((d.maxRadius + e.maxRadius) / _k) * 0.7;
+			const d_maxRadius = d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius;
+			const e_maxRadius = e.history.slice(-1)[0].groups.slice(-1)[0].outerRadius;
+			const _threshold = ((d_maxRadius + e_maxRadius) / _k) * 0.7;
 			if (_dist < _threshold) {
-				// console.log(d.label, e.label);
 				const selected_d = d3.select(elm_d);
 				const selected_e = d3.select(elm_e);
 				if (selected_d.classed("overlapping") || selected_e.classed("overlapping")) {
 					return;
 				} else {
-					let hidden_elm, visible_elm;
+					let hidden_elm;
 					if (d.maxValue < e.maxValue) {
 						hidden_elm = d3.select(elm_d);
-						visible_elm = d3.select(elm_e);
+						console.log("hidden_elm", d.label);
 					} else {
 						hidden_elm = d3.select(elm_e);
-						visible_elm = d3.select(elm_d);
+						console.log("hidden_elm", e.label);
 					}
-					// console.log(hidden_elm);
 					hidden_elm.classed("overlapping", true);
 					hidden_elm.selectAll(".bubble").attr("display", "block");
 					hidden_elm.selectAll(".snapshot").attr("display", "none");

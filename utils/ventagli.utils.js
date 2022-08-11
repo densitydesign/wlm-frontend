@@ -21,15 +21,15 @@ const drawVentaglio = (datum, ventaglio) => {
 
 	rotation = fanOpening / data[0].history.length;
 
-	// ventaglio
-	// 	.selectAll(".collisionArea")
-	// 	.data(
-	// 		(d) => [d],
-	// 		(d) => d.code
-	// 	)
-	// 	.join("circle")
-	// 	.attr("class", "collisionArea")
-	// 	.attr("r", (d) => d.maxRaius || d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius);
+	ventaglio
+		.selectAll(".collisionArea")
+		.data(
+			(d) => [d],
+			(d) => d.code
+		)
+		.join("circle")
+		.attr("class", "collisionArea")
+		.attr("r", (d) => d.maxRaius || d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius);
 
 	ventaglio
 		.selectAll(".bubble")
@@ -102,7 +102,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("font-size", 10)
 		.attr("class", "label")
 		.attr("y", 1 * 12)
-		.text((d) => d.label)
+		.text((d) => d.label.slice(0,7))
 		.raise();
 
 	let g_ticks = ventaglio.select(".ticks");
