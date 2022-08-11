@@ -52,7 +52,7 @@ const drawVentaglio = (datum, ventaglio) => {
 	ventaglio
 		.selectAll(".tickBg")
 		.data(
-			(d) => dataTick(d).slice(0,1),
+			(d) => dataTick(d).slice(0, 1),
 			(d) => d.code
 		)
 		.join("path")
@@ -104,22 +104,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("class", "label")
 		.attr("y", 1 * 12)
 		.text((d) => d.label)
-		.each(wrap)
 		.raise();
-
-	function wrap(d) {
-		const width = d.maxRadius * 2.5;
-		const padding = 0;
-		var self = d3.select(this),
-			textLength = self.node().getComputedTextLength(),
-			text = self.text();
-		while (textLength > width && text.length > 0) {
-			text = text.slice(0, -1);
-			text = text.trim();
-			self.text(text + ".");
-			textLength = self.node().getComputedTextLength();
-		}
-	}
 
 	let g_ticks = ventaglio.select(".ticks");
 	if (g_ticks.empty()) {
@@ -138,24 +123,24 @@ const drawVentaglio = (datum, ventaglio) => {
 		.classed("tick", true)
 		.raise();
 
-	// tick
-	// 	.selectAll(".axis")
-	// 	.data(
-	// 		(d) => [d],
-	// 		(d) => d
-	// 	)
-	// 	.join("path")
-	// 	.classed("axis", true)
-	// 	.attr("d", (d) => {
-	// 		const r = d.outerRadius;
-	// 		const start = -fanOpening / 2;
-	// 		const end = fanOpening / 2;
-	// 		return describeArc(0, 0, r, start, end);
-	// 	})
-	// 	.attr("fill", "none")
-	// 	.attr("stroke", "#aaa")
-	// 	.attr("stroke-dasharray", "1, 2")
-	// 	.style("mix-blend-mode", "multiply");
+	tick
+		.selectAll(".axis")
+		.data(
+			(d) => [d],
+			(d) => d
+		)
+		.join("path")
+		.classed("axis", true)
+		.attr("d", (d) => {
+			const r = d.outerRadius;
+			const start = -fanOpening / 2;
+			const end = fanOpening / 2;
+			return describeArc(0, 0, r, start, end);
+		})
+		.attr("fill", "none")
+		.attr("stroke", "#aaa")
+		.attr("stroke-dasharray", "1, 2")
+		.style("mix-blend-mode", "multiply");
 
 	tick
 		.selectAll(".axisLabel")
@@ -279,6 +264,7 @@ function dataTick(d) {
 	const groups = d.history.slice(-1)[0].groups;
 	for (let i = groups.length - 1; i >= 0; i--) {
 		const g = groups[i];
+		if (g.value === 0) continue;
 		const outerRadius = g.outerRadius;
 		const group = { ...g, index: i };
 		const delta = 7;

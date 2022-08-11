@@ -28,12 +28,13 @@ let _x,
 	_y,
 	_k = 1,
 	kLimit = 45,
+	mode = undefined,
 	labelSize = 10,
 	axisLabel = 7;
 
 const scaleRadius = d3
 	.scalePow()
-	.exponent(1 / 3)
+	.exponent(1 / 2)
 	// .domain([0, 5000])
 	.range([0, 60]);
 
@@ -189,11 +190,39 @@ const update = (viz_data) => {
 		});
 
 	let geoFeaturesArr;
-
-	if (selectedMunicipality) geoFeaturesArr = lvl8;
-	else if (selectedProvince) geoFeaturesArr = lvl8;
-	else if (selectedRegion) geoFeaturesArr = lvl6;
-	else geoFeaturesArr = lvl4;
+	if (selectedMunicipality) {
+		geoFeaturesArr = lvl8;
+		mode = "municipality";
+		region.attr("opacity", 0.5);
+		province.attr("opacity", 0.5);
+		municipality
+			.attr("display", "none")
+			.filter((d) => d.properties.code === selectedMunicipality.code)
+			.attr("display", "block")
+			.each(zoomToArea);
+	} else if (selectedProvince) {
+		geoFeaturesArr = lvl8;
+		mode = "province";
+		region.attr("opacity", 0.5);
+		province
+			.attr("opacity", 0.5)
+			.filter((d) => d.properties.code === selectedProvince.code)
+			.attr("opacity", 1)
+			.each(zoomToArea);
+		municipality.attr("display", "block");
+	} else if (selectedRegion) {
+		geoFeaturesArr = lvl6;
+		mode = "region";
+		region
+			.attr("opacity", 0.5)
+			.filter((d) => d.properties.code === selectedRegion.code)
+			.attr("opacity", 1)
+			.each(zoomToArea);
+		municipality.attr("display", "block");
+	} else {
+		geoFeaturesArr = lvl4;
+		mode = undefined;
+	}
 
 	data = compileVentagliData(data, geoFeaturesArr);
 
@@ -207,29 +236,6 @@ const update = (viz_data) => {
 			drawVentaglio(d, d3.select(this));
 		});
 
-	if (selectedMunicipality) {
-		region.attr("opacity", 0.5);
-		province.attr("opacity", 0.5);
-		municipality
-			.attr("opacity", 0.5)
-			.filter((d) => d.properties.code === selectedMunicipality.code)
-			.attr("opacity", 1)
-			.each(zoomToArea);
-	} else if (selectedProvince) {
-		region.attr("opacity", 0.5);
-		province
-			.attr("opacity", 0.5)
-			.filter((d) => d.properties.code === selectedProvince.code)
-			.attr("opacity", 1)
-			.each(zoomToArea);
-	} else if (selectedRegion) {
-		region
-			.attr("opacity", 0.5)
-			.filter((d) => d.properties.code === selectedRegion.code)
-			.attr("opacity", 1)
-			.each(zoomToArea);
-	}
-
 	simulation.nodes(data);
 	// simulation.tick(120);
 	// ticked();
@@ -239,7 +245,7 @@ const update = (viz_data) => {
 	function zoomToArea(d) {
 		const [[x0, y0], [x1, y1]] = render.bounds(d);
 		// const newScale = Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
-		const newScale = 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height);
+		const newScale = 0.8 / Math.max((x1 - x0) / width, (y1 - y0) / height);
 		svg
 			.transition()
 			.duration(t_duration * 3)
@@ -261,8 +267,7 @@ function zoomed(transform) {
 	_k = k;
 
 	document.documentElement.style.setProperty("--stroke-width", 1 / k);
-
-	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (k>=kLimit?kLimit:k)})`);
+	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (k >= kLimit ? kLimit : k)})`);
 
 	// simulation.force("collide").radius((d) => getRadius(d, 0.75) / _k);
 	// simulation.alpha(1);
@@ -271,7 +276,7 @@ function zoomed(transform) {
 
 // simulation
 const ticked = () => {
-	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (_k>=kLimit?kLimit:_k)})`);
+	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (_k >= kLimit ? kLimit : _k)})`);
 };
 simulation = d3
 	.forceSimulation()
