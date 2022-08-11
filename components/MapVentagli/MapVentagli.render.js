@@ -26,11 +26,14 @@ let svg,
 
 let _x,
 	_y,
-	_k = 1;
+	_k = 1,
+	kLimit = 45,
+	labelSize = 10,
+	axisLabel = 7;
 
 const scaleRadius = d3
 	.scalePow()
-	.exponent(1 / 4)
+	.exponent(1 / 3)
 	// .domain([0, 5000])
 	.range([0, 60]);
 
@@ -46,11 +49,7 @@ const initialize = (element, viz_data) => {
 	if (bgRect.empty()) {
 		bgRect = svg.append("rect").classed("bgRect", true);
 	}
-	bgRect
-		.attr("fill", colors.lightBlue)
-		.attr("width", "100%")
-		.attr("height", "100%")
-		.attr("pointer-events", "none");
+	bgRect.attr("fill", colors.lightBlue).attr("width", "100%").attr("height", "100%").attr("pointer-events", "none");
 
 	g = svg.select(".main-g");
 	if (g.empty()) {
@@ -260,17 +259,19 @@ function zoomed(transform) {
 	_x = x;
 	_y = y;
 	_k = k;
-	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / k})`);
+
 	document.documentElement.style.setProperty("--stroke-width", 1 / k);
 
+	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (k>=kLimit?kLimit:k)})`);
+
 	// simulation.force("collide").radius((d) => getRadius(d, 0.75) / _k);
-	simulation.alpha(1);
-	simulation.restart();
+	// simulation.alpha(1);
+	// simulation.restart();
 }
 
 // simulation
 const ticked = () => {
-	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / _k})`);
+	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (_k>=kLimit?kLimit:_k)})`);
 };
 simulation = d3
 	.forceSimulation()
