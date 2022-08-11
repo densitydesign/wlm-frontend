@@ -89,6 +89,11 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 				return value_b - value_a
 			})
 			setDataValue(data);
+			parentData.data.forEach((area) => {
+				area.history.forEach((date) => {
+					date.groups.reverse();
+				});
+			});
 			setParentDataValue(parentData);
 		});
 	}

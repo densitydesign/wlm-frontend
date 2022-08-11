@@ -41,7 +41,6 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("class", "bubble")
 		.attr("fill", (d) => {
 			const groups = d.history.slice(-1)[0].groups;
-			groups.forEach((g, i) => (g.valueDelta = i == 0 ? g.value : g.value - groups[i - 1].value));
 			const predominant = groups.reduce((prev, current) => (prev.valueDelta > current.valueDelta ? prev : current));
 			return colors[predominant.label];
 		})
@@ -277,19 +276,6 @@ function dataTick(d) {
 			data.push(group);
 		}
 	}
-	// groups.forEach((g, i) => {
-	// 	const outerRadius = g.outerRadius;
-	// 	const group = { ...g, index: i };
-	// 	const delta = 7;
-	// 	const similarElment = temp.find((d) => {
-	// 		return d >= outerRadius - delta && d <= outerRadius + delta;
-	// 	});
-
-	// 	if (!similarElment) {
-	// 		temp.push(outerRadius);
-	// 		data.push(group);
-	// 	}
-	// });
 	return data;
 }
 

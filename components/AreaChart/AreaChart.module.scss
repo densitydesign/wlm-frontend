@@ -1,5 +1,13 @@
 .areaChart {
-  flex-grow: 1;
-  background-color: var(--bs-primary);
-  // font-size: 6px;
+	flex-grow: 1;
+	// background-color: var(--bs-primary);
+	// font-size: 6px;
+
+	width: 100%;
+	height: 100%;
+
+	svg {
+		width: 100%;
+		height: 100%;
+	}
 }

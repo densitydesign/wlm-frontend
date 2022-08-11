@@ -3,6 +3,8 @@ import "../styles/globals.scss";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
+import SSRProvider from 'react-bootstrap/SSRProvider'
+
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
   useEffect(() => {
@@ -10,7 +12,7 @@ function MyApp({ Component, pageProps }) {
       ? require("bootstrap/dist/js/bootstrap")
       : null;
   }, [router.events]);
-  return <Component {...pageProps} />;
+  return <SSRProvider><Component {...pageProps} /></SSRProvider>;
 }
 
 export default MyApp;

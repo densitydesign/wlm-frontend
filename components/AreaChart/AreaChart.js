@@ -1,12 +1,22 @@
 import styles from "./AreaChart.module.scss";
 import classNames from "classnames";
-export default function AreaChart({ data }) {
+import { useEffect, useRef, useState } from "react";
+import { initialize as init_areaChart, update as update_areaChart } from "./AreaChart.render";
+
+export default function AreaChart({ data, filterData }) {
+	const svgEl = useRef();
+
+	useEffect(() => {
+		init_areaChart(svgEl.current);
+	}, []);
+
+	useEffect(() => {
+		update_areaChart(data, filterData);
+	}, [data, filterData]);
+
 	return (
 		<div className={classNames(styles.areaChart, "d-flex", "justify-content-center", "align-items-center")}>
-			[ Areachart will be here ]
-			{/* {data.data[0].history.map((h, i) => (
-				<p key={i} className="mb-0">{h.date}</p>
-			))} */}
+			<svg ref={svgEl}></svg>
 		</div>
 	);
 }

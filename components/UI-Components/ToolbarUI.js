@@ -81,7 +81,7 @@ export default function ToolbarUI({
 				/>
 				<ButtonUI label="Save" content={<BsDownload />} disabled={true} />
 			</div>
-			{parentData && <AreaChart data={parentData} filterData={filterData} />}
+			{parentData && filterData && <AreaChart data={parentData} filterData={filterData} />}
 		</div>
 	);
 }
