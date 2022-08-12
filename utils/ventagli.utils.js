@@ -64,7 +64,7 @@ const drawVentaglio = (datum, ventaglio) => {
 			return colors[predominant.label];
 		})
 		.attr("stroke", "#fff")
-		.attr("r", 3)
+		.attr("r", 4)
 		.attr("display", "none");
 
 	const snapshot = ventaglio
