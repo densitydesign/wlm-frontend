@@ -16,6 +16,7 @@ const HairyMenu = forwardRef(({ children, onClick }, ref) => (
 			onClick(e);
 		}}
 		size="sm"
+		variant="lightBlue"
 		className={classNames(styles.btnWlm, "w-100", "d-flex", "justify-content-between", "align-items-center")}
 	>
 		<span>{children}</span>

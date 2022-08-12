@@ -8,7 +8,14 @@
 // );
 
 $theme-colors: (
-	"primary": #ddf7ff,
+  "primary":    $primary,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark,
 	"blue-jeans": #0978ab,
 	"lightBlue": #ddf7ff,
 	"terrain": #ece5e0,

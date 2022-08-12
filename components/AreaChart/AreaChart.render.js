@@ -36,12 +36,11 @@ const initialize = (element) => {
 };
 
 const update = (data, filterData) => {
-	console.log("update areachart");
+	// console.log("update areachart");
 
 	const bbox = svg.node().getBoundingClientRect();
 	width = bbox.width;
 	height = bbox.height;
-	console.log(width, height);
 
 	const temp = [];
 	const keys = new Set();
@@ -71,7 +70,6 @@ const update = (data, filterData) => {
 	});
 	const stack = d3.stack().keys(Array.from(keys)).order(d3.stackOrderNone).offset(d3.stackOffsetNone);
 	const series = stack(temp);
-	console.log(series);
 
 	const timeExtent = d3.extent(dates);
 	timeScale.domain(timeExtent).range([margin.left, width - margin.right]);
@@ -88,7 +86,6 @@ const update = (data, filterData) => {
 	quantityScale.domain([0, quantityExtent[1]]).range([height - margin.bottom, margin.top]);
 	const qTicks = quantityScale.ticks(5);
 	const qTicksFormat = quantityScale.tickFormat(5, "~s");
-	console.log(qTicks.map(qTicksFormat));
 	const quantityAxis = d3.axisRight(quantityScale.copy()).tickFormat(qTicksFormat);
 	const arr = [];
 	quantityAxisGroup
@@ -112,7 +109,6 @@ const update = (data, filterData) => {
 				.filter((d) => d === 0)
 				.attr("display", "none");
 		});
-	// .call(quantityAxis.tickSize(width - margin.left - margin.right - ));
 
 	const area = d3
 		.area()

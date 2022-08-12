@@ -6,4 +6,9 @@
 
 .btnWlm {
 	color: #0978AB;
+	&:disabled {
+		background-color: #dcdcdc;
+		border-color: #dcdcdc;
+		opacity: 0.5;
+	}
 }

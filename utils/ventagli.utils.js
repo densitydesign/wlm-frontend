@@ -45,6 +45,7 @@ const drawVentaglio = (datum, ventaglio) => {
 			const end = fanOpening / 2;
 			return describeArc(0, 0, r, start, end);
 		})
+		.attr("stroke", "none")
 		.attr("fill", "url(#tick-background)")
 		.classed("tickBg", true)
 		.lower();
@@ -121,8 +122,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		)
 		.join("g")
 		.attr("data-tick", (d, i) => d.label + d.value)
-		.classed("tick", true)
-		.raise();
+		.classed("tick", true);
 
 	tick
 		.selectAll(".axis")
@@ -138,10 +138,9 @@ const drawVentaglio = (datum, ventaglio) => {
 			const end = fanOpening / 2;
 			return describeArc(0, 0, r, start, end);
 		})
-		.attr("fill", "none")
-		.attr("stroke", "#aaa")
-		.attr("stroke-dasharray", "1, 2")
-		.style("mix-blend-mode", "multiply");
+		.attr("stroke", "rgba(255,255,255,0.75)")
+		.attr("stroke-width", 0.5)
+		.attr("fill", "none");
 
 	tick
 		.selectAll(".axisLabel")
@@ -166,7 +165,7 @@ const drawVentaglio = (datum, ventaglio) => {
 			return polarToCartesian(0, 0, r, a).y + 7;
 		})
 		.attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
-		.text((d) => (d.value !== 1 ? d.value : ""));
+		.text((d) => d.value);
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {

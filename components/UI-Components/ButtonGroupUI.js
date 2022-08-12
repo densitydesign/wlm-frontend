@@ -7,7 +7,7 @@ export default function ButtonGroupUI({ label, items, disabled }) {
 			{label && <span>{label}</span>}
 			<ButtonGroup className={classNames({ "ms-1": label })} aria-label="Basic example">
 				{items.map((btn, i) => (
-					<Button key={i} size="sm" onClick={(e) => btn.onClickAction(e)} disabled={disabled}>
+					<Button key={i} size="sm" variant="lightBlue" onClick={(e) => btn.onClickAction(e)} disabled={disabled}>
 						{btn.content}
 					</Button>
 				))}

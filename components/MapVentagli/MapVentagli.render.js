@@ -42,16 +42,12 @@ let svg,
 let _x,
 	_y,
 	_k = 1,
-	kLimit = 45,
+	kLimit = 35,
 	mode = undefined,
 	labelSize = 10,
 	axisLabel = 7;
 
-const scaleRadius = d3
-	.scalePow()
-	.exponent(1 / 3)
-	// .domain([0, 5000])
-	.range([0, 60]);
+const scaleRadius = d3.scalePow();
 
 const initialize = (element, viz_data) => {
 	const { lvl4 } = viz_data;
@@ -98,14 +94,10 @@ const initialize = (element, viz_data) => {
 	}
 	ventaglio = g_ventagli.selectAll(".ventaglio");
 
-	projection = d3
-		.geoMercator()
-		// .scale(1 / (2 * Math.PI))
-		// .translate([0, 0])
-		.fitSize([width, height], {
-			type: "FeatureCollection",
-			features: lvl4,
-		});
+	projection = d3.geoMercator().fitSize([width, height], {
+		type: "FeatureCollection",
+		features: lvl4,
+	});
 
 	render = d3.geoPath(projection);
 
@@ -145,7 +137,10 @@ const update = (viz_data) => {
 		setSelectedMunicipality,
 	} = viz_data;
 
-	scaleRadius.domain([0, d3.max(extent.map((d) => d.value[1]))]);
+	scaleRadius
+		.exponent(1 / 2)
+		.domain([0, d3.max(extent.map((d) => d.value[1]))])
+		.range([0, 70]);
 
 	region = g_regions
 		.selectAll(".region")

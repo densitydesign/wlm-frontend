@@ -42,7 +42,7 @@
 		display: block;
 		position: absolute;
 		left: 0%;
-		background: linear-gradient(90deg, var(--bs-primary), transparent, var(--bs-primary), transparent, var(--bs-primary));
+		background: linear-gradient(90deg, var(--bs-lightBlue), transparent, var(--bs-lightBlue), transparent, var(--bs-lightBlue));
 		@include animation("bgAnimation 2s linear infinite");
 		// opacity: 0.5;
 	}

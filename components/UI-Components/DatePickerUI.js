@@ -16,6 +16,7 @@ export default function DatePickerUI({ label, value, transferSelection }) {
 				placeholder="Pick a date"
 				value={value}
 				size="sm"
+				variant="lightBlue"
 				onChange={(e) => transferSelection(e.target.value)}
 			/>
 		</Form.Group>
