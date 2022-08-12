@@ -22,7 +22,22 @@ let svg,
 	municipality,
 	g_ventagli,
 	ventaglio,
-	simulation;
+	simulation = d3
+		.forceSimulation()
+		.force(
+			"x",
+			d3.forceX((d) => d.x)
+		)
+		.force(
+			"y",
+			d3.forceY((d) => d.y)
+		)
+		// .force(
+		// 	"collide",
+		// 	d3.forceCollide().radius((d) => getRadius(d, 0.75) / _k)
+		// )
+		.on("tick", ticked)
+		.stop();
 
 let _x,
 	_y,
@@ -184,9 +199,13 @@ const update = (viz_data) => {
 		.attr("d", (d) => render(d))
 		.on("click", (event, d) => {
 			event.stopPropagation();
-			const { code, label } = d.properties;
-			const selected = { code, label };
-			setSelectedMunicipality(selected);
+			if (selectedMunicipality) {
+				setSelectedMunicipality(undefined);
+			} else {
+				const { code, label } = d.properties;
+				const selected = { code, label };
+				setSelectedMunicipality(selected);
+			}
 		});
 
 	let geoFeaturesArr;
@@ -254,19 +273,23 @@ const update = (viz_data) => {
 			drawVentaglio(d, d3.select(this));
 		});
 
-	simulation.nodes(data);
+	ticked(); // positions ventagli in correct place
+
+	// simulation.nodes(data);
 	// simulation.tick(120);
 	// ticked();
-	simulation.alpha(1);
-	simulation.restart();
+	// simulation.alpha(1);
+	// simulation.restart();
 
 	function zoomToArea(d) {
 		const [[x0, y0], [x1, y1]] = render.bounds(d);
 		// const newScale = Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
-		const newScale = 0.8 / Math.max((x1 - x0) / width, (y1 - y0) / height);
+		const zK = mode === "municipality" ? 0.25 : 1;
+		const newScale = zK / Math.max((x1 - x0) / width, (y1 - y0) / height);
 		svg
 			.transition()
-			.duration(t_duration * 3)
+			.duration(0)
+			// .duration(t_duration * 3)
 			.call(
 				zoom.transform,
 				d3.zoomIdentity
@@ -286,32 +309,15 @@ function zoomed(transform) {
 
 	document.documentElement.style.setProperty("--stroke-width", 1 / k);
 	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (k >= kLimit ? kLimit : k)})`);
-
 	// simulation.force("collide").radius((d) => getRadius(d, 0.75) / _k);
 	// simulation.alpha(1);
 	// simulation.restart();
 }
 
 // simulation
-const ticked = () => {
+function ticked() {
 	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (_k >= kLimit ? kLimit : _k)})`);
-};
-simulation = d3
-	.forceSimulation()
-	.force(
-		"x",
-		d3.forceX((d) => d.x)
-	)
-	.force(
-		"y",
-		d3.forceY((d) => d.y)
-	)
-	// .force(
-	// 	"collide",
-	// 	d3.forceCollide().radius((d) => getRadius(d, 0.75) / _k)
-	// )
-	.on("tick", ticked)
-	.stop();
+}
 
 function compileVentagliData(data, arr) {
 	data.forEach((area) => {
@@ -343,10 +349,12 @@ function handleOverlappings(selection) {
 	// console.log("handleOverlappings", selection);
 	selection.classed("overlapping", false);
 	selection.selectAll(".bubble").attr("display", "none");
-	selection.selectAll(".snapshot").attr("display", "block");
-	selection.selectAll(".tickBg").attr("display", "block");
-	selection.selectAll(".tick").attr("display", "block");
-	selection.selectAll(".label").attr("display", "block");
+	selection.selectAll("*:not(.bubble)").attr("display", "block");
+
+	// selection.selectAll(".snapshot").attr("display", "block");
+	// selection.selectAll(".tickBg").attr("display", "block");
+	// selection.selectAll(".tick").attr("display", "block");
+	// selection.selectAll(".label").attr("display", "block");
 
 	selection.each(function (d) {
 		const elm_d = this;
@@ -373,10 +381,12 @@ function handleOverlappings(selection) {
 					}
 					hidden_elm.classed("overlapping", true);
 					hidden_elm.selectAll(".bubble").attr("display", "block");
-					hidden_elm.selectAll(".snapshot").attr("display", "none");
-					hidden_elm.selectAll(".tickBg").attr("display", "none");
-					hidden_elm.selectAll(".tick").attr("display", "none");
-					hidden_elm.selectAll(".label").attr("display", "none");
+					hidden_elm.selectAll("*:not(.bubble)").attr("display", "none");
+
+					// hidden_elm.selectAll(".snapshot").attr("display", "none");
+					// hidden_elm.selectAll(".tickBg").attr("display", "none");
+					// hidden_elm.selectAll(".tick").attr("display", "none");
+					// hidden_elm.selectAll(".label").attr("display", "none");
 				}
 			}
 		});

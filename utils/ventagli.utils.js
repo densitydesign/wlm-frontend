@@ -29,24 +29,8 @@ const drawVentaglio = (datum, ventaglio) => {
 		)
 		.join("circle")
 		.attr("class", "collisionArea")
-		.attr("r", (d) => d.maxRaius || d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius);
-
-	ventaglio
-		.selectAll(".bubble")
-		.data(
-			(d) => [d],
-			(d) => d.code
-		)
-		.join("circle")
-		.attr("class", "bubble")
-		.attr("fill", (d) => {
-			const groups = d.history.slice(-1)[0].groups;
-			const predominant = groups.reduce((prev, current) => (prev.valueDelta > current.valueDelta ? prev : current));
-			return colors[predominant.label];
-		})
-		.attr("stroke", "#fff")
-		.attr("r", 4)
-		.attr("display", "none");
+		.attr("r", (d) => d.maxRaius || d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius)
+		.lower();
 
 	ventaglio
 		.selectAll(".tickBg")
@@ -62,7 +46,25 @@ const drawVentaglio = (datum, ventaglio) => {
 			return describeArc(0, 0, r, start, end);
 		})
 		.attr("fill", "url(#tick-background)")
-		.classed("tickBg", true);
+		.classed("tickBg", true)
+		.lower();
+
+	ventaglio
+		.selectAll(".bubble")
+		.data(
+			(d) => [d],
+			(d) => d.code
+		)
+		.join("circle")
+		.attr("class", "bubble")
+		.attr("fill", (d) => {
+			const groups = d.history.slice(-1)[0].groups;
+			const predominant = groups.reduce((prev, current) => (prev.valueDelta > current.valueDelta ? prev : current));
+			return colors[predominant.label];
+		})
+		.attr("stroke", "#fff")
+		.attr("r", 3)
+		.attr("display", "none");
 
 	const snapshot = ventaglio
 		.selectAll(".snapshot")
@@ -102,7 +104,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("font-size", 10)
 		.attr("class", "label")
 		.attr("y", 1 * 12)
-		.text((d) => d.label.slice(0,7))
+		.text((d) => d.label.slice(0, 7))
 		.raise();
 
 	let g_ticks = ventaglio.select(".ticks");
