@@ -16,7 +16,6 @@ let svg,
 	quantityAxisGroup;
 
 const initialize = (element) => {
-	console.log("initialize areachart");
 	svg = d3.select(element);
 
 	quantityAxisGroup = svg.select(".quantityAxisGroup");
@@ -36,8 +35,6 @@ const initialize = (element) => {
 };
 
 const update = (data, filterData) => {
-	// console.log("update areachart");
-
 	const bbox = svg.node().getBoundingClientRect();
 	width = bbox.width;
 	height = bbox.height;
