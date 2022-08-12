@@ -341,15 +341,10 @@ function getRadius(d, k) {
 }
 
 function handleOverlappings(selection) {
-	// console.log("handleOverlappings", selection);
+	if (!mode || mode === "region") return;
 	selection.classed("overlapping", false);
 	selection.selectAll(".bubble").attr("display", "none");
 	selection.selectAll("*:not(.bubble)").attr("display", "block");
-
-	// selection.selectAll(".snapshot").attr("display", "block");
-	// selection.selectAll(".tickBg").attr("display", "block");
-	// selection.selectAll(".tick").attr("display", "block");
-	// selection.selectAll(".label").attr("display", "block");
 
 	selection.each(function (d) {
 		const elm_d = this;
@@ -369,19 +364,12 @@ function handleOverlappings(selection) {
 					let hidden_elm;
 					if (d.maxValue < e.maxValue) {
 						hidden_elm = d3.select(elm_d);
-						// console.log("hidden_elm", d.label);
 					} else {
 						hidden_elm = d3.select(elm_e);
-						// console.log("hidden_elm", e.label);
 					}
 					hidden_elm.classed("overlapping", true);
 					hidden_elm.selectAll(".bubble").attr("display", "block");
 					hidden_elm.selectAll("*:not(.bubble)").attr("display", "none");
-
-					// hidden_elm.selectAll(".snapshot").attr("display", "none");
-					// hidden_elm.selectAll(".tickBg").attr("display", "none");
-					// hidden_elm.selectAll(".tick").attr("display", "none");
-					// hidden_elm.selectAll(".label").attr("display", "none");
 				}
 			}
 		});
