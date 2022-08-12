@@ -3,6 +3,7 @@ import styles from "./MapVentagli.module.scss";
 import classNames from "classnames";
 import { useRef, useEffect, useMemo } from "react";
 import { initialize, update } from "./MapVentagli.render";
+import { Fetching } from "../Fetching";
 
 export default function MapVentagli({
 	ventagli,
@@ -18,6 +19,7 @@ export default function MapVentagli({
 	typology,
 	dateFrom,
 	dateTo,
+	isFetching,
 }) {
 	const svgEl = useRef();
 	const { data, extent } = ventagli;
@@ -37,7 +39,7 @@ export default function MapVentagli({
 			setSelectedMunicipality,
 			typology,
 			dateFrom,
-			dateTo,
+			dateTo
 		};
 		// console.log("Mounted", data_for_viz);
 		initialize(svgEl.current, data_for_viz);
@@ -65,13 +67,14 @@ export default function MapVentagli({
 	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality]);
 
 	return (
-		<div className={classNames(styles.map)}>
+		<div className={classNames(styles.map, "position-relative")}>
 			<svg ref={svgEl}>
 				<linearGradient id="tick-background" x1="50%" y1="0%" x2="50%" y2="100%">
 					<stop offset="0%" stopColor="rgb(255,255,255)" stopOpacity="0.75" />
 					<stop offset="100%" stopColor="rgb(255,255,255)" stopOpacity="0" />
 				</linearGradient>
 			</svg>
+			{(isFetching) && <Fetching />}
 		</div>
 	);
 }

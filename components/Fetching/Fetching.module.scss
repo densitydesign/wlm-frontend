@@ -1,0 +1,49 @@
+@mixin keyframes($animation-name) {
+	@-webkit-keyframes #{$animation-name} {
+		@content;
+	}
+	@-moz-keyframes #{$animation-name} {
+		@content;
+	}
+	@-ms-keyframes #{$animation-name} {
+		@content;
+	}
+	@-o-keyframes #{$animation-name} {
+		@content;
+	}
+	@keyframes #{$animation-name} {
+		@content;
+	}
+}
+
+@mixin animation($str) {
+	-webkit-animation: #{$str};
+	-moz-animation: #{$str};
+	-ms-animation: #{$str};
+	-o-animation: #{$str};
+	animation: #{$str};
+}
+
+@include keyframes(bgAnimation) {
+	0% {
+		left: 0%;
+	}
+	100% {
+		left: -100%;
+	}
+}
+
+.fetching {
+	overflow: hidden;
+	&::before {
+		content: " ";
+		width: 200%;
+		height: 100%;
+		display: block;
+		position: absolute;
+		left: 0%;
+		background: linear-gradient(90deg, var(--bs-primary), transparent, var(--bs-primary), transparent, var(--bs-primary));
+		@include animation("bgAnimation 2s linear infinite");
+		// opacity: 0.5;
+	}
+}

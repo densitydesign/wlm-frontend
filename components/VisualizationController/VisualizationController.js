@@ -7,6 +7,7 @@ import { Col, Container, Row } from "react-bootstrap";
 import classNames from "classnames";
 import { ToolbarUI } from "../UI-Components";
 import MapVentagli from "../MapVentagli/MapVentagli";
+import { Fetching } from "../Fetching";
 import { feature } from "topojson-client";
 import { fetchData } from "../../utils/fetchData.utils";
 
@@ -20,6 +21,7 @@ export default function VisualizationController() {
 	const { asPath } = useRouter();
 
 	const [loading, setLoading] = useState(true); // changes will trigger initial data fetching and rendering
+	const [isFetching, setIsFetching] = useState(false);
 	const [ventagli, setVentagli] = useState();
 	const [parentData, setParentData] = useState();
 	const [filterData, setFilterData] = useState();
@@ -194,7 +196,7 @@ export default function VisualizationController() {
 		location.replace(hashUrl);
 
 		if (!loading) {
-			fetchData(parametersFetchData, setVentagli, setParentData);
+			fetchData(parametersFetchData, setVentagli, setParentData, setIsFetching);
 		}
 	}, [selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo, loading]);
 
@@ -250,7 +252,7 @@ export default function VisualizationController() {
 						setFilterData={setFilterData}
 					/>
 				</Col>
-				<Col className={classNames("h-100")}>
+				<Col className={classNames("h-100", "position-relative")}>
 					<>
 						{!loading && filteredVentagli && (
 							<MapVentagli
@@ -267,11 +269,11 @@ export default function VisualizationController() {
 								typology={typology}
 								dateFrom={dateFrom}
 								dateTo={dateTo}
+								isFetching={isFetching}
 							/>
 						)}
-						{loading && <p>Loading data</p>}
+						{loading && <Fetching />}
 					</>
-					{/* {data && <TestVentagli data={data} slice={slice} />} */}
 				</Col>
 			</Row>
 		</Container>

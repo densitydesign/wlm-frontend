@@ -374,10 +374,10 @@ function handleOverlappings(selection) {
 					let hidden_elm;
 					if (d.maxValue < e.maxValue) {
 						hidden_elm = d3.select(elm_d);
-						console.log("hidden_elm", d.label);
+						// console.log("hidden_elm", d.label);
 					} else {
 						hidden_elm = d3.select(elm_e);
-						console.log("hidden_elm", e.label);
+						// console.log("hidden_elm", e.label);
 					}
 					hidden_elm.classed("overlapping", true);
 					hidden_elm.selectAll(".bubble").attr("display", "block");

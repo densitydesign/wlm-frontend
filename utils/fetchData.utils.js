@@ -3,7 +3,8 @@ import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
 
-const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue) => {
+const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue, setIsFetching) => {
+	setIsFetching(true)
 	// console.log("fetching data...");
 	let dataUrl = apiBaseUrl;
 	let parentDataUrl = apiBaseUrl;
@@ -28,6 +29,7 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		console.log("all Italian regions");
 		console.info("No endopoint for retrieving all italian regions at once");
 		dataUrl = undefined;
+		setIsFetching(false)
 	}
 
 	if (dataUrl) {
@@ -95,6 +97,7 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 				});
 			});
 			setParentDataValue(parentData);
+			setIsFetching(false)
 		});
 	}
 };
