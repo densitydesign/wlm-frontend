@@ -4,11 +4,12 @@ let svg,
 	width,
 	height,
 	margin = {
-		left: 0,
-		right: 40,
-		top: 10,
+		left: 20,
+		right: 1,
+		top: 30,
 		bottom: 20,
 	},
+	areaChart,
 	timeScale = d3.scaleTime(),
 	timeAxisGroup,
 	quantityScale = d3.scaleLinear(),
@@ -17,27 +18,31 @@ let svg,
 const initialize = (element) => {
 	console.log("initialize areachart");
 	svg = d3.select(element);
-	const bbox = svg.node().getBoundingClientRect();
-	width = bbox.width;
-	height = bbox.height;
 
-	timeScale.range([margin.left, width - margin.right]);
-	timeAxisGroup = svg.select(".timeAxisGroup");
-	if (timeAxisGroup.empty()) {
-		timeAxisGroup = svg.append("g").classed("timeAxisGroup", true);
-	}
-	timeAxisGroup.attr("transform", `translate(0, ${height - margin.bottom})`);
-
-	quantityScale.range([height - margin.bottom, margin.top]);
 	quantityAxisGroup = svg.select(".quantityAxisGroup");
 	if (quantityAxisGroup.empty()) {
 		quantityAxisGroup = svg.append("g").classed("quantityAxisGroup", true);
 	}
-	quantityAxisGroup.attr("transform", `translate(${width},0)`);
+
+	areaChart = svg.selectAll(".areaChart");
+	if (areaChart.empty()) {
+		areaChart = svg.append("g").classed("areaChart", true);
+	}
+
+	timeAxisGroup = svg.select(".timeAxisGroup");
+	if (timeAxisGroup.empty()) {
+		timeAxisGroup = svg.append("g").classed("timeAxisGroup", true);
+	}
 };
 
 const update = (data, filterData) => {
 	console.log("update areachart");
+
+	const bbox = svg.node().getBoundingClientRect();
+	width = bbox.width;
+	height = bbox.height;
+	console.log(width, height);
+
 	const temp = [];
 	const keys = new Set();
 	const dates = [];
@@ -51,7 +56,6 @@ const update = (data, filterData) => {
 			const o = {
 				date: _date,
 			};
-
 			const groups = date.groups.filter((group) => preservedGroups.indexOf(group.label) !== -1);
 			groups.forEach((group, i) => {
 				let _value = group.value;
@@ -66,18 +70,49 @@ const update = (data, filterData) => {
 		});
 	});
 	const stack = d3.stack().keys(Array.from(keys)).order(d3.stackOrderNone).offset(d3.stackOffsetNone);
-
 	const series = stack(temp);
+	console.log(series);
+
 	const timeExtent = d3.extent(dates);
-	const quantityExtent = d3.extent(amounts);
+	timeScale.domain(timeExtent).range([margin.left, width - margin.right]);
 
-	timeScale.domain(timeExtent);
 	const timeAxis = d3.axisBottom(timeScale);
-	timeAxisGroup.call(timeAxis);
+	timeAxisGroup
+		.attr("transform", `translate(0, ${height - margin.bottom})`)
+		.call(timeAxis)
+		.call((g) => {
+			const d_attr = g.select(".domain").remove()
+		});
 
-	quantityScale.domain(quantityExtent);
-	const quantityAxis = d3.axisLeft(quantityScale);
-	quantityAxisGroup.call(quantityAxis);
+	const quantityExtent = d3.extent(amounts);
+	quantityScale.domain([0, quantityExtent[1]]).range([height - margin.bottom, margin.top]);
+	const qTicks = quantityScale.ticks(5);
+	const qTicksFormat = quantityScale.tickFormat(5, "~s");
+	console.log(qTicks.map(qTicksFormat));
+	const quantityAxis = d3.axisRight(quantityScale.copy()).tickFormat(qTicksFormat);
+	const arr = [];
+	quantityAxisGroup
+		.attr("transform", `translate(${0},0)`)
+		.call(quantityAxis)
+		.call((g) => {
+			g.select(".domain").attr("display", "none");
+
+			g.selectAll(".tick > text")
+				.attr("x", 0)
+				.each(function (d) {
+					arr.push(this.getComputedTextLength());
+				});
+
+			g.selectAll(".tick > line")
+				.attr("stroke-dasharray", "1, 4")
+				.attr("x1", Math.ceil(d3.max(arr)) + 4)
+				.attr("x2", width)
+
+			g.selectAll(".tick")
+				.filter((d) => d === 0)
+				.attr("display", "none");
+		});
+	// .call(quantityAxis.tickSize(width - margin.left - margin.right - ));
 
 	const area = d3
 		.area()
@@ -86,7 +121,7 @@ const update = (data, filterData) => {
 		.y1((d) => quantityScale(d[1]))
 		.curve(d3.curveStepAfter);
 
-	svg
+	areaChart
 		.selectAll(".area")
 		.data(series)
 		.join("path")
