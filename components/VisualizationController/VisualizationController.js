@@ -37,6 +37,7 @@ export default function VisualizationController() {
 	const [dateFrom, setDateFrom] = useState();
 	const [maxDate, setMaxDate] = useState();
 	const [dateTo, setDateTo] = useState();
+	const [timeStep, setTimeStep] = useState();
 
 	// Decode URL, load geographies and domain (themes + max date)
 	useEffect(() => {
@@ -224,7 +225,7 @@ export default function VisualizationController() {
 		location.replace(hashUrl);
 
 		if (!loading) {
-			fetchData(parametersFetchData, setVentagli, setParentData, setIsFetching);
+			fetchData(parametersFetchData, setVentagli, setParentData, setIsFetching, setTimeStep);
 		}
 	}, [selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo, loading]);
 
@@ -295,6 +296,7 @@ export default function VisualizationController() {
 						maxDate={maxDate}
 						dateTo={dateTo}
 						setDateTo={setDateTo}
+						timeStep={timeStep}
 						parentData={parentData}
 						filterData={filterData}
 						setFilterData={setFilterData}
@@ -320,6 +322,25 @@ export default function VisualizationController() {
 								isFetching={isFetching}
 							/>
 						)}
+						<div>
+							<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+								<img alt="Licenza Creative Commons" style={{borderWidth:0}} src="https://upload.wikimedia.org/wikipedia/commons/9/9e/CC-BY.svg" />
+							</a>
+							<br />
+							This{" "}
+							<span xmlnsDct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" rel="dct:type">
+								work
+							</span>{" "}
+							by
+							<span xmlnsCc="http://creativecommons.org/ns#" property="cc:attributionName">
+								DensityDesign Research Lab, Politecnico di Milano / Wikimedia Italia
+							</span>{" "}
+							is licensed under a{" "}
+							<a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+								Creative Commons Attribution 4.0 International
+							</a>
+							.
+						</div>
 						{(loading || isFetching) && <Fetching />}
 					</>
 				</Col>

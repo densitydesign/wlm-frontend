@@ -4,7 +4,7 @@ import { json } from "d3";
 const apiBaseUrl = "https://wlm.inmagik.com";
 const cacheMode = "force-cache";
 
-const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue, setIsFetching) => {
+const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue, setIsFetching, setTimeStep) => {
 	setIsFetching(true);
 	// console.log("fetching data...");
 	let dataUrl = apiBaseUrl;
@@ -65,8 +65,8 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 			step_unit = "years";
 			step_size = 1;
 		}
-
-		// console.log("Requesting an aggregation every", step_size, step_unit, "makes", Math.ceil(i.length(step_unit) / step_size), "history points");
+		const timeStepMessage = ["Showing ", Math.ceil(i.length(step_unit) / step_size), " history points (every ", step_size, " ", step_unit, ")", ].join("")
+		setTimeStep(timeStepMessage)
 
 		const parameters = { step_size, step_unit };
 		parameters.date_from = dateFrom;
