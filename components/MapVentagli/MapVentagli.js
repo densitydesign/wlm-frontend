@@ -18,7 +18,6 @@ export default function MapVentagli({
 	typology,
 	dateFrom,
 	dateTo,
-	isFetching,
 }) {
 	const svgEl = useRef();
 	const { data, extent } = ventagli;
