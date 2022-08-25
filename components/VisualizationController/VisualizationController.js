@@ -34,9 +34,9 @@ export default function VisualizationController() {
 	const [typology, setTypology] = useState();
 
 	const [minDate, setMinDate] = useState("2012-01-01");
-	const [dateFrom, setDateFrom] = useState(minDate);
+	const [dateFrom, setDateFrom] = useState();
 	const [maxDate, setMaxDate] = useState();
-	const [dateTo, setDateTo] = useState(maxDate);
+	const [dateTo, setDateTo] = useState();
 
 	// Decode URL, load geographies and domain (themes + max date)
 	useEffect(() => {
@@ -51,7 +51,6 @@ export default function VisualizationController() {
 		Promise.all(requests).then(([geographiesRegions, domain]) => {
 			// set max date
 			setMaxDate(domain.last_snapshot);
-			setDateTo(domain.last_snapshot);
 
 			// set themes list (typologies)
 			const fetchedTypologiesList = domain.themes;
@@ -77,8 +76,16 @@ export default function VisualizationController() {
 				const correspondingType = fetchedTypologiesList.find((d) => d.id == typology);
 				setTypology(correspondingType);
 			}
-			if (dateFrom) setDateFrom(dateFrom);
-			if (dateTo) setDateTo(dateTo);
+			if (dateFrom) {
+				setDateFrom(dateFrom);
+			} else {
+				setDateFrom(dateMin);
+			}
+			if (dateTo) {
+				setDateTo(dateTo);
+			} else {
+				setDateTo(domain.last_snapshot);
+			}
 			if (filterDataParams) {
 				const decoded_filterData = filterDataParams
 					.split(";")

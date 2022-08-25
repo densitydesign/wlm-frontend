@@ -5,6 +5,7 @@ import styles from "./UI-Components.module.scss";
 import NavMenu from "../NavMenu";
 import WhatsNew from "../WhatsNew";
 import AreaChart from "../AreaChart";
+import { useCallback } from "react";
 
 export default function ToolbarUI({
 	regions,
@@ -65,8 +66,8 @@ export default function ToolbarUI({
 				disabled={municipalities.disabled}
 			/>
 			<DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={!typologiesList} />
-			<DatePickerUI label="From" min={minDate} max={maxDate} value={dateFrom} transferSelection={setDateFrom} />
-			<DatePickerUI label="To" min={minDate} max={maxDate} value={dateTo} transferSelection={setDateTo} />
+			<DatePickerUI label="From" min={minDate} max={dateTo} value={dateFrom} transferSelection={setDateFrom} />
+			<DatePickerUI label="To" min={dateFrom} max={maxDate} value={dateTo} transferSelection={setDateTo} />
 			{parentData && filterData && <WhatsNew data={parentData} filterData={filterData} setFilterData={setFilterData} />}
 			<h6>Timeline</h6>
 			<div className={classNames("d-flex", "justify-content-between")}>
