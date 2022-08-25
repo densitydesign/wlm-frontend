@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styles from "./WhatsNew.module.scss";
 import { colors } from "../../utils/ventagli.utils";
 import classNames from "classnames";
-import { filter, max as d3Max } from "d3";
+import { max as d3Max } from "d3";
 
 const labelsDict = {
 	onWIki: {
@@ -37,6 +37,7 @@ export default function WhatsNew({ data, filterData, setFilterData }) {
 function Group({ group, max, filterData, setFilterData }) {
 	const initialStatus = filterData.find((f) => group.label === f.label).active;
 	const [checked, setChecked] = useState(initialStatus);
+	const [isDisabled, setIsDisabled] = useState(false);
 
 	const amount = useMemo(() => {
 		return group.value[1] - group.value[0];
@@ -47,19 +48,21 @@ function Group({ group, max, filterData, setFilterData }) {
 	}, [amount, max]);
 
 	useEffect(() => {
-		const newFilterData = [...filterData]
-    newFilterData.find((f) => group.label === f.label).active = checked
+		const newFilterData = [...filterData];
+		newFilterData.find((f) => group.label === f.label).active = checked;
 		setFilterData(newFilterData);
 	}, [checked]);
 
-	useEffect(()=>{
+	useEffect(() => {
 		const newStatus = filterData.find((f) => group.label === f.label).active;
-		setChecked(newStatus)
-	}, [filterData])
+		setChecked(newStatus);
+		const _disabled = filterData.filter((d) => d.active).length < 2 && checked === true;
+		setIsDisabled(_disabled);
+	}, [filterData]);
 
 	return (
 		<div className={classNames(styles.group)}>
-			<input name={group.label} type="checkbox" checked={checked} onChange={() => setChecked(!checked)} />
+			<input name={group.label} type="checkbox" checked={checked} onChange={() => setChecked(!checked)} disabled={isDisabled} />
 			<span className={classNames(styles.bar)}>
 				<div style={{ backgroundColor: colors[group.label], width: `${barWidth}%` }} />
 				<span className={classNames(styles.amount)}>
