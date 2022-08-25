@@ -30,8 +30,6 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		console.log("All Italian regions");
 		// dataUrl = undefined;
 		dataUrl += `/api/region/wlm-regions/`;
-		console.warn("Missing endpoint per aggregato nazionale");
-		// https://wlm.inmagik.com/api/region/wlm-aggregate/?date_from=2020-01-01&date_to=2022-01-01&step_size=5&step_unit=months
 		parentDataUrl += `/api/region/wlm-aggregate`;
 	}
 
@@ -89,39 +87,20 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 			}),
 		]).then(([data, parentData]) => {
 			// filter data if later than date_to
-			data.data.forEach((area) => {
-				const newHistory = area.history.filter((h) => {
-					const date = h.date;
-					return DateTime.fromISO(date) <= _dt;
-				});
-				area.history = newHistory;
-			});
-			parentData.data.forEach((area) => {
-				const newHistory = area.history.filter((h) => {
-					const date = h.date;
-					return DateTime.fromISO(date) <= _dt;
-				});
-				area.history = newHistory;
-			});
 			// data.data.forEach((area) => {
-			// 	area.history.forEach((date) => {
-			// 		date.groups.reverse();
+			// 	const newHistory = area.history.filter((h) => {
+			// 		const date = h.date;
+			// 		return DateTime.fromISO(date) <= _dt;
 			// 	});
+			// 	area.history = newHistory;
 			// });
-			// data.data.sort((a,b)=>{
-			// 	const value_a = a.history.slice(-1)[0].groups.slice(-1)[0].value
-			// 	a.maxValue = value_a
-			// 	const value_b = b.history.slice(-1)[0].groups.slice(-1)[0].value
-			// 	b.maxValue = value_b
-			// 	return value_b - value_a
-			// })
-
 			// parentData.data.forEach((area) => {
-			// 	area.history.forEach((date) => {
-			// 		date.groups.reverse();
+			// 	const newHistory = area.history.filter((h) => {
+			// 		const date = h.date;
+			// 		return DateTime.fromISO(date) <= _dt;
 			// 	});
+			// 	area.history = newHistory;
 			// });
-
 			setDataValue(data);
 			setParentDataValue(parentData);
 			setIsFetching(false);
