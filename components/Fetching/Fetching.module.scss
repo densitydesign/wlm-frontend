@@ -34,6 +34,9 @@
 }
 
 .fetching {
+	--margin: calc(var(--bs-gutter-x) * 0.5);
+	width: calc(100% - (var(--margin) * 2));
+	height: calc(100% - (var(--margin) * 2));
 	overflow: hidden;
 	&::before {
 		content: " ";
@@ -42,7 +45,7 @@
 		display: block;
 		position: absolute;
 		left: 0%;
-		background: linear-gradient(-90deg, var(--bs-lightBlue), rgba(255,255,255,0.5), var(--bs-lightBlue), rgba(255,255,255,0.5), var(--bs-lightBlue));
+		background: linear-gradient(-90deg, var(--bs-lightBlue), rgba(255, 255, 255, 0.5), var(--bs-lightBlue), rgba(255, 255, 255, 0.5), var(--bs-lightBlue));
 		@include animation("bgAnimation 2s linear infinite");
 		// opacity: 0.5;
 	}

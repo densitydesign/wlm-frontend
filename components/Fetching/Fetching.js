@@ -14,9 +14,7 @@ export default function Fetching() {
 				"d-flex",
 				"flex-column",
 				"justify-content-center",
-				"align-items-center",
-				"w-100",
-				"h-100"
+				"align-items-center"
 			)}
 		>
 			<Spinner variant="blue-jeans" animation="border" role="status" size="sm">
