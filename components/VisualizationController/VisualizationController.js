@@ -79,7 +79,7 @@ export default function VisualizationController() {
 			if (dateFrom) {
 				setDateFrom(dateFrom);
 			} else {
-				setDateFrom(dateMin);
+				setDateFrom(minDate);
 			}
 			if (dateTo) {
 				setDateTo(dateTo);
