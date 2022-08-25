@@ -2,9 +2,10 @@ const { DateTime, Interval } = require("luxon");
 import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
+const cacheMode = "force-cache";
 
 const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue, setIsFetching) => {
-	setIsFetching(true)
+	setIsFetching(true);
 	// console.log("fetching data...");
 	let dataUrl = apiBaseUrl;
 	let parentDataUrl = apiBaseUrl;
@@ -26,10 +27,12 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		parentDataUrl += `/api/region/${selectedRegion.code}/wlm/`;
 	} else {
 		// no area selected, do all italian regions
-		console.log("all Italian regions");
-		console.info("No endopoint for retrieving all italian regions at once");
-		dataUrl = undefined;
-		setIsFetching(false)
+		console.log("All Italian regions");
+		// dataUrl = undefined;
+		dataUrl += `/api/region/wlm-regions/`;
+		console.warn("Missing endpoint per aggregato nazionale");
+		// https://wlm.inmagik.com/api/region/wlm-aggregate/?date_from=2020-01-01&date_to=2022-01-01&step_size=5&step_unit=months
+		parentDataUrl += `/api/region/wlm-aggregate`;
 	}
 
 	if (dataUrl) {
@@ -70,36 +73,60 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 		const parameters = { step_size, step_unit };
 		parameters.date_from = dateFrom;
 		parameters.date_to = dateTo;
-		if (typology) parameters.typology = typology.label;
+		if (typology) parameters.theme = typology.id;
 		parameters.format = "json";
 
 		const searchParams = new URLSearchParams(parameters).toString();
 		dataUrl += "?" + searchParams;
 		parentDataUrl += "?" + searchParams;
 
-		Promise.all([json(dataUrl), json(parentDataUrl)]).then(([data, parentData]) => {
+		Promise.all([
+			json(dataUrl, {
+				cache: cacheMode,
+			}),
+			json(parentDataUrl, {
+				cache: cacheMode,
+			}),
+		]).then(([data, parentData]) => {
+			// filter data if later than date_to
 			data.data.forEach((area) => {
-				area.history.forEach((date) => {
-					date.groups.reverse();
+				const newHistory = area.history.filter((h) => {
+					const date = h.date;
+					return DateTime.fromISO(date) <= _dt;
 				});
+				area.history = newHistory;
 			});
-			data.data.sort((a,b)=>{
-				const value_a = a.history.slice(-1)[0].groups.slice(-1)[0].value
-				a.maxValue = value_a
-				const value_b = b.history.slice(-1)[0].groups.slice(-1)[0].value
-				b.maxValue = value_b
-				return value_b - value_a
-			})
-			setDataValue(data);
 			parentData.data.forEach((area) => {
-				area.history.forEach((date) => {
-					date.groups.reverse();
+				const newHistory = area.history.filter((h) => {
+					const date = h.date;
+					return DateTime.fromISO(date) <= _dt;
 				});
+				area.history = newHistory;
 			});
+			// data.data.forEach((area) => {
+			// 	area.history.forEach((date) => {
+			// 		date.groups.reverse();
+			// 	});
+			// });
+			// data.data.sort((a,b)=>{
+			// 	const value_a = a.history.slice(-1)[0].groups.slice(-1)[0].value
+			// 	a.maxValue = value_a
+			// 	const value_b = b.history.slice(-1)[0].groups.slice(-1)[0].value
+			// 	b.maxValue = value_b
+			// 	return value_b - value_a
+			// })
+
+			// parentData.data.forEach((area) => {
+			// 	area.history.forEach((date) => {
+			// 		date.groups.reverse();
+			// 	});
+			// });
+
+			setDataValue(data);
 			setParentDataValue(parentData);
-			setIsFetching(false)
+			setIsFetching(false);
 		});
 	}
 };
 
-export { apiBaseUrl, fetchData };
+export { apiBaseUrl, fetchData, cacheMode };

@@ -1,7 +1,5 @@
 import * as d3 from "d3";
-import { group } from "d3";
-import { Duration } from "luxon";
-import { collisionRadius, colors, drawVentaglio } from "../../utils/ventagli.utils";
+import { colors, drawVentaglio } from "../../utils/ventagli.utils";
 
 const t_duration = 350;
 
@@ -110,14 +108,10 @@ const initialize = (element, viz_data) => {
 		])
 		.on("zoom", ({ transform }) => zoomed(transform))
 		.on("end", () => {
-			console.log("fcadciuchuacidpb");
-		})
-		.on("end", () => {
 			ventaglio.call(handleOverlappings);
 		});
 
 	svg.call(zoom);
-
 	update(viz_data);
 };
 
@@ -235,7 +229,8 @@ const update = (viz_data) => {
 		municipality.attr("display", "block");
 	} else {
 		geoFeaturesArr = lvl4;
-		mode = undefined;
+		mode = undefined; // italy
+		// zoomToArea(undefined);
 	}
 
 	data = compileVentagliData(data, geoFeaturesArr);
@@ -277,21 +272,22 @@ const update = (viz_data) => {
 	// simulation.restart();
 
 	function zoomToArea(d) {
-		const [[x0, y0], [x1, y1]] = render.bounds(d);
-		// const newScale = Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
-		const zK = mode === "municipality" ? 0.25 : 1;
-		const newScale = zK / Math.max((x1 - x0) / width, (y1 - y0) / height);
-		svg
-			.transition()
-			.duration(0)
-			// .duration(t_duration * 3)
-			.call(
+		if (!d) {
+			console.log("zoom to italy")
+			svg.call(zoom.transform, d3.zoomIdentity);
+		} else {
+			const [[x0, y0], [x1, y1]] = render.bounds(d);
+			// const newScale = Math.min(8, 0.9 / Math.max((x1 - x0) / width, (y1 - y0) / height))
+			const zK = mode === "municipality" ? 0.25 : 1;
+			const newScale = zK / Math.max((x1 - x0) / width, (y1 - y0) / height);
+			svg.call(
 				zoom.transform,
 				d3.zoomIdentity
 					.translate(width / 2, height / 2)
 					.scale(newScale)
 					.translate(-(x0 + x1) / 2, -(y0 + y1) / 2)
 			);
+		}
 	}
 };
 
@@ -321,6 +317,10 @@ function compileVentagliData(data, arr) {
 			const centroid = projection(temp.properties.centroid.coordinates);
 			area.x = centroid[0];
 			area.y = centroid[1];
+		} else {
+			const centroidUnknown = projection([12.4, 39.3]);
+			area.x = centroidUnknown[0];
+			area.y = centroidUnknown[1];
 		}
 		area.maxRadius = scaleRadius(area.maxValue);
 		area.history.forEach((date) => {

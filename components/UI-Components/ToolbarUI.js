@@ -62,7 +62,7 @@ export default function ToolbarUI({
 				defaultLabel="Select a municipality"
 				disabled={municipalities.disabled}
 			/>
-			<DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={true} />
+			<DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={!typologiesList} />
 			<DatePickerUI label="From" value={dateFrom} transferSelection={setDateFrom} />
 			<DatePickerUI label="To" value={dateTo} transferSelection={setDateTo} />
 			{parentData && filterData && <WhatsNew data={parentData} filterData={filterData} setFilterData={setFilterData} />}

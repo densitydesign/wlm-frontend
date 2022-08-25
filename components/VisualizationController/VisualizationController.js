@@ -2,20 +2,19 @@ import styles from "./VisualizationController.module.scss";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import * as d3 from "d3";
-import TestVentagli from "../test-ventagli/TestVentagli";
+// import TestVentagli from "../test-ventagli/TestVentagli";
 import { Col, Container, Row } from "react-bootstrap";
 import classNames from "classnames";
 import { ToolbarUI } from "../UI-Components";
 import MapVentagli from "../MapVentagli/MapVentagli";
 import { Fetching } from "../Fetching";
-import { feature } from "topojson-client";
-import { fetchData } from "../../utils/fetchData.utils";
+// import { feature } from "topojson-client";
+import { apiBaseUrl, fetchData, cacheMode } from "../../utils/fetchData.utils";
 
 // let _regionsList = [],
 // 	_provincesList = [],
 // 	_municipalitiesList = [];
-
-const _typologiesList = [{ label: "All monuments" }, { label: "Fortificazioni" }, { label: "Quasi tutti" }, { label: "Una piccola parte" }];
+// const _typologiesList = [{ label: "All monuments" }, { label: "Fortificazioni" }, { label: "Quasi tutti" }, { label: "Una piccola parte" }];
 
 export default function VisualizationController() {
 	const { asPath } = useRouter();
@@ -43,11 +42,16 @@ export default function VisualizationController() {
 	const [dateFrom, setDateFrom] = useState("2012-09-01");
 	const [dateTo, setDateTo] = useState("2022-09-01");
 
-	// Decode URL and load data
+	// Decode URL, load geographies and themes (also named typologies)
 	useEffect(() => {
-		const requests = [d3.json("https://wlm.inmagik.com/api/region/geo/?format=json")];
-		Promise.all(requests).then(([geographiesRegions]) => {
-			const fetchedTypologiesList = _typologiesList;
+		const requests = [
+			d3.json(apiBaseUrl + "/api/region/geo/?format=json", {
+				cache: cacheMode,
+			}),
+			d3.json(apiBaseUrl + "/api/domain/"),
+		];
+		Promise.all(requests).then(([geographiesRegions, domain]) => {
+			const fetchedTypologiesList = domain.themes;
 			setTypologiesList(fetchedTypologiesList);
 
 			setLvl4(geographiesRegions.features);
@@ -63,20 +67,28 @@ export default function VisualizationController() {
 			if (paramString) {
 				vizParameters = Object.fromEntries(paramString.split("&").map((d) => d.split("=").map((dd) => decodeURIComponent(dd))));
 			}
-
-			const { typology, dateFrom, dateTo, selectedRegion, selectedProvince, selectedMunicipality } = vizParameters;
+			const { typology, dateFrom, dateTo, selectedRegion, selectedProvince, selectedMunicipality, filterDataParams } = vizParameters;
 
 			if (typology) {
-				const correspondingType = fetchedTypologiesList.find((d) => d.label === typology);
+				const correspondingType = fetchedTypologiesList.find((d) => d.id == typology);
 				setTypology(correspondingType);
 			}
 			if (dateFrom) setDateFrom(dateFrom);
 			if (dateTo) setDateTo(dateTo);
+			if (filterDataParams) {
+				const decoded_filterData = filterDataParams
+					.split(";")
+					.map((d) => d.split(":"))
+					.map((d) => ({ label: d[0], active: d[1] === "true" }));
+				setFilterData(decoded_filterData);
+			}
 
 			if (selectedRegion) {
 				const regionItem = _regionsList.find((d) => d.label === selectedRegion);
 				setSelectedRegion(regionItem);
-				d3.json(`https://wlm.inmagik.com/api/region/${regionItem.code}/areas/?format=json`).then((geographiesProvinces) => {
+				d3.json(apiBaseUrl + `/api/region/${regionItem.code}/areas/?format=json`, {
+					cache: cacheMode,
+				}).then((geographiesProvinces) => {
 					setLvl6(geographiesProvinces.features);
 					const _provincesList = geographiesProvinces.features.map((d) => ({
 						label: d.properties.name,
@@ -88,7 +100,9 @@ export default function VisualizationController() {
 						const provinceItem = _provincesList.find((d) => d.label === selectedProvince);
 						setSelectedProvince(provinceItem);
 
-						d3.json(`https://wlm.inmagik.com/api/province/${provinceItem.code}/areas/?format=json`).then((geographiesMunicipalities) => {
+						d3.json(apiBaseUrl + `/api/province/${provinceItem.code}/areas/?format=json`, {
+							cache: cacheMode,
+						}).then((geographiesMunicipalities) => {
 							setLvl8(geographiesMunicipalities.features);
 							const _municipalitiesList = geographiesMunicipalities.features.map((d) => ({
 								label: d.properties.name,
@@ -116,7 +130,7 @@ export default function VisualizationController() {
 
 	useEffect(() => {
 		if (selectedRegion && !loading) {
-			d3.json(`https://wlm.inmagik.com/api/region/${selectedRegion.code}/areas/?format=json`).then((geographiesProvinces) => {
+			d3.json(apiBaseUrl + `/api/region/${selectedRegion.code}/areas/?format=json`).then((geographiesProvinces) => {
 				setLvl6(geographiesProvinces.features);
 				const _provincesList = geographiesProvinces.features.map((d) => ({
 					label: d.properties.name,
@@ -132,7 +146,7 @@ export default function VisualizationController() {
 
 	useEffect(() => {
 		if (selectedProvince && !loading) {
-			d3.json(`https://wlm.inmagik.com/api/province/${selectedProvince.code}/areas/?format=json`).then((geographiesMunicipalities) => {
+			d3.json(apiBaseUrl + `/api/province/${selectedProvince.code}/areas/?format=json`).then((geographiesMunicipalities) => {
 				setLvl8(geographiesMunicipalities.features);
 				const _municipalitiesList = geographiesMunicipalities.features.map((d) => ({
 					label: d.properties.name,
@@ -148,9 +162,11 @@ export default function VisualizationController() {
 
 	useEffect(() => {
 		if (parentData) {
-			const _filterData = parentData.extent.map((d) => {
+			const _filterData = parentData.extent.reverse().map((d) => {
 				let active = true;
-				if (filterData) active = filterData.find((f) => f.label === d.label).active;
+				if (filterData) {
+					active = filterData.find((f) => f.label === d.label).active;
+				}
 				return {
 					label: d.label,
 					active: active,
@@ -177,7 +193,7 @@ export default function VisualizationController() {
 			parametersFetchData.selectedMunicipality = selectedMunicipality;
 		}
 		if (typology) {
-			parameters.typology = encodeURIComponent(typology.label);
+			parameters.typology = encodeURIComponent(typology.id);
 			parametersFetchData.typology = typology;
 		}
 		if (dateFrom) {
@@ -199,6 +215,24 @@ export default function VisualizationController() {
 			fetchData(parametersFetchData, setVentagli, setParentData, setIsFetching);
 		}
 	}, [selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo, loading]);
+
+	useEffect(() => {
+		if (filterData) {
+			const temp_obj = Object.fromEntries(
+				location.hash
+					.split("#")[1]
+					.split("&")
+					.map((d) => d.split("=").map((dd) => decodeURIComponent(dd)))
+			);
+			temp_obj.filterDataParams = encodeURIComponent(filterData.map((d) => d.label + ":" + d.active.toString()).join(";"));
+			const temp = [];
+			for (const key in temp_obj) {
+				temp.push(key + "=" + temp_obj[key]);
+			}
+			const newHashPath = "#" + temp.join("&");
+			location.replace(newHashPath);
+		}
+	}, [filterData]);
 
 	const filteredVentagli = useMemo(() => {
 		if (filterData && ventagli) {
@@ -272,7 +306,7 @@ export default function VisualizationController() {
 								isFetching={isFetching}
 							/>
 						)}
-						{loading && <Fetching />}
+						{(loading || isFetching) && <Fetching />}
 					</>
 				</Col>
 			</Row>

@@ -105,7 +105,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("font-size", 10)
 		.attr("class", "label")
 		.attr("y", 1 * 12)
-		.text((d) => d.label.slice(0, 7))
+		.text((d) => d.label || "Unknown Region")
 		.raise();
 
 	let g_ticks = ventaglio.select(".ticks");

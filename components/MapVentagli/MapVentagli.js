@@ -3,7 +3,6 @@ import styles from "./MapVentagli.module.scss";
 import classNames from "classnames";
 import { useRef, useEffect, useMemo } from "react";
 import { initialize, update } from "./MapVentagli.render";
-import { Fetching } from "../Fetching";
 
 export default function MapVentagli({
 	ventagli,
@@ -74,7 +73,6 @@ export default function MapVentagli({
 					<stop offset="100%" stopColor="rgb(255,255,255)" stopOpacity="0" />
 				</linearGradient>
 			</svg>
-			{(isFetching) && <Fetching />}
 		</div>
 	);
 }
