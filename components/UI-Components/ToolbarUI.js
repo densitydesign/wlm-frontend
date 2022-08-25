@@ -23,9 +23,11 @@ export default function ToolbarUI({
 	typology,
 	setTypology,
 
+	minDate,
 	dateFrom,
 	setDateFrom,
 
+	maxDate,
 	dateTo,
 	setDateTo,
 
@@ -63,8 +65,8 @@ export default function ToolbarUI({
 				disabled={municipalities.disabled}
 			/>
 			<DropdownUI label="Type" items={typologiesList} value={typology} setValue={setTypology} disabled={!typologiesList} />
-			<DatePickerUI label="From" value={dateFrom} transferSelection={setDateFrom} />
-			<DatePickerUI label="To" value={dateTo} transferSelection={setDateTo} />
+			<DatePickerUI label="From" min={minDate} max={maxDate} value={dateFrom} transferSelection={setDateFrom} />
+			<DatePickerUI label="To" min={minDate} max={maxDate} value={dateTo} transferSelection={setDateTo} />
 			{parentData && filterData && <WhatsNew data={parentData} filterData={filterData} setFilterData={setFilterData} />}
 			<h6>Timeline</h6>
 			<div className={classNames("d-flex", "justify-content-between")}>

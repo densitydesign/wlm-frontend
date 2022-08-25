@@ -1,7 +1,7 @@
 import { Form } from "react-bootstrap";
 import classNames from "classnames";
 
-export default function DatePickerUI({ label, value, transferSelection }) {
+export default function DatePickerUI({ label, value, transferSelection, min, max }) {
 	return (
 		<Form.Group
 			controlId="date"
@@ -13,6 +13,8 @@ export default function DatePickerUI({ label, value, transferSelection }) {
 				className={classNames({ "ms-1": label })}
 				type="date"
 				name="date"
+				min={min}
+				max={max}
 				placeholder="Pick a date"
 				value={value}
 				size="sm"

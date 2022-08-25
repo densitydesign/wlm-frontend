@@ -1,20 +1,13 @@
 import styles from "./VisualizationController.module.scss";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import * as d3 from "d3";
-// import TestVentagli from "../test-ventagli/TestVentagli";
 import { Col, Container, Row } from "react-bootstrap";
 import classNames from "classnames";
 import { ToolbarUI } from "../UI-Components";
 import MapVentagli from "../MapVentagli/MapVentagli";
 import { Fetching } from "../Fetching";
-// import { feature } from "topojson-client";
 import { apiBaseUrl, fetchData, cacheMode } from "../../utils/fetchData.utils";
-
-// let _regionsList = [],
-// 	_provincesList = [],
-// 	_municipalitiesList = [];
-// const _typologiesList = [{ label: "All monuments" }, { label: "Fortificazioni" }, { label: "Quasi tutti" }, { label: "Una piccola parte" }];
 
 export default function VisualizationController() {
 	const { asPath } = useRouter();
@@ -39,21 +32,32 @@ export default function VisualizationController() {
 	const [selectedProvince, setSelectedProvince] = useState();
 	const [selectedMunicipality, setSelectedMunicipality] = useState();
 	const [typology, setTypology] = useState();
-	const [dateFrom, setDateFrom] = useState("2012-09-01");
-	const [dateTo, setDateTo] = useState("2022-09-01");
 
-	// Decode URL, load geographies and themes (also named typologies)
+	const [minDate, setMinDate] = useState("2012-01-01");
+	const [dateFrom, setDateFrom] = useState(minDate);
+	const [maxDate, setMaxDate] = useState();
+	const [dateTo, setDateTo] = useState(maxDate);
+
+	// Decode URL, load geographies and domain (themes + max date)
 	useEffect(() => {
 		const requests = [
 			d3.json(apiBaseUrl + "/api/region/geo/?format=json", {
 				cache: cacheMode,
 			}),
-			d3.json(apiBaseUrl + "/api/domain/"),
+			d3.json(apiBaseUrl + "/api/domain/?format=json", {
+				cache: cacheMode,
+			}),
 		];
 		Promise.all(requests).then(([geographiesRegions, domain]) => {
+			// set max date
+			setMaxDate(domain.last_snapshot);
+			setDateTo(domain.last_snapshot);
+
+			// set themes list (typologies)
 			const fetchedTypologiesList = domain.themes;
 			setTypologiesList(fetchedTypologiesList);
 
+			// set lvl4 (regions)
 			setLvl4(geographiesRegions.features);
 			const _regionsList = geographiesRegions.features.map((d) => ({
 				label: d.properties.name,
@@ -61,7 +65,7 @@ export default function VisualizationController() {
 			}));
 			setRegionsList(_regionsList);
 
-			// Decode URL
+			// Decode URL before checking selected areas
 			const paramString = asPath.split("#")[1];
 			let vizParameters = {};
 			if (paramString) {
@@ -83,6 +87,7 @@ export default function VisualizationController() {
 				setFilterData(decoded_filterData);
 			}
 
+			// Check selected areas and set loading to false to trigger data fetching
 			if (selectedRegion) {
 				const regionItem = _regionsList.find((d) => d.label === selectedRegion);
 				setSelectedRegion(regionItem);
@@ -277,8 +282,10 @@ export default function VisualizationController() {
 						typologiesList={typologiesList}
 						typology={typology}
 						setTypology={setTypology}
+						minDate={minDate}
 						dateFrom={dateFrom}
 						setDateFrom={setDateFrom}
+						maxDate={maxDate}
 						dateTo={dateTo}
 						setDateTo={setDateTo}
 						parentData={parentData}
