@@ -28,5 +28,5 @@ export default function DatePickerUI({ label, value, transferSelection, min, max
 DatePickerUI.defaultProps = {
 	value: "2012-01-01",
 	transferSelection: (value) =>
-		console.warn("No function specified for rtansferring the selection to parent. Value:", value),
+		console.warn("No function specified for transferring the selection to parent. Value:", value),
 };
