@@ -5,9 +5,9 @@ import * as d3 from "d3";
 import { Col, Container, Row } from "react-bootstrap";
 import classNames from "classnames";
 import { ToolbarUI } from "../UI-Components";
-import MapVentagli from "../MapVentagli/MapVentagli";
+import { MapVentagli, PlaceholderMapVentagli } from "../MapVentagli";
 import { Fetching } from "../Fetching";
-import { apiBaseUrl, fetchData, cacheMode } from "../../utils/fetchData.utils";
+import { apiBaseUrl, fetchData, dataCacheMode, geoCacheMode } from "../../utils/fetchData.utils";
 import LicenseAttribution from "../LicenseAttribution/LicenseAttribution";
 
 export default function VisualizationController() {
@@ -44,10 +44,10 @@ export default function VisualizationController() {
 	useEffect(() => {
 		const requests = [
 			d3.json(apiBaseUrl + "/api/region/geo/?format=json", {
-				cache: cacheMode,
+				cache: geoCacheMode,
 			}),
 			d3.json(apiBaseUrl + "/api/domain/?format=json", {
-				cache: cacheMode,
+				cache: dataCacheMode,
 			}),
 		];
 		Promise.all(requests).then(([geographiesRegions, domain]) => {
@@ -101,7 +101,7 @@ export default function VisualizationController() {
 				const regionItem = _regionsList.find((d) => d.label === selectedRegion);
 				setSelectedRegion(regionItem);
 				d3.json(apiBaseUrl + `/api/region/${regionItem.code}/areas/?format=json`, {
-					cache: cacheMode,
+					cache: geoCacheMode,
 				}).then((geographiesProvinces) => {
 					setLvl6(geographiesProvinces.features);
 					const _provincesList = geographiesProvinces.features.map((d) => ({
@@ -115,7 +115,7 @@ export default function VisualizationController() {
 						setSelectedProvince(provinceItem);
 
 						d3.json(apiBaseUrl + `/api/province/${provinceItem.code}/areas/?format=json`, {
-							cache: cacheMode,
+							cache: geoCacheMode,
 						}).then((geographiesMunicipalities) => {
 							setLvl8(geographiesMunicipalities.features);
 							const _municipalitiesList = geographiesMunicipalities.features.map((d) => ({
@@ -176,7 +176,7 @@ export default function VisualizationController() {
 
 	useEffect(() => {
 		if (parentData) {
-			const _filterData = parentData.extent.reverse().map((d) => {
+			const _filterData = parentData.extent.map((d) => {
 				let active = true;
 				if (filterData) {
 					active = filterData.find((f) => f.label === d.label).active;
@@ -277,7 +277,7 @@ export default function VisualizationController() {
 	return (
 		<Container className={classNames(styles.vizController)} fluid>
 			<Row className={classNames("h-100")}>
-				<Col className={classNames("h-100", "pe-0")} md={3} xl={3}>
+				<Col className={classNames("h-100", "pe-sm-3", "pe-md-0")} lg={3}>
 					<ToolbarUI
 						regions={{ items: regionsList, disabled: !regionsList.length }}
 						selectedRegion={selectedRegion}
@@ -323,6 +323,7 @@ export default function VisualizationController() {
 								isFetching={isFetching}
 							/>
 						)}
+						{!(!loading && filteredVentagli) && <PlaceholderMapVentagli />}
 						<LicenseAttribution />
 						{(loading || isFetching) && <Fetching />}
 					</>

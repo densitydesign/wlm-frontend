@@ -2,7 +2,8 @@ const { DateTime, Interval } = require("luxon");
 import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
-const cacheMode = "force-cache";
+const dataCacheMode = "force-cache"//"default";
+const geoCacheMode = "force-cache";
 
 const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue, setIsFetching, setTimeStep) => {
 	setIsFetching(true);
@@ -12,23 +13,18 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 
 	if (selectedMunicipality) {
 		// in municipality
-		// console.log("municipality", selectedMunicipality.label, "aggregated values");
 		dataUrl += `/api/municipality/${selectedMunicipality.code}/wlm/`;
 		parentDataUrl += `/api/municipality/${selectedMunicipality.code}/wlm/`;
 	} else if (selectedProvince) {
 		// municipalities in province
-		// console.log("municipalities in", selectedProvince.label, "province");
 		dataUrl += `/api/province/${selectedProvince.code}/wlm-areas/`;
 		parentDataUrl += `/api/province/${selectedProvince.code}/wlm/`;
 	} else if (selectedRegion) {
 		// provinces in region
-		// console.log("provinces in", selectedRegion.label, "region");
 		dataUrl += `/api/region/${selectedRegion.code}/wlm-areas/`;
 		parentDataUrl += `/api/region/${selectedRegion.code}/wlm/`;
 	} else {
 		// no area selected, do all italian regions
-		console.log("All Italian regions");
-		// dataUrl = undefined;
 		dataUrl += `/api/region/wlm-regions/`;
 		parentDataUrl += `/api/region/wlm-aggregate`;
 	}
@@ -80,12 +76,13 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 
 		Promise.all([
 			json(dataUrl, {
-				cache: cacheMode,
+				cache: dataCacheMode,
 			}),
 			json(parentDataUrl, {
-				cache: cacheMode,
+				cache: dataCacheMode,
 			}),
 		]).then(([data, parentData]) => {
+			console.log(data, parentData)
 			// filter data if later than date_to
 			// data.data.forEach((area) => {
 			// 	const newHistory = area.history.filter((h) => {
@@ -108,4 +105,4 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 	}
 };
 
-export { apiBaseUrl, fetchData, cacheMode };
+export { apiBaseUrl, fetchData, dataCacheMode, geoCacheMode };

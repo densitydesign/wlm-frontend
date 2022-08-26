@@ -4,6 +4,7 @@ const colors = {
 	blueJeans: "#0978AB",
 	lightBlue: "#DDF7FF",
 	terrain: "#ECE5E0",
+	terrainDark: "#A4988F",
 	white: "#ffffff",
 	onWIki: "#C3C5C3",
 	inContest: "#F8FF0E",

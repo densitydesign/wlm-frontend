@@ -1,6 +1,6 @@
 .map {
 	--margin-top: calc(var(--bs-gutter-x) * 0.5);
-	height: calc(100% - (var(--margin-top) * 2));
+	height: calc((100% - 1rem) - (var(--margin-top) * 3));
 	margin-top: var(--margin-top);
 
 	svg {
@@ -39,4 +39,8 @@
 			}
 		}
 	}
+}
+
+.placeholder {
+	background-color: var(--bs-lightBlue);
 }

@@ -1,7 +1,6 @@
-import * as d3 from "d3";
 import styles from "./MapVentagli.module.scss";
 import classNames from "classnames";
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect } from "react";
 import { initialize, update } from "./MapVentagli.render";
 
 export default function MapVentagli({
@@ -37,7 +36,7 @@ export default function MapVentagli({
 			setSelectedMunicipality,
 			typology,
 			dateFrom,
-			dateTo
+			dateTo,
 		};
 		// console.log("Mounted", data_for_viz);
 		initialize(svgEl.current, data_for_viz);
@@ -61,7 +60,7 @@ export default function MapVentagli({
 			dateTo,
 		};
 		// console.log("update",data_for_viz);
-		update(data_for_viz);
+		// update(data_for_viz);
 	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality]);
 
 	return (

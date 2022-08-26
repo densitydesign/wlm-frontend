@@ -1,0 +1,21 @@
+.licenseAttribution {
+	--margin-top: calc(var(--bs-gutter-x) * 0.25);
+	--margin-bottom: calc(var(--bs-gutter-x) * 0.25);
+	height: 1.5rem;
+	margin: 0;
+	margin-top: var(--margin-top);
+	margin-bottom: var(--margin-bottom);
+
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-content: space-between;
+	justify-content: center;
+	align-items: center;
+}
+
+@media only screen and (max-width: 767px) {
+	.licenseAttribution {
+		background-color: lightblue;
+	}
+}

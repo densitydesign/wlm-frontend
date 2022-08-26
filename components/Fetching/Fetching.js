@@ -8,9 +8,9 @@ export default function Fetching() {
 			className={classNames(
 				styles.fetching,
 				"position-absolute",
-				"top-50",
-				"start-50",
-				"translate-middle",
+				// "top-50",
+				// "start-50",
+				// "translate-middle",
 				"d-flex",
 				"flex-column",
 				"justify-content-center",
