@@ -5,6 +5,9 @@ import styles from "./UI-Components.module.scss";
 import NavMenu from "../NavMenu";
 import WhatsNew from "../WhatsNew";
 import AreaChart from "../AreaChart";
+import { useState } from "react";
+import { Modal } from "react-bootstrap";
+import ExportTools from "../ExportTools/ExportTools";
 
 export default function ToolbarUI({
 	regions,
@@ -36,7 +39,12 @@ export default function ToolbarUI({
 	parentData,
 	filterData,
 	setFilterData,
+
+	mapData,
 }) {
+	const [show, setShow] = useState(false);
+	const handleClose = () => setShow(false);
+	const handleShow = () => setShow(true);
 	return (
 		<div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
 			<NavMenu />
@@ -88,7 +96,10 @@ export default function ToolbarUI({
 					]}
 					disabled={true}
 				/>
-				<ButtonUI label="Save" content={<BsDownload />} disabled={true} />
+				<ButtonUI label="Save" content={<BsDownload />} onClickAction={() => setShow(true)} disabled={false} />
+				<Modal size="xl" centered show={show} onHide={handleClose}>
+					<ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
+				</Modal>
 			</div>
 			{parentData && filterData && <AreaChart data={parentData} filterData={filterData} />}
 		</div>

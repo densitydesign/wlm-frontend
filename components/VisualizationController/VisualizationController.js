@@ -274,6 +274,23 @@ export default function VisualizationController() {
 		}
 	}, [filterData, ventagli]);
 
+	const mapData = {
+		ventagli: filteredVentagli,
+		lvl4: lvl4,
+		lvl6: lvl6,
+		lvl8: lvl8,
+		selectedRegion: selectedRegion,
+		setSelectedRegion: setSelectedRegion,
+		selectedProvince: selectedProvince,
+		setSelectedProvince: setSelectedProvince,
+		selectedMunicipality: selectedMunicipality,
+		setSelectedMunicipality: setSelectedMunicipality,
+		typology: typology,
+		dateFrom: dateFrom,
+		dateTo: dateTo,
+		isFetching: isFetching,
+	};
+
 	return (
 		<Container className={classNames(styles.vizController)} fluid>
 			<Row className={classNames("h-100")}>
@@ -301,26 +318,28 @@ export default function VisualizationController() {
 						parentData={parentData}
 						filterData={filterData}
 						setFilterData={setFilterData}
+						mapData={mapData}
 					/>
 				</Col>
 				<Col className={classNames("h-100", "position-relative")}>
 					<>
 						{!loading && filteredVentagli && (
 							<MapVentagli
-								ventagli={filteredVentagli}
-								lvl4={lvl4}
-								lvl6={lvl6}
-								lvl8={lvl8}
-								selectedRegion={selectedRegion}
-								setSelectedRegion={setSelectedRegion}
-								selectedProvince={selectedProvince}
-								setSelectedProvince={setSelectedProvince}
-								selectedMunicipality={selectedMunicipality}
-								setSelectedMunicipality={setSelectedMunicipality}
-								typology={typology}
-								dateFrom={dateFrom}
-								dateTo={dateTo}
-								isFetching={isFetching}
+								// ventagli={filteredVentagli}
+								// lvl4={lvl4}
+								// lvl6={lvl6}
+								// lvl8={lvl8}
+								// selectedRegion={selectedRegion}
+								// setSelectedRegion={setSelectedRegion}
+								// selectedProvince={selectedProvince}
+								// setSelectedProvince={setSelectedProvince}
+								// selectedMunicipality={selectedMunicipality}
+								// setSelectedMunicipality={setSelectedMunicipality}
+								// typology={typology}
+								// dateFrom={dateFrom}
+								// dateTo={dateTo}
+								// isFetching={isFetching}
+								{...mapData}
 							/>
 						)}
 						{!(!loading && filteredVentagli) && <PlaceholderMapVentagli />}

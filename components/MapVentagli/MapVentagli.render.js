@@ -55,6 +55,12 @@ const initialize = (element, viz_data) => {
 	width = bbox.width;
 	height = bbox.height;
 
+	if (viz_data.viewbox) {
+		width = viz_data.viewbox.width;
+		height = viz_data.viewbox.height;
+		svg.attr("viewBox", `0 0 ${viz_data.viewbox.width} ${viz_data.viewbox.height}`);
+	}
+
 	bgRect = svg.select(".bgRect");
 	if (bgRect.empty()) {
 		bgRect = svg.append("rect").classed("bgRect", true);
@@ -130,6 +136,12 @@ const update = (viz_data) => {
 		setSelectedProvince,
 		setSelectedMunicipality,
 	} = viz_data;
+
+	if (viz_data.viewbox) {
+		width = viz_data.viewbox.width;
+		height = viz_data.viewbox.height;
+		svg.attr("viewBox", `0 0 ${viz_data.viewbox.width} ${viz_data.viewbox.height}`);
+	}
 
 	scaleRadius
 		.exponent(1 / 2)
@@ -230,7 +242,10 @@ const update = (viz_data) => {
 	} else {
 		geoFeaturesArr = lvl4;
 		mode = undefined; // italy
-		// zoomToArea(undefined);
+		region.attr("opacity", 1);
+		province.attr("opacity", 1);
+		municipality.attr("opacity", 1);
+		zoomToArea(undefined);
 	}
 
 	data = compileVentagliData(data, geoFeaturesArr);
@@ -273,7 +288,7 @@ const update = (viz_data) => {
 
 	function zoomToArea(d) {
 		if (!d) {
-			console.log("zoom to italy")
+			console.log("zoom to italy");
 			svg.call(zoom.transform, d3.zoomIdentity);
 		} else {
 			const [[x0, y0], [x1, y1]] = render.bounds(d);

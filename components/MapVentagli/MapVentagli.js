@@ -17,6 +17,7 @@ export default function MapVentagli({
 	typology,
 	dateFrom,
 	dateTo,
+	viewbox
 }) {
 	const svgEl = useRef();
 	const { data, extent } = ventagli;
@@ -37,6 +38,7 @@ export default function MapVentagli({
 			typology,
 			dateFrom,
 			dateTo,
+			viewbox
 		};
 		// console.log("Mounted", data_for_viz);
 		initialize(svgEl.current, data_for_viz);
@@ -58,10 +60,11 @@ export default function MapVentagli({
 			typology,
 			dateFrom,
 			dateTo,
+			viewbox
 		};
 		// console.log("update",data_for_viz);
-		// update(data_for_viz);
-	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality]);
+		update(data_for_viz);
+	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality, viewbox]);
 
 	return (
 		<div className={classNames(styles.map, "position-relative")}>

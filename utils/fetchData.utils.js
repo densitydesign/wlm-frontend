@@ -82,7 +82,7 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 				cache: dataCacheMode,
 			}),
 		]).then(([data, parentData]) => {
-			console.log(data, parentData)
+			// console.log(data, parentData)
 			// filter data if later than date_to
 			// data.data.forEach((area) => {
 			// 	const newHistory = area.history.filter((h) => {
