@@ -3,6 +3,9 @@
 		background-color: darkgoldenrod;
 		display: block;
     position: relative;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 30%);
+    border-radius: 2px;
+    overflow: hidden;
 		&.mobile {
       width: calc(400px * 0.75);
       height: calc(500px * 0.75);

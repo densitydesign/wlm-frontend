@@ -4,6 +4,7 @@ import { BsDownload, BsFillPlayFill, BsArrowRepeat, BsXLg as CloseIcon, BsDispla
 import classNames from "classnames";
 import { MapVentagli } from "../MapVentagli";
 import { useEffect, useState } from "react";
+import Head from "next/head";
 export default function ExportTools({ closeFunct, mapData }) {
 	const dimensions = {
 		mobile: {
@@ -19,37 +20,56 @@ export default function ExportTools({ closeFunct, mapData }) {
 	const [target, setTarget] = useState("mobile");
 	const [viewbox, setViewBox] = useState(dimensions["mobile"]);
 
-	return (
-		<div className={classNames(styles.exportTools, "d-flex", "flex-column", "align-items-center", "justify-content-between", "p-3")}>
-			<div className={classNames(styles.preview, { [styles.computer]: target === "computer" }, { [styles.mobile]: target === "mobile" }, "mb-3")}>
-				<MapVentagli {...mapData} viewbox={viewbox} />
-			</div>
+	const downloadSvg = () => {
+		console.log("download svg")
+		const filename = "WLM.svg"
+		const text = document.querySelector(`.${styles.exportTools} svg`).outerHTML
 
-			<div className={classNames("w-100", "d-flex", "flex-row", "justify-content-between")}>
-				<span className={classNames("d-flex", "flex-row", "justify-content-center")} style={{ flex: "1 1 0px" }}>
-					<ButtonUI content={<CloseIcon />} onClickAction={closeFunct} />
-					<span>Export snapshot</span>
-				</span>
-				<span className={classNames("d-flex", "flex-row", "justify-content-center")} style={{ flex: "1 1 0px" }}>
-					<ButtonUI
-						content={<BsPhone />}
-						onClickAction={() => {
-							setViewBox(dimensions["mobile"]);
-							setTarget("mobile");
-						}}
-					/>
-					<ButtonUI
-						content={<BsDisplay />}
-						onClickAction={() => {
-							setViewBox(dimensions["computer"]);
-							setTarget("computer");
-						}}
-					/>
-				</span>
-				<span className={classNames("d-flex", "flex-row", "justify-content-center")} style={{ flex: "1 1 0px" }}>
-					Save <ButtonUI content={<CloseIcon />} onClickAction={closeFunct} disabled />
-				</span>
+		var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/svg;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+    
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    
+    element.click();
+    
+    document.body.removeChild(element);
+	};
+
+	return (
+		<>
+			<div className={classNames(styles.exportTools, "d-flex", "flex-column", "align-items-center", "justify-content-between", "p-3")}>
+				<div className={classNames(styles.preview, { [styles.computer]: target === "computer" }, { [styles.mobile]: target === "mobile" }, "mb-3")}>
+					<MapVentagli {...mapData} viewbox={viewbox} />
+				</div>
+
+				<div className={classNames("w-100", "d-flex", "flex-row", "justify-content-between")}>
+					<span className={classNames("d-flex", "flex-row", "justify-content-center")} style={{ flex: "1 1 0px" }}>
+						<ButtonUI content={<CloseIcon />} onClickAction={closeFunct} />
+						<span>Export snapshot</span>
+					</span>
+					<span className={classNames("d-flex", "flex-row", "justify-content-center")} style={{ flex: "1 1 0px" }}>
+						<ButtonUI
+							content={<BsPhone />}
+							onClickAction={() => {
+								setViewBox(dimensions["mobile"]);
+								setTarget("mobile");
+							}}
+						/>
+						<ButtonUI
+							content={<BsDisplay />}
+							onClickAction={() => {
+								setViewBox(dimensions["computer"]);
+								setTarget("computer");
+							}}
+						/>
+					</span>
+					<span className={classNames("d-flex", "flex-row", "justify-content-center")} style={{ flex: "1 1 0px" }}>
+						Save <ButtonUI content={<CloseIcon />} onClickAction={downloadSvg} />
+					</span>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
