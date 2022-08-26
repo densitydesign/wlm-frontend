@@ -66,7 +66,7 @@ export default function ExportTools({ closeFunct, mapData }) {
 						/>
 					</span>
 					<span className={classNames("d-flex", "flex-row", "justify-content-center")} style={{ flex: "1 1 0px" }}>
-						Save <ButtonUI content={<CloseIcon />} onClickAction={downloadSvg} />
+						<ButtonUI label="Save SVG" content={<BsDownload />} onClickAction={downloadSvg} />
 					</span>
 				</div>
 			</div>
