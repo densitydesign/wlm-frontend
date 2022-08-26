@@ -1,6 +1,10 @@
 @import "./custom.bootstrap.scss";
 @import "./variables.scss";
 
+:root {
+	--bs-font-sans-serif: "Noto Sans", sans-serif;
+}
+
 html {
 	--stroke-width: 1;
 	--label-size: 8;
