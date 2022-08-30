@@ -40,7 +40,7 @@ let svg,
 let _x,
 	_y,
 	_k = 1,
-	kLimit = 35,
+	kLimit = 1,
 	mode = undefined,
 	labelSize = 10,
 	axisLabel = 7;
@@ -211,8 +211,10 @@ const update = (viz_data) => {
 
 	let geoFeaturesArr;
 	if (selectedMunicipality) {
+		console.log("a municipality");
 		geoFeaturesArr = lvl8;
 		mode = "municipality";
+		kLimit = 35;
 		region.attr("opacity", 0.5);
 		province.attr("opacity", 0.5);
 		municipality
@@ -221,8 +223,10 @@ const update = (viz_data) => {
 			.attr("display", "block")
 			.each(zoomToArea);
 	} else if (selectedProvince) {
+		console.log("a province");
 		geoFeaturesArr = lvl8;
 		mode = "province";
+		kLimit = 35;
 		region.attr("opacity", 0.5);
 		province
 			.attr("opacity", 0.5)
@@ -231,8 +235,10 @@ const update = (viz_data) => {
 			.each(zoomToArea);
 		municipality.attr("display", "block");
 	} else if (selectedRegion) {
+		console.log("a region");
 		geoFeaturesArr = lvl6;
 		mode = "region";
+		kLimit = 35;
 		region
 			.attr("opacity", 0.5)
 			.filter((d) => d.properties.code === selectedRegion.code)
@@ -240,8 +246,10 @@ const update = (viz_data) => {
 			.each(zoomToArea);
 		municipality.attr("display", "block");
 	} else {
+		console.log("all Italy");
 		geoFeaturesArr = lvl4;
 		mode = undefined; // italy
+		kLimit = 1.3;
 		region.attr("opacity", 1);
 		province.attr("opacity", 1);
 		municipality.attr("opacity", 1);
@@ -288,7 +296,7 @@ const update = (viz_data) => {
 
 	function zoomToArea(d) {
 		if (!d) {
-			console.log("zoom to italy");
+			// console.log("zoom to italy");
 			svg.call(zoom.transform, d3.zoomIdentity);
 		} else {
 			const [[x0, y0], [x1, y1]] = render.bounds(d);
@@ -307,6 +315,7 @@ const update = (viz_data) => {
 };
 
 function zoomed(transform) {
+	console.log(transform.k, kLimit);
 	g.attr("transform", transform);
 	const { x, y, k } = transform;
 	_x = x;
