@@ -249,7 +249,7 @@ const update = (viz_data) => {
 		console.log("all Italy");
 		geoFeaturesArr = lvl4;
 		mode = undefined; // italy
-		kLimit = 1.3;
+		kLimit = 1.4;
 		region.attr("opacity", 1);
 		province.attr("opacity", 1);
 		municipality.attr("opacity", 1);
@@ -315,7 +315,7 @@ const update = (viz_data) => {
 };
 
 function zoomed(transform) {
-	console.log(transform.k, kLimit);
+	// console.log(transform.k, kLimit);
 	g.attr("transform", transform);
 	const { x, y, k } = transform;
 	_x = x;

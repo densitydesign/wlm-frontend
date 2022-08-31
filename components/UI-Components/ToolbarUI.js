@@ -43,8 +43,6 @@ export default function ToolbarUI({
 	mapData,
 }) {
 	const [show, setShow] = useState(false);
-	const handleClose = () => setShow(false);
-	const handleShow = () => setShow(true);
 	return (
 		<div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
 			<NavMenu />
@@ -97,7 +95,7 @@ export default function ToolbarUI({
 					disabled={true}
 				/>
 				<ButtonUI label="Save" content={<BsDownload />} onClickAction={() => setShow(true)} disabled={false} />
-				<Modal size="xl" centered show={show} onHide={handleClose}>
+				<Modal size="xl" centered show={show} onHide={() => setShow(false)}>
 					<ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
 				</Modal>
 			</div>

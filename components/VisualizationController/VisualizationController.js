@@ -139,6 +139,8 @@ export default function VisualizationController() {
 			} else {
 				setLoading(false);
 			}
+		}).catch((error) => {
+			console.error('Error:', error);
 		});
 	}, []);
 
