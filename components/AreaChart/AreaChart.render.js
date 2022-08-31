@@ -112,7 +112,7 @@ const update = (data, filterData) => {
 		.x((d) => timeScale(d.data.date))
 		.y0((d) => quantityScale(d[0]))
 		.y1((d) => quantityScale(d[1]))
-		.curve(d3.curveStepAfter);
+		.curve(d3.curveStepBefore);
 
 	areaChart
 		.selectAll(".area")

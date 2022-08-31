@@ -1,6 +1,6 @@
 import styles from "./AreaChart.module.scss";
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { initialize as init_areaChart, update as update_areaChart } from "./AreaChart.render";
 
 export default function AreaChart({ data, filterData }) {
