@@ -17,7 +17,7 @@ export default function MapVentagli({
 	typology,
 	dateFrom,
 	dateTo,
-	viewbox
+	viewbox,
 }) {
 	const svgEl = useRef();
 	const { data, extent } = ventagli;
@@ -38,7 +38,7 @@ export default function MapVentagli({
 			typology,
 			dateFrom,
 			dateTo,
-			viewbox
+			viewbox,
 		};
 		// console.log("Mounted", data_for_viz);
 		initialize(svgEl.current, data_for_viz);
@@ -60,15 +60,20 @@ export default function MapVentagli({
 			typology,
 			dateFrom,
 			dateTo,
-			viewbox
+			viewbox,
 		};
 		// console.log("update",data_for_viz);
 		update(data_for_viz);
 	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality, viewbox]);
 
+	const svg_ns = {
+		"xmlns": "http://www.w3.org/2000/svg",
+		"xmlns:xlink": "http://www.w3.org/1999/xlink"
+	};
+
 	return (
 		<div className={classNames(styles.map, "position-relative")}>
-			<svg xmlns="http://www.w3.org/2000/svg" ref={svgEl}>
+			<svg {...svg_ns} ref={svgEl}>
 				<linearGradient id="tick-background" x1="50%" y1="0%" x2="50%" y2="100%">
 					<stop offset="0%" stopColor="rgb(255,255,255)" stopOpacity="0.75" />
 					<stop offset="100%" stopColor="rgb(255,255,255)" stopOpacity="0" />

@@ -42,8 +42,7 @@ let _x,
 	_k = 1,
 	kLimit = 1,
 	mode = undefined,
-	labelSize = 10,
-	axisLabel = 7;
+	initStrokeWidth = 1;
 
 const scaleRadius = d3.scalePow();
 
@@ -74,27 +73,27 @@ const initialize = (element, viz_data) => {
 
 	g_geographies = g.select(".g_geographies");
 	if (g_geographies.empty()) {
-		g_geographies = g.append("g").classed("g_geographies", true);
+		g_geographies = g.append("g").classed("g_geographies", true).attr("id", "map");
 	}
 
 	g_regions = g_geographies.select(".regions");
 	if (g_regions.empty()) {
-		g_regions = g_geographies.append("g").classed("regions", true);
+		g_regions = g_geographies.append("g").classed("regions", true).attr("id", "regions");
 	}
 
 	g_provinces = g_geographies.select(".provinces");
 	if (g_provinces.empty()) {
-		g_provinces = g_geographies.append("g").classed("provinces", true);
+		g_provinces = g_geographies.append("g").classed("provinces", true).attr("id", "provinces");
 	}
 
 	g_municipalities = g_geographies.select(".municipalities");
 	if (g_municipalities.empty()) {
-		g_municipalities = g_geographies.append("g").classed("municipalities", true);
+		g_municipalities = g_geographies.append("g").classed("municipalities", true).attr("id", "municipalities");
 	}
 
 	g_ventagli = g.select(".g_ventagli");
 	if (g_ventagli.empty()) {
-		g_ventagli = g.append("g").classed("g_ventagli", true);
+		g_ventagli = g.append("g").classed("g_ventagli", true).attr("id", "ventagli");
 	}
 	ventaglio = g_ventagli.selectAll(".ventaglio");
 
@@ -152,10 +151,11 @@ const update = (viz_data) => {
 		.selectAll(".region")
 		.data(lvl4, (d) => d.properties.code)
 		.join("path")
-		.attr("class", "region")
+		.attr("id", (d) => "region-" + d.properties.code)
+		.attr("class", "region area")
 		.attr("fill", colors.terrain)
 		.attr("stroke", colors.terrainDark)
-		.attr("stroke-width", "var(--stroke-width)")
+		.attr("stroke-width", initStrokeWidth + "px")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-linejoin", "round")
 		.attr("d", (d) => render(d))
@@ -172,10 +172,11 @@ const update = (viz_data) => {
 		.selectAll(".province")
 		.data(lvl6, (d) => d.properties.code)
 		.join("path")
-		.attr("class", "province")
+		.attr("class", "province area")
+		.attr("id", (d) => "province-" + d.properties.code)
 		.attr("fill", colors.terrain)
 		.attr("stroke", colors.terrainDark)
-		.attr("stroke-width", "var(--stroke-width)")
+		.attr("stroke-width", initStrokeWidth + "px")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-linejoin", "round")
 		.attr("d", (d) => render(d))
@@ -191,10 +192,11 @@ const update = (viz_data) => {
 		.selectAll(".municipality")
 		.data(lvl8, (d) => d.properties.code)
 		.join("path")
-		.attr("class", "municipality")
+		.attr("class", "municipality area")
+		.attr("id", (d) => "municipality-" + d.properties.code)
 		.attr("fill", colors.terrain)
 		.attr("stroke", colors.terrainDark)
-		.attr("stroke-width", "var(--stroke-width)")
+		.attr("stroke-width", initStrokeWidth + "px")
 		.attr("stroke-linecap", "round")
 		.attr("stroke-linejoin", "round")
 		.attr("d", (d) => render(d))
@@ -263,6 +265,7 @@ const update = (viz_data) => {
 		.data(data, (d) => d.code)
 		.join("g")
 		.attr("class", "ventaglio")
+		.attr("id", (d) => "ventaglio-" + d.code)
 		.classed("overlapping", false)
 		.on("click", (event, d) => {
 			if (mode === "municipality") {
@@ -322,8 +325,11 @@ function zoomed(transform) {
 	_y = y;
 	_k = k;
 
-	document.documentElement.style.setProperty("--stroke-width", 1 / k);
+	// document.documentElement.style.setProperty("--initial-stroke-width", 1 / k);
 	ventaglio.attr("transform", (d) => `translate(${d.x}, ${d.y}) scale(${1 / (k >= kLimit ? kLimit : k)})`);
+	region.attr("stroke-width", initStrokeWidth / k);
+	province.attr("stroke-width", initStrokeWidth / k);
+	municipality.attr("stroke-width", initStrokeWidth / k);
 	// simulation.force("collide").radius((d) => getRadius(d, 0.75) / _k);
 	// simulation.alpha(1);
 	// simulation.restart();

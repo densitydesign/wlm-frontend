@@ -15,6 +15,8 @@ const colors = {
 const collisionRadius = 70;
 const fanOpening = 150;
 let rotation;
+const initLabelSize = 8;
+const initAxisLabelSize = 7;
 
 const drawVentaglio = (datum, ventaglio) => {
 	// console.log("drawing ventagli", [datum], ventaglio);
@@ -102,8 +104,9 @@ const drawVentaglio = (datum, ventaglio) => {
 			(d) => d.code
 		)
 		.join("text")
+		.attr("transform", "translate(0,0) scale(1)")
 		.attr("text-anchor", "middle")
-		.attr("font-size", 10)
+		.attr("font-size", initLabelSize)
 		.attr("class", "label")
 		.attr("y", 1 * 12)
 		.text((d) => d.label || "Unknown Region")
@@ -152,8 +155,9 @@ const drawVentaglio = (datum, ventaglio) => {
 		.join("text")
 		.classed("axisLabel", true)
 		.attr("fill", "#aaa")
-		.attr("font-size", 7)
+		.attr("font-size", initAxisLabelSize)
 		.attr("font-weight", "bold")
+		.attr("transform", "translate(0,0) scale(1)")
 		.attr("x", (d) => {
 			const r = d.outerRadius;
 			let a = fanOpening / 2;
