@@ -11,6 +11,8 @@ let svg,
 	render,
 	zoom,
 	g,
+	g_europe,
+	europe,
 	g_geographies,
 	g_regions,
 	region,
@@ -73,6 +75,9 @@ const initialize = (element, viz_data) => {
 	}
 
 	g_geographies = g.select(".g_geographies");
+	g_europe = g.select(".g_europe")
+	g.append("g").classed("g_europe", true);
+
 	if (g_geographies.empty()) {
 		g_geographies = g.append("g").classed("g_geographies", true);
 	}

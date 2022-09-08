@@ -83,7 +83,7 @@ export default function ToolbarUI({
 			{parentData && filterData && <WhatsNew data={parentData} filterData={filterData} setFilterData={setFilterData} />}
 			<h6>Timeline</h6>
 			<div className={classNames("d-flex", "justify-content-between")}>
-				<ButtonGroupUI
+				{/* <ButtonGroupUI
 					label="Play"
 					items={[
 						{ content: <BsFillPlayFill />, onClickAction: (e) => console.log(e) },
@@ -93,7 +93,7 @@ export default function ToolbarUI({
 						{ content: <BsArrowRepeat />, onClickAction: (e) => console.log(e) },
 					]}
 					disabled={true}
-				/>
+				/> */}
 				<ButtonUI label="Save" content={<BsDownload />} onClickAction={() => setShow(true)} disabled={false} />
 				<Modal size="xl" centered show={show} onHide={() => setShow(false)}>
 					<ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
