@@ -48,21 +48,21 @@ export default function NavMenu() {
 				<Dropdown.Item href={`/`} onClick={(e) => forceNavigation(e, `/`)}>
 					Map
 				</Dropdown.Item>
-				<Link href={`/list`} passHref>
+				{/* <Link href={`/list`} passHref>
 					<Dropdown.Item>List</Dropdown.Item>
-				</Link>
-				<Link href={`/about`} passHref>
+				</Link> */}
+				{/* <Link href={`/about`} passHref>
 					<Dropdown.Item>About</Dropdown.Item>
-				</Link>
+				</Link> */}
 				<Dropdown.Item href="https://www.wikimedia.it/wiki-loves-monuments/">WikiLovesMonuments</Dropdown.Item>
 				<Dropdown.Header>Contests</Dropdown.Header>
 				<Dropdown.Item
-					href={`/#selectedRegion=Umbria&dateFrom=2022-09-01&dateTo=2022-09-30`}
-					onClick={(e) => forceNavigation(e, `/#selectedRegion=Umbria&dateFrom=2022-09-01&dateTo=2022-09-30`)}
+					href={`/#typology=3&dateFrom=2022-09-01&dateTo=2022-09-30`}
+					onClick={(e) => forceNavigation(e, `/#typology=3&dateFrom=2022-09-01&dateTo=2022-09-30`)}
 				>
 					2022: Castelli e fortificazioni
 				</Dropdown.Item>
-				<Dropdown.Item
+				{/* <Dropdown.Item
 					href={`/#selectedRegion=Umbria&dateFrom=2021-09-01&dateTo=2021-09-30`}
 					onClick={(e) => forceNavigation(e, `/#selectedRegion=Umbria&dateFrom=2021-09-01&dateTo=2021-09-30`)}
 				>
@@ -73,7 +73,7 @@ export default function NavMenu() {
 					onClick={(e) => forceNavigation(e, `/#selectedRegion=Umbria&dateFrom=2020-09-01&dateTo=2020-09-30`)}
 				>
 					Concorso 2020
-				</Dropdown.Item>
+				</Dropdown.Item> */}
 			</Dropdown.Menu>
 		</Dropdown>
 	);

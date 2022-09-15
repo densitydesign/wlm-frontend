@@ -2,7 +2,7 @@ import * as d3 from "d3";
 
 const colors = {
 	blueJeans: "#0978AB",
-	lightBlue: "#DDF7FF",
+	lightBlue: "#9AE5FC",
 	terrain: "#ECE5E0",
 	terrainDark: "#A4988F",
 	white: "#ffffff",
@@ -98,6 +98,24 @@ const drawVentaglio = (datum, ventaglio) => {
 		);
 
 	ventaglio
+		.selectAll(".labelOutline")
+		.data(
+			(d) => [d],
+			(d) => d.code
+		)
+		.join("text")
+		.attr("stroke", "#FFF")
+		.attr("stroke-width", 3)
+		.attr("stroke-linejoin", "round")
+		.attr("opacity", 0.8)
+		.attr("text-anchor", "middle")
+		.attr("font-size", 10)
+		.attr("class", "labelOutline")
+		.attr("y", 1 * 12)
+		.text((d) => d.label || "Unknown Region")
+		.raise();
+
+	ventaglio
 		.selectAll(".label")
 		.data(
 			(d) => [d],
@@ -147,17 +165,19 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("fill", "none");
 
 	tick
-		.selectAll(".axisLabel")
+		.selectAll(".axisOutline")
 		.data(
 			(d) => [d],
 			(d) => d
 		)
 		.join("text")
-		.classed("axisLabel", true)
-		.attr("fill", "#aaa")
-		.attr("font-size", initAxisLabelSize)
-		.attr("font-weight", "bold")
-		.attr("transform", "translate(0,0) scale(1)")
+		.classed("axisOutline", true)
+		.attr("opacity", 0.8)
+		.attr("stroke", d => d3.color(colors[d.label]).darker(2))
+		.attr("stroke-width", 2)
+		.attr("stroke-linejoin", "round")
+		.attr("font-size", 8)
+		.attr("font-weight", 600)
 		.attr("x", (d) => {
 			const r = d.outerRadius;
 			let a = fanOpening / 2;
@@ -167,10 +187,35 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("y", (d) => {
 			const r = d.outerRadius;
 			const a = fanOpening / 2;
-			return polarToCartesian(0, 0, r, a).y + 7;
+			return polarToCartesian(0, 0, r, a).y + 9;
 		})
 		.attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
-		.text((d) => d.value);
+		.text((d) => (d.value).toLocaleString());
+
+	tick
+		.selectAll(".axisLabel")
+		.data(
+			(d) => [d],
+			(d) => d
+		)
+		.join("text")
+		.classed("axisLabel", true)
+		.attr("fill", d => d3.color(colors[d.label]).brighter(3))
+		.attr("font-size", 8)
+		.attr("font-weight", 600)
+		.attr("x", (d) => {
+			const r = d.outerRadius;
+			let a = fanOpening / 2;
+			a = d.index % 2 === 0 ? a : -a;
+			return polarToCartesian(0, 0, r, a).x;
+		})
+		.attr("y", (d) => {
+			const r = d.outerRadius;
+			const a = fanOpening / 2;
+			return polarToCartesian(0, 0, r, a).y + 9;
+		})
+		.attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
+		.text((d) => (d.value).toLocaleString());
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
