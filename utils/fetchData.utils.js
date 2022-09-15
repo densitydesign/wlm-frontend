@@ -2,11 +2,58 @@ const { DateTime, Interval } = require("luxon");
 import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
-const dataCacheMode = "default";
+const dataCacheMode = "force-cache";
 const geoCacheMode = "force-cache";
 
 const timeFrameData = {
-	items: [{ label: "Latest 7 days" }, { label: "Latest 30 days" }, { label: "Latest 12 months" }, { label: "Latest 5 years" }, { label: "Advanced" }],
+	items: [
+		{
+			label: "Latest 7 days",
+			getDateFrom: (dateTo) => {
+				const _dt = DateTime.fromISO(dateTo);
+				const _df = _dt.minus({ days: 6 });
+				// console.log(_df.toLocaleString(), _dt.toLocaleString());
+				const _dfISO = _df.toISO()
+				return _dfISO.split("T")[0]
+			},
+		},
+		{
+			label: "Latest 30 days",
+			getDateFrom: (dateTo) => {
+				const _dt = DateTime.fromISO(dateTo);
+				const _df = _dt.minus({ days: 29 });
+				// console.log(_df.toLocaleString(), _dt.toLocaleString());
+				const _dfISO = _df.toISO()
+				return _dfISO.split("T")[0]
+			},
+		},
+		{
+			label: "Latest 12 months",
+			getDateFrom: (dateTo) => {
+				const _dt = DateTime.fromISO(dateTo);
+				const _df = _dt.minus({ months: 11 });
+				// console.log(_df.toLocaleString(), _dt.toLocaleString());
+				const _dfISO = _df.toISO()
+				return _dfISO.split("T")[0]
+			},
+		},
+		{
+			label: "Latest 5 years",
+			getDateFrom: (dateTo) => {
+				const _dt = DateTime.fromISO(dateTo);
+				const _df = _dt.minus({ years: 4 });
+				// console.log(_df.toLocaleString(), _dt.toLocaleString());
+				const _dfISO = _df.toISO()
+				return _dfISO.split("T")[0]
+			},
+		},
+		// {
+		// 	label: "Advanced",
+		// 	getDateFrom: (dateTo) => {
+		// 		console.log(dateTo);
+		// 	},
+		// },
+	],
 	disabled: false,
 };
 

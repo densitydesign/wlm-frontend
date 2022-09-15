@@ -10,15 +10,6 @@ import { Fetching } from "../Fetching";
 import { apiBaseUrl, timeFrameData, dateRanges, fetchData, dataCacheMode, geoCacheMode } from "../../utils/fetchData.utils";
 import LicenseAttribution from "../LicenseAttribution/LicenseAttribution";
 
-// const timeFrameData = {
-// 	items: [{ label: "Latest 7 days" }, { label: "Latest 30 days" }, { label: "Latest 12 months" }, { label: "Latest 5 years" }, { label: "Advanced" }],
-// 	disabled: false,
-// };
-
-// const dateRanges = {
-// 	months:
-// }
-
 export default function VisualizationController() {
 	const { asPath } = useRouter();
 
@@ -208,6 +199,16 @@ export default function VisualizationController() {
 			setFilterData(_filterData);
 		}
 	}, [parentData]);
+
+	// handle date changes
+	useEffect(() => {
+		console.log(selectedTimeFrame);
+		if (maxDate) {
+			const _dateFrom = selectedTimeFrame.getDateFrom(maxDate);
+			console.log(_dateFrom);
+			setDateFrom(_dateFrom);
+		}
+	}, [selectedTimeFrame]);
 
 	// Set parameters and fetch data
 	useEffect(() => {
