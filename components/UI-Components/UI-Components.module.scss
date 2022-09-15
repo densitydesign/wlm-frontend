@@ -1,12 +1,15 @@
 .toolBar {
-  --margin-top: calc(var(--bs-gutter-x) * 0.5);
+	--margin-top: calc(var(--bs-gutter-x) * 0.5);
 	height: calc(100% - (var(--margin-top) * 2));
 	margin-top: var(--margin-top);
 	overflow-y: scroll;
 }
 
 .btnWlm {
-	color: #0978AB;
+	color: #0978ab;
+	button {
+		color: #0978ab;
+	}
 	&:disabled {
 		background-color: #dcdcdc;
 		border-color: #dcdcdc;

@@ -1,11 +1,11 @@
-import { ButtonUI, ButtonGroupUI, DatePickerUI, DropdownUI } from "./";
+import { ButtonUI, ButtonGroupUI, DatePickerUI, DropdownUI, DropdownGroupUI } from "./";
 import { BsDownload, BsFillPlayFill, BsArrowRepeat } from "react-icons/bs";
 import classNames from "classnames";
 import styles from "./UI-Components.module.scss";
 import NavMenu from "../NavMenu";
 import WhatsNew from "../WhatsNew";
 import AreaChart from "../AreaChart";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import ExportTools from "../ExportTools/ExportTools";
 
@@ -36,6 +36,20 @@ export default function ToolbarUI({
 
 	timeStep,
 
+	timeFrameData,
+	selectedTimeFrame,
+	setSelectedTimeFrame,
+
+	startMonth,
+	setStartMonth,
+	startYear,
+	setStartYear,
+	endMonth,
+	setEndMonth,
+	endYear,
+	setEndYear,
+	dateRanges,
+
 	parentData,
 	filterData,
 	setFilterData,
@@ -43,6 +57,40 @@ export default function ToolbarUI({
 	mapData,
 }) {
 	const [show, setShow] = useState(false);
+	const startDateItems = useMemo(() => {
+		return [
+			{
+				transferSelection: setStartMonth,
+				defaultLabel: "Month",
+				selected: startMonth,
+				items: dateRanges.months.map((d) => ({ label: d })),
+			},
+			{
+				transferSelection: setStartYear,
+				defaultLabel: "Year",
+				selected: startYear,
+				items: dateRanges.years.map((d) => ({ label: d })),
+			},
+		];
+	}, [startMonth, startYear]);
+
+	const endDateItems = useMemo(() => {
+		return [
+			{
+				transferSelection: setEndMonth,
+				defaultLabel: "Month",
+				selected: endMonth,
+				items: dateRanges.months.map((d) => ({ label: d })),
+			},
+			{
+				transferSelection: setEndYear,
+				defaultLabel: "Year",
+				selected: endYear,
+				items: dateRanges.years.map((d) => ({ label: d })),
+			},
+		];
+	}, [endMonth, endYear]);
+
 	return (
 		<div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
 			<NavMenu />
@@ -81,6 +129,19 @@ export default function ToolbarUI({
 				Last database snapshot: {maxDate}
 			</p>
 			{parentData && filterData && <WhatsNew data={parentData} filterData={filterData} setFilterData={setFilterData} />}
+			<h6>Timeframe</h6>
+			<DropdownUI
+				label="View"
+				items={timeFrameData.items}
+				value={selectedTimeFrame}
+				setValue={setSelectedTimeFrame}
+				defaultLabel="Select a timeframe"
+				disabled={timeFrameData.disabled}
+				hideReset={true}
+			/>
+			<DropdownGroupUI label="From" items={startDateItems} disabled={selectedTimeFrame.label !== "Advanced"} />
+			<DropdownGroupUI label="To" items={endDateItems} disabled={(selectedTimeFrame.label !== "Advanced")} />
+
 			<h6>Timeline</h6>
 			<div className={classNames("d-flex", "justify-content-between")}>
 				{/* <ButtonGroupUI

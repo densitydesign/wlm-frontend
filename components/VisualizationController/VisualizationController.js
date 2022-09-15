@@ -7,8 +7,17 @@ import classNames from "classnames";
 import { ToolbarUI } from "../UI-Components";
 import { MapVentagli, PlaceholderMapVentagli } from "../MapVentagli";
 import { Fetching } from "../Fetching";
-import { apiBaseUrl, fetchData, dataCacheMode, geoCacheMode } from "../../utils/fetchData.utils";
+import { apiBaseUrl, timeFrameData, dateRanges, fetchData, dataCacheMode, geoCacheMode } from "../../utils/fetchData.utils";
 import LicenseAttribution from "../LicenseAttribution/LicenseAttribution";
+
+// const timeFrameData = {
+// 	items: [{ label: "Latest 7 days" }, { label: "Latest 30 days" }, { label: "Latest 12 months" }, { label: "Latest 5 years" }, { label: "Advanced" }],
+// 	disabled: false,
+// };
+
+// const dateRanges = {
+// 	months:
+// }
 
 export default function VisualizationController() {
 	const { asPath } = useRouter();
@@ -40,6 +49,12 @@ export default function VisualizationController() {
 	const [dateTo, setDateTo] = useState();
 	const [timeStep, setTimeStep] = useState();
 
+	const [selectedTimeFrame, setSelectedTimeFrame] = useState(timeFrameData.items[0]);
+	const [startMonth, setStartMonth] = useState();
+	const [startYear, setStartYear] = useState();
+	const [endMonth, setEndMonth] = useState();
+	const [endYear, setEndYear] = useState();
+
 	// Decode URL, load geographies and domain (themes + max date)
 	useEffect(() => {
 		const requests = [
@@ -50,98 +65,100 @@ export default function VisualizationController() {
 				cache: dataCacheMode,
 			}),
 		];
-		Promise.all(requests).then(([geographiesRegions, domain]) => {
-			// set max date
-			setMaxDate(domain.last_snapshot);
+		Promise.all(requests)
+			.then(([geographiesRegions, domain]) => {
+				// set max date
+				setMaxDate(domain.last_snapshot);
 
-			// set themes list (typologies)
-			const fetchedTypologiesList = domain.themes;
-			setTypologiesList(fetchedTypologiesList);
+				// set themes list (typologies)
+				const fetchedTypologiesList = domain.themes;
+				setTypologiesList(fetchedTypologiesList);
 
-			// set lvl4 (regions)
-			setLvl4(geographiesRegions.features);
-			const _regionsList = geographiesRegions.features.map((d) => ({
-				label: d.properties.name,
-				code: d.properties.code,
-			}));
-			setRegionsList(_regionsList);
+				// set lvl4 (regions)
+				setLvl4(geographiesRegions.features);
+				const _regionsList = geographiesRegions.features.map((d) => ({
+					label: d.properties.name,
+					code: d.properties.code,
+				}));
+				setRegionsList(_regionsList);
 
-			// Decode URL before checking selected areas
-			const paramString = asPath.split("#")[1];
-			let vizParameters = {};
-			if (paramString) {
-				vizParameters = Object.fromEntries(paramString.split("&").map((d) => d.split("=").map((dd) => decodeURIComponent(dd))));
-			}
-			const { typology, dateFrom, dateTo, selectedRegion, selectedProvince, selectedMunicipality, filterDataParams } = vizParameters;
+				// Decode URL before checking selected areas
+				const paramString = asPath.split("#")[1];
+				let vizParameters = {};
+				if (paramString) {
+					vizParameters = Object.fromEntries(paramString.split("&").map((d) => d.split("=").map((dd) => decodeURIComponent(dd))));
+				}
+				const { typology, dateFrom, dateTo, selectedRegion, selectedProvince, selectedMunicipality, filterDataParams } = vizParameters;
 
-			if (typology) {
-				const correspondingType = fetchedTypologiesList.find((d) => d.id == typology);
-				setTypology(correspondingType);
-			}
-			if (dateFrom) {
-				setDateFrom(dateFrom);
-			} else {
-				setDateFrom(minDate);
-			}
-			if (dateTo) {
-				setDateTo(dateTo);
-			} else {
-				setDateTo(domain.last_snapshot);
-			}
-			if (filterDataParams) {
-				const decoded_filterData = filterDataParams
-					.split(";")
-					.map((d) => d.split(":"))
-					.map((d) => ({ label: d[0], active: d[1] === "true" }));
-				setFilterData(decoded_filterData);
-			}
+				if (typology) {
+					const correspondingType = fetchedTypologiesList.find((d) => d.id == typology);
+					setTypology(correspondingType);
+				}
+				if (dateFrom) {
+					setDateFrom(dateFrom);
+				} else {
+					setDateFrom(minDate);
+				}
+				if (dateTo) {
+					setDateTo(dateTo);
+				} else {
+					setDateTo(domain.last_snapshot);
+				}
+				if (filterDataParams) {
+					const decoded_filterData = filterDataParams
+						.split(";")
+						.map((d) => d.split(":"))
+						.map((d) => ({ label: d[0], active: d[1] === "true" }));
+					setFilterData(decoded_filterData);
+				}
 
-			// Check selected areas and set loading to false to trigger data fetching
-			if (selectedRegion) {
-				const regionItem = _regionsList.find((d) => d.label === selectedRegion);
-				setSelectedRegion(regionItem);
-				d3.json(apiBaseUrl + `/api/region/${regionItem.code}/areas/?format=json`, {
-					cache: geoCacheMode,
-				}).then((geographiesProvinces) => {
-					setLvl6(geographiesProvinces.features);
-					const _provincesList = geographiesProvinces.features.map((d) => ({
-						label: d.properties.name,
-						code: d.properties.code,
-					}));
-					setProvincesList(_provincesList);
+				// Check selected areas and set loading to false to trigger data fetching
+				if (selectedRegion) {
+					const regionItem = _regionsList.find((d) => d.label === selectedRegion);
+					setSelectedRegion(regionItem);
+					d3.json(apiBaseUrl + `/api/region/${regionItem.code}/areas/?format=json`, {
+						cache: geoCacheMode,
+					}).then((geographiesProvinces) => {
+						setLvl6(geographiesProvinces.features);
+						const _provincesList = geographiesProvinces.features.map((d) => ({
+							label: d.properties.name,
+							code: d.properties.code,
+						}));
+						setProvincesList(_provincesList);
 
-					if (selectedProvince) {
-						const provinceItem = _provincesList.find((d) => d.label === selectedProvince);
-						setSelectedProvince(provinceItem);
+						if (selectedProvince) {
+							const provinceItem = _provincesList.find((d) => d.label === selectedProvince);
+							setSelectedProvince(provinceItem);
 
-						d3.json(apiBaseUrl + `/api/province/${provinceItem.code}/areas/?format=json`, {
-							cache: geoCacheMode,
-						}).then((geographiesMunicipalities) => {
-							setLvl8(geographiesMunicipalities.features);
-							const _municipalitiesList = geographiesMunicipalities.features.map((d) => ({
-								label: d.properties.name,
-								code: d.properties.code,
-							}));
-							setMunicipalitiesList(_municipalitiesList);
-							if (selectedMunicipality) {
-								const municipalityItem = _municipalitiesList.find((d) => d.label === selectedMunicipality);
-								setSelectedMunicipality(municipalityItem);
-								// Could fetch more data here and then set loading to false
-								setLoading(false);
-							} else {
-								setLoading(false);
-							}
-						});
-					} else {
-						setLoading(false);
-					}
-				});
-			} else {
-				setLoading(false);
-			}
-		}).catch((error) => {
-			console.error('Error:', error);
-		});
+							d3.json(apiBaseUrl + `/api/province/${provinceItem.code}/areas/?format=json`, {
+								cache: geoCacheMode,
+							}).then((geographiesMunicipalities) => {
+								setLvl8(geographiesMunicipalities.features);
+								const _municipalitiesList = geographiesMunicipalities.features.map((d) => ({
+									label: d.properties.name,
+									code: d.properties.code,
+								}));
+								setMunicipalitiesList(_municipalitiesList);
+								if (selectedMunicipality) {
+									const municipalityItem = _municipalitiesList.find((d) => d.label === selectedMunicipality);
+									setSelectedMunicipality(municipalityItem);
+									// Could fetch more data here and then set loading to false
+									setLoading(false);
+								} else {
+									setLoading(false);
+								}
+							});
+						} else {
+							setLoading(false);
+						}
+					});
+				} else {
+					setLoading(false);
+				}
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
 	}, []);
 
 	useEffect(() => {
@@ -317,6 +334,20 @@ export default function VisualizationController() {
 						dateTo={dateTo}
 						setDateTo={setDateTo}
 						timeStep={timeStep}
+						//
+						timeFrameData={timeFrameData}
+						selectedTimeFrame={selectedTimeFrame}
+						setSelectedTimeFrame={setSelectedTimeFrame}
+						startMonth={startMonth}
+						setStartMonth={setStartMonth}
+						startYear={startYear}
+						setStartYear={setStartYear}
+						endMonth={endMonth}
+						setEndMonth={setEndMonth}
+						endYear={endYear}
+						setEndYear={setEndYear}
+						dateRanges={dateRanges}
+						//
 						parentData={parentData}
 						filterData={filterData}
 						setFilterData={setFilterData}

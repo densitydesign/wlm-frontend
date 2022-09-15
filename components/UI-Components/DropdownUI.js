@@ -1,11 +1,9 @@
 import { Button, Dropdown } from "react-bootstrap";
 import classNames from "classnames";
-import { useState } from "react";
 import { BsXLg as CloseIcon } from "react-icons/bs";
 import styles from "./UI-Components.module.scss";
 
-export default function DropdownUI({ label, items, value, setValue, defaultLabel, disabled }) {
-	// const [selection, setSelection] = useState();
+export default function DropdownUI({ label, items, value, setValue, defaultLabel, disabled, hideReset }) {
 	return (
 		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-2")}>
 			{label && <span>{label}</span>}
@@ -29,7 +27,7 @@ export default function DropdownUI({ label, items, value, setValue, defaultLabel
 					))}
 				</Dropdown.Menu>
 			</Dropdown>
-			{value && (
+			{(!hideReset && value) && (
 				<Button
 					className={classNames("ms-1", styles.btnWlm)}
 					size="sm"

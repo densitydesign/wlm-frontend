@@ -2,10 +2,26 @@ const { DateTime, Interval } = require("luxon");
 import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
-const dataCacheMode = "force-cache"//"default";
+const dataCacheMode = "default";
 const geoCacheMode = "force-cache";
 
-const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo }, setDataValue, setParentDataValue, setIsFetching, setTimeStep) => {
+const timeFrameData = {
+	items: [{ label: "Latest 7 days" }, { label: "Latest 30 days" }, { label: "Latest 12 months" }, { label: "Latest 5 years" }, { label: "Advanced" }],
+	disabled: false,
+};
+
+const dateRanges = {
+	months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+	years: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022],
+};
+
+const fetchData = (
+	{ selectedRegion, selectedProvince, selectedMunicipality, typology, dateFrom, dateTo },
+	setDataValue,
+	setParentDataValue,
+	setIsFetching,
+	setTimeStep
+) => {
 	setIsFetching(true);
 	// console.log("fetching data...");
 	let dataUrl = apiBaseUrl;
@@ -61,8 +77,8 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 			step_unit = "years";
 			step_size = 1;
 		}
-		const timeStepMessage = ["Showing ", Math.ceil(i.length(step_unit) / step_size), " history points (every ", step_size, " ", step_unit, ")", ].join("")
-		setTimeStep(timeStepMessage)
+		const timeStepMessage = ["Showing ", Math.ceil(i.length(step_unit) / step_size), " history points (every ", step_size, " ", step_unit, ")"].join("");
+		setTimeStep(timeStepMessage);
 
 		const parameters = { step_size, step_unit };
 		parameters.date_from = dateFrom;
@@ -105,4 +121,4 @@ const fetchData = ({ selectedRegion, selectedProvince, selectedMunicipality, typ
 	}
 };
 
-export { apiBaseUrl, fetchData, dataCacheMode, geoCacheMode };
+export { apiBaseUrl, fetchData, dataCacheMode, timeFrameData, dateRanges, geoCacheMode };
