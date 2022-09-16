@@ -24,6 +24,7 @@ export default function DropdownGroupUI({ label, items, disabled }) {
 								onClick={() => {
 									d.transferSelection(dd);
 								}}
+								disabled={dd.disabled}
 							>
 								{dd.label}
 							</Dropdown.Item>

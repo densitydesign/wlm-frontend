@@ -112,7 +112,7 @@ const drawVentaglio = (datum, ventaglio) => {
 		.attr("stroke-linejoin", "round")
 		.attr("opacity", 0.8)
 		.attr("text-anchor", "middle")
-		.attr("font-size", 10)
+		.attr("font-size", initLabelSize)
 		.attr("class", "labelOutline")
 		.attr("y", 1 * 12)
 		.text((d) => d.label || "Unknown Region")

@@ -85,16 +85,20 @@ export default function VisualizationController() {
 					const correspondingType = fetchedTypologiesList.find((d) => d.id == typology);
 					setTypology(correspondingType);
 				}
-				if (dateFrom) {
-					setDateFrom(dateFrom);
-				} else {
-					setDateFrom(minDate);
-				}
+			
 				if (dateTo) {
 					setDateTo(dateTo);
 				} else {
 					setDateTo(domain.last_snapshot);
 				}
+
+				if (dateFrom) {
+					setDateFrom(dateFrom);
+				} else {
+					const dateRange = selectedTimeFrame.getDateRange(domain.last_snapshot);
+					if (dateRange[0] !== dateFrom) setDateFrom(dateRange[0]);
+				}
+
 				if (filterDataParams) {
 					const decoded_filterData = filterDataParams
 						.split(";")
@@ -200,13 +204,50 @@ export default function VisualizationController() {
 		}
 	}, [parentData]);
 
-	// handle date changes
+	// Hooks to handle time intervals and date changes
 	useEffect(() => {
-		console.log(selectedTimeFrame);
-		if (maxDate) {
-			const _dateFrom = selectedTimeFrame.getDateFrom(maxDate);
-			console.log(_dateFrom);
-			setDateFrom(_dateFrom);
+		if (dateFrom) {
+			console.log("updated date from")
+			setStartMonth({ label: dateFrom.split("-")[1] });
+			setStartYear({ label: dateFrom.split("-")[0] });
+		}
+	}, [dateFrom]);
+
+	useEffect(() => {
+		if (startYear && startMonth && selectedTimeFrame.label === "Custom interval") {
+			const newDateFrom = startYear.label + "-" + startMonth.label + "-" + "01";
+			if (dateFrom !== newDateFrom) {
+				console.log(dateFrom, newDateFrom);
+				setDateFrom(newDateFrom);
+			}
+		}
+	}, [startMonth, startYear]);
+
+	useEffect(() => {
+		if (dateTo) {
+			setEndMonth({ label: dateTo.split("-")[1] });
+			setEndYear({ label: dateTo.split("-")[0] });
+		}
+	}, [dateTo]);
+
+	useEffect(() => {
+		if (endYear && endMonth && selectedTimeFrame.label === "Custom interval") {
+			const newDateTo = endYear.label + "-" + endMonth.label + "-" + "28";
+			if (dateTo !== newDateTo) {
+				console.log(dateTo, newDateTo);
+				setDateTo(newDateTo);
+			}
+		}
+	}, [endMonth, endYear]);
+
+	useEffect(() => {
+		if (dateTo && maxDate) {
+			if (selectedTimeFrame.label !== "Custom interval") {
+				const dateRange = selectedTimeFrame.getDateRange(maxDate);
+				if (dateRange[0] !== dateFrom) setDateFrom(dateRange[0]);
+				if (dateRange[1] !== dateTo) setDateTo(dateRange[1]);
+				console.log(dateRange);
+			}
 		}
 	}, [selectedTimeFrame]);
 
