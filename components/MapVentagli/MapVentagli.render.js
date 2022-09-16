@@ -74,7 +74,7 @@ const initialize = (element, viz_data) => {
 	}
 
 	g_geographies = g.select(".g_geographies");
-	g_europe = g.select(".g_europe")
+	g_europe = g.select(".g_europe");
 	g.append("g").classed("g_europe", true);
 
 	if (g_geographies.empty()) {
@@ -272,9 +272,12 @@ const update = (viz_data) => {
 		.attr("class", "ventaglio")
 		.attr("id", (d) => "ventaglio-" + d.code)
 		.classed("overlapping", false)
+		.each(function (d) {
+			drawVentaglio(d, d3.select(this));
+		})
 		.on("click", (event, d) => {
 			if (mode === "municipality") {
-				console.log("Clicked.", d);
+				// console.log("Clicked.", d);
 				setSelectedMunicipality(undefined);
 			} else if (mode === "province") {
 				const { code, label } = d;
@@ -287,11 +290,8 @@ const update = (viz_data) => {
 			} else {
 				const { code, label } = d;
 				const selected = { code, label };
-				setSelectedRegion(selected);
+				if (d.code != 0) setSelectedRegion(selected);
 			}
-		})
-		.each(function (d) {
-			drawVentaglio(d, d3.select(this));
 		});
 
 	ticked(); // positions ventagli in correct place
