@@ -133,7 +133,8 @@ const fetchData = (
 			step_size = 1;
 		}
 		// const timeStepMessage = ["Showing ", Math.ceil(i.length(step_unit) / step_size), " history points (every ", step_size, " ", step_unit, ")"].join("");
-		const timeStep = ["One slice is ", step_size, " ", step_size===1?step_unit.replace("s",""): step_unit, "."].join("");
+		// const timeStep = ["One slice is ", step_size, " ", step_size===1?step_unit.replace("s",""): step_unit, "."].join("");
+		const timeStep = [step_size, " ", step_size===1?step_unit.replace("s",""): step_unit].join("");
 		setTimeStep(timeStep);
 
 		const parameters = { step_size, step_unit };
