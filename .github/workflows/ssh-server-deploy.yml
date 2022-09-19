@@ -23,13 +23,13 @@ jobs:
       with:
         node-version: '16'
       
-    - name: 🔨 Build Project
-      run: |
-        npm install
-        npm run export
+    # - name: 🔨 Build Project
+    #   run: |
+    #     npm install
+    #     npm run export
         
-    - name: 📖 List output files
-      run: find out/ -print
+    # - name: 📖 List output files
+    #   run: find out/ -print
       
     - name: 📂 Sync Files
       uses: appleboy/ssh-action@master
@@ -38,6 +38,7 @@ jobs:
         username: ${{ secrets.USER_NAME }}
         key: ${{ secrets.PRIVATE_KEY }}
         passphrase: ${{ secrets.PASSWORD }}
+        port: 22
         script: ls
         # source-path: ./out/
         # destination-path: ~/www/
