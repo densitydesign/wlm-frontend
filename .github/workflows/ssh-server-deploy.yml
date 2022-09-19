@@ -36,7 +36,7 @@ jobs:
       with:
         target-server: ${{ secrets.SSH_SERVER }}
         remote-user: ${{ secrets.USER_NAME }}
-        private-ssh-key: ${{ secrets.PRIVATE_KEY }}
+        # private-ssh-key: ${{ secrets.PRIVATE_KEY }}
         password: ${{ secrets.PASSWORD }}
         source-path: ./out/
         destination-path: ~/www/
