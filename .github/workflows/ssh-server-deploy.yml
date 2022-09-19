@@ -1,0 +1,47 @@
+name: Deploy on SSH server
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: 🚚 Get latest code
+      uses: actions/checkout@v2
+
+    - name: 🪢 Use Node.js 16
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+      
+    - name: 🔨 Build Project
+      run: |
+        npm install
+        npm run export
+        
+    - name: 📖 List output files
+      run: find out/ -print
+      
+    - name: 📂 Sync Files
+      uses: SamKirkland/web-deploy@v1
+      with:
+        target-server: ${{ secrets.SSH_SERVER }}
+        remote-user: ${{ secrets.USER_NAME }}
+        private-ssh-key: ${{ secrets.PRIVATE_KEY }}
+        password: ${{ secrets.PASSWORD }}
+        source-path: ./out/
+        destination-path: ~/www/
