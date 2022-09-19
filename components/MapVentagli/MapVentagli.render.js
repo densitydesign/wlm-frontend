@@ -185,30 +185,26 @@ const update = (viz_data) => {
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
     .range([0, 70]);
 
-  console.log(lvl4);
-  console.log(coastlinesData);
+  //   coastlines = g_coastlines
+  //     .selectAll(".coastlines")
+  //     .data(coastlinesData.features)
+  //     .join("path")
+  //     .attr("d", (d) => render(d.geometry))
+  //     .attr("stroke", colors.coastlines)
+  // 	.attr("stroke-linecap", "round")
+  //     .attr("stroke-linejoin", "round")
+  // 	.attr("stroke-width", 10)
 
-//   coastlines = g_coastlines
-//     .selectAll(".coastlines")
-//     .data(coastlinesData.features)
-//     .join("path")
-//     .attr("d", (d) => render(d.geometry))
-//     .attr("stroke", colors.coastlines)
-// 	.attr("stroke-linecap", "round")
-//     .attr("stroke-linejoin", "round")
-// 	.attr("stroke-width", 10)
-
-	coastlines = g_coastlines
+  coastlines = g_coastlines
     .selectAll(".coastlines")
     .data(coastlinesData.features)
     .join("path")
     .attr("d", (d) => render(d.geometry))
-	.attr('fill', colors.terrainLight)
+    .attr("fill", colors.terrainLight)
     .attr("stroke", colors.terrainLightOuter)
-	.attr("stroke-linecap", "round")
+    .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
-	.attr("stroke-width", initStrokeWidth + "px")
-
+    .attr("stroke-width", initStrokeWidth + "px");
 
   region = g_regions
     .selectAll(".region")
@@ -411,7 +407,24 @@ function ticked() {
 }
 
 function compileVentagliData(data, arr) {
+  // rescale using as baseline the number of already photographed items
   data.forEach((area) => {
+    //console.log(area);
+
+    let first = area.history[0].groups.filter((d) => d.label == "photographed");
+    //console.log(first[0].value);
+
+    if (first.length > 0) {
+      let baseline = first[0].value;
+      area.history.forEach((h) => {
+        console.log("1");
+        h.groups.forEach((g) => {
+          g.oldValue = g.value;
+          g.value -= baseline;
+        });
+      });
+    }
+
     const temp = arr.find((d) => d.properties.code === area.code);
     if (temp) {
       const centroid = projection(temp.properties.centroid.coordinates);
