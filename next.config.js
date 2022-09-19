@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
-  basePath: '/wlm-frontend'
+  // basePath: '/wlm-frontend'
 }
 
 module.exports = nextConfig

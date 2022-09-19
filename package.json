@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "open http://localhost:3000/wlm-frontend & next dev",
+    "dev": "open http://localhost:3000 & next dev",
     "build": "next build",
     "export": "next build && next export && touch out/.nojekyll",
     "pre-deploy": "rm -rf node_modules/.cache && npm run export && touch out/.nojekyll && rm -rf docs && mv out docs",

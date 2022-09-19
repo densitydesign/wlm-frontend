@@ -185,9 +185,6 @@ const update = (viz_data) => {
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
     .range([0, 70]);
 
-  console.log(lvl4);
-  console.log(coastlinesData);
-
 //   coastlines = g_coastlines
 //     .selectAll(".coastlines")
 //     .data(coastlinesData.features)
@@ -198,16 +195,16 @@ const update = (viz_data) => {
 //     .attr("stroke-linejoin", "round")
 // 	.attr("stroke-width", 10)
 
-	coastlines = g_coastlines
-    .selectAll(".coastlines")
-    .data(coastlinesData.features)
-    .join("path")
-    .attr("d", (d) => render(d.geometry))
-	.attr('fill', colors.terrainLight)
-    .attr("stroke", colors.terrainLightOuter)
-	.attr("stroke-linecap", "round")
-    .attr("stroke-linejoin", "round")
-	.attr("stroke-width", initStrokeWidth + "px")
+	// coastlines = g_coastlines
+  //   .selectAll(".coastlines")
+  //   .data(coastlinesData.features)
+  //   .join("path")
+  //   .attr("d", (d) => render(d.geometry))
+	// .attr('fill', colors.terrainLight)
+  //   .attr("stroke", colors.terrainLightOuter)
+	// .attr("stroke-linecap", "round")
+  //   .attr("stroke-linejoin", "round")
+	// .attr("stroke-width", initStrokeWidth + "px")
 
 
   region = g_regions
@@ -276,7 +273,7 @@ const update = (viz_data) => {
 
   let geoFeaturesArr;
   if (selectedMunicipality) {
-    console.log("a municipality");
+    // console.log("a municipality");
     geoFeaturesArr = lvl8;
     mode = "municipality";
     kLimit = 35;
@@ -288,7 +285,7 @@ const update = (viz_data) => {
       .attr("display", "block")
       .each(zoomToArea);
   } else if (selectedProvince) {
-    console.log("a province");
+    // console.log("a province");
     geoFeaturesArr = lvl8;
     mode = "province";
     kLimit = 35;
@@ -300,7 +297,7 @@ const update = (viz_data) => {
       .each(zoomToArea);
     municipality.attr("display", "block");
   } else if (selectedRegion) {
-    console.log("a region");
+    // console.log("a region");
     geoFeaturesArr = lvl6;
     mode = "region";
     kLimit = 35;
@@ -311,7 +308,7 @@ const update = (viz_data) => {
       .each(zoomToArea);
     municipality.attr("display", "block");
   } else {
-    console.log("all Italy");
+    // console.log("all Italy");
     geoFeaturesArr = lvl4;
     mode = undefined; // italy
     kLimit = 1.4;
