@@ -38,7 +38,7 @@ jobs:
         username: ${{ secrets.USER_NAME }}
         key: ${{ secrets.PRIVATE_KEY }}
         passphrase: ${{ secrets.PASSWORD }}
-        port: 22
-        script: ls
+        port: ${{ secrets.SSH_PORT }}
+        script: whoami
         # source-path: ./out/
         # destination-path: ~/www/
