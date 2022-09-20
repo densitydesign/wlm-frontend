@@ -23,10 +23,10 @@ jobs:
       with:
         node-version: '16'
       
-    # - name: 🔨 Build Project
-    #   run: |
-    #     npm install
-    #     npm run export
+    - name: 🔨 Build Project
+      run: |
+        npm install
+        npm run export
         
     # - name: 📖 List output files
     #   run: find out/ -print
@@ -39,6 +39,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.PRIVATE_KEY }}
         passphrase: ${{ secrets.PASSWORD }}
-        source: "./docs/*"
+        source: "./out/*"
         target: "~/www/"
         strip_components: 1
