@@ -48,6 +48,16 @@ const timeFrameData = {
 			},
 		},
 		{
+			label: "All history",
+			getDateRange: (maxDate) => {
+				const _dt = DateTime.fromISO(maxDate).endOf("year");
+				const _dtISO = _dt.toISO().split("T")[0];
+				const _df = DateTime.fromISO("2012-09-01").startOf("year");
+				const _dfISO = _df.toISO().split("T")[0];
+				return [_dfISO, _dtISO];
+			},
+		},
+		{
 			label: "Custom interval",
 			getDateRange: (dateFrom, dateTo) => {
 				console.log(dateFrom, dateTo);
