@@ -101,7 +101,7 @@ export default function VisualizationController() {
           selectedProvince,
           selectedMunicipality,
           filterDataParams,
-          selectedTimeFrame,
+          selectedTimeFramePar,
         } = vizParameters;
 
         if (typology) {
@@ -111,10 +111,9 @@ export default function VisualizationController() {
           setTypology(correspondingType);
         }
 
-        if (selectedTimeFrame) {
-          // console.log(selectedTimeFrame)
+        if (selectedTimeFramePar) {
           const obj = timeFrameData.items.find(
-            (d) => d.label === selectedTimeFrame
+            (d) => d.label === selectedTimeFramePar
           );
           // console.log(obj);
           setSelectedTimeFrame(obj);
@@ -354,7 +353,7 @@ export default function VisualizationController() {
       parametersFetchData.dateTo = dateTo;
     }
     if (selectedTimeFrame) {
-      parameters.selectedTimeFrame = encodeURIComponent(
+      parameters.selectedTimeFramePar = encodeURIComponent(
         selectedTimeFrame.label
       );
     }
