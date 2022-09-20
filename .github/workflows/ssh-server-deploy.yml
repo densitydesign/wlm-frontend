@@ -39,6 +39,6 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         key: ${{ secrets.PRIVATE_KEY }}
         passphrase: ${{ secrets.PASSWORD }}
-        source: "./docs/."
+        source: "./docs/*"
         target: "~/www/"
         strip_components: 1
