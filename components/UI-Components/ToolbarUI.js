@@ -4,6 +4,7 @@ import {
   DatePickerUI,
   DropdownUI,
   DropdownGroupUI,
+  SwitchUI
 } from "./";
 import {
   BsExclamationTriangleFill,
@@ -67,6 +68,9 @@ export default function ToolbarUI({
   setFilterData,
 
   mapData,
+  //
+  showDelta,
+  setShowDelta
 }) {
   const [show, setShow] = useState(false);
 
@@ -206,6 +210,7 @@ export default function ToolbarUI({
           setFilterData={setFilterData}
         />
       )}
+      <SwitchUI label="Show Delta" checked={showDelta} setChecked={setShowDelta} />
       <h6>Timeframe</h6>
       <DropdownUI
         label="View"
