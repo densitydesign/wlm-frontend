@@ -23,6 +23,7 @@ export default function VisualizationController() {
 
   const [loading, setLoading] = useState(true); // changes will trigger initial data fetching and rendering
   const [isFetching, setIsFetching] = useState(false);
+  const [isFetchingGeo, setIsFetchingGeo] = useState(false);
   const [ventagli, setVentagli] = useState();
   const [parentData, setParentData] = useState();
   const [filterData, setFilterData] = useState();
@@ -56,6 +57,62 @@ export default function VisualizationController() {
   const [startYear, setStartYear] = useState();
   const [endMonth, setEndMonth] = useState();
   const [endYear, setEndYear] = useState();
+
+  // Function to set parameters and fetch data
+  const setParmsAndFetch = () => {
+    const parameters = {};
+    const parametersFetchData = {};
+    if (selectedRegion) {
+      parameters.selectedRegion = encodeURIComponent(selectedRegion.label);
+      parametersFetchData.selectedRegion = selectedRegion;
+    }
+    if (selectedProvince) {
+      parameters.selectedProvince = encodeURIComponent(selectedProvince.label);
+      parametersFetchData.selectedProvince = selectedProvince;
+    }
+    if (selectedMunicipality) {
+      parameters.selectedMunicipality = encodeURIComponent(
+        selectedMunicipality.label
+      );
+      parametersFetchData.selectedMunicipality = selectedMunicipality;
+    }
+    if (typology) {
+      parameters.typology = encodeURIComponent(typology.id);
+      parametersFetchData.typology = typology;
+    }
+    if (dateFrom) {
+      parameters.dateFrom = encodeURIComponent(dateFrom);
+      parametersFetchData.dateFrom = dateFrom;
+    }
+    if (dateTo) {
+      parameters.dateTo = encodeURIComponent(dateTo);
+      parametersFetchData.dateTo = dateTo;
+    }
+    if (selectedTimeFrame) {
+      parameters.selectedTimeFramePar = encodeURIComponent(
+        selectedTimeFrame.label
+      );
+    }
+    if (showDelta) {
+      parameters.showDeltaPar = encodeURIComponent(showDelta);
+    }
+    const temp = [];
+    for (const key in parameters) {
+      temp.push(key + "=" + parameters[key]);
+    }
+    const hashUrl = "#" + temp.join("&");
+    location.replace(hashUrl);
+
+    if (!loading && !isFetchingGeo) {
+      fetchData(
+        parametersFetchData,
+        setVentagli,
+        setParentData,
+        setIsFetching,
+        setTimeStep
+      );
+    }
+  }
 
   // Decode URL, load geographies and domain (themes + max date)
   useEffect(() => {
@@ -211,27 +268,35 @@ export default function VisualizationController() {
 
   useEffect(() => {
     if (selectedRegion && !loading) {
+      setIsFetching(true);
+      // setIsFetchingGeo(true);
       d3.json(
         apiBaseUrl + `/api/region/${selectedRegion.code}/areas/?format=json`
       ).then((geographiesProvinces) => {
+        // setIsFetchingGeo(false);
         setLvl6(geographiesProvinces.features);
         const _provincesList = geographiesProvinces.features.map((d) => ({
           label: d.properties.name,
           code: d.properties.code,
         }));
         setProvincesList(_provincesList);
+        setParmsAndFetch()
       });
     } else {
       setLvl6([]);
       setProvincesList([]);
+      setParmsAndFetch()
     }
   }, [selectedRegion]);
 
   useEffect(() => {
     if (selectedProvince && !loading) {
+      setIsFetching(true);
+      // setIsFetchingGeo(true);
       d3.json(
         apiBaseUrl + `/api/province/${selectedProvince.code}/areas/?format=json`
       ).then((geographiesMunicipalities) => {
+        // setIsFetchingGeo(false);
         setLvl8(geographiesMunicipalities.features);
         const _municipalitiesList = geographiesMunicipalities.features.map(
           (d) => ({
@@ -240,10 +305,12 @@ export default function VisualizationController() {
           })
         );
         setMunicipalitiesList(_municipalitiesList);
+        setParmsAndFetch()
       });
     } else {
       setLvl8([]);
       setMunicipalitiesList([]);
+      setParmsAndFetch()
     }
   }, [selectedProvince]);
 
@@ -323,63 +390,11 @@ export default function VisualizationController() {
     }
   }, [selectedTimeFrame]);
 
-  // Set parameters and fetch data
-  useEffect(() => {
-    const parameters = {};
-    const parametersFetchData = {};
-    if (selectedRegion) {
-      parameters.selectedRegion = encodeURIComponent(selectedRegion.label);
-      parametersFetchData.selectedRegion = selectedRegion;
-    }
-    if (selectedProvince) {
-      parameters.selectedProvince = encodeURIComponent(selectedProvince.label);
-      parametersFetchData.selectedProvince = selectedProvince;
-    }
-    if (selectedMunicipality) {
-      parameters.selectedMunicipality = encodeURIComponent(
-        selectedMunicipality.label
-      );
-      parametersFetchData.selectedMunicipality = selectedMunicipality;
-    }
-    if (typology) {
-      parameters.typology = encodeURIComponent(typology.id);
-      parametersFetchData.typology = typology;
-    }
-    if (dateFrom) {
-      parameters.dateFrom = encodeURIComponent(dateFrom);
-      parametersFetchData.dateFrom = dateFrom;
-    }
-    if (dateTo) {
-      parameters.dateTo = encodeURIComponent(dateTo);
-      parametersFetchData.dateTo = dateTo;
-    }
-    if (selectedTimeFrame) {
-      parameters.selectedTimeFramePar = encodeURIComponent(
-        selectedTimeFrame.label
-      );
-    }
-    if (showDelta) {
-      parameters.showDeltaPar = encodeURIComponent(showDelta);
-    }
-    const temp = [];
-    for (const key in parameters) {
-      temp.push(key + "=" + parameters[key]);
-    }
-    const hashUrl = "#" + temp.join("&");
-    location.replace(hashUrl);
-
-    if (!loading) {
-      fetchData(
-        parametersFetchData,
-        setVentagli,
-        setParentData,
-        setIsFetching,
-        setTimeStep
-      );
-    }
+  useEffect(()=>{
+    setParmsAndFetch()
   }, [
-    selectedRegion,
-    selectedProvince,
+    // selectedRegion,
+    // selectedProvince,
     selectedMunicipality,
     typology,
     dateFrom,
@@ -518,25 +533,7 @@ export default function VisualizationController() {
         </Col>
         <Col className={classNames("h-100", "position-relative")}>
           <>
-            {!loading && filteredVentagli && (
-              <MapVentagli
-                // ventagli={filteredVentagli}
-                // lvl4={lvl4}
-                // lvl6={lvl6}
-                // lvl8={lvl8}
-                // selectedRegion={selectedRegion}
-                // setSelectedRegion={setSelectedRegion}
-                // selectedProvince={selectedProvince}
-                // setSelectedProvince={setSelectedProvince}
-                // selectedMunicipality={selectedMunicipality}
-                // setSelectedMunicipality={setSelectedMunicipality}
-                // typology={typology}
-                // dateFrom={dateFrom}
-                // dateTo={dateTo}
-                // isFetching={isFetching}
-                {...mapData}
-              />
-            )}
+            {!loading && filteredVentagli && <MapVentagli {...mapData} />}
             {!(!loading && filteredVentagli) && <PlaceholderMapVentagli />}
             <LicenseAttribution />
             {(loading || isFetching) && <Fetching />}

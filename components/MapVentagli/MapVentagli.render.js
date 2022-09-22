@@ -24,6 +24,7 @@ let svg,
   municipality,
   g_ventagli,
   ventaglio,
+  // areaLabel,
   simulation = d3
     .forceSimulation()
     .force(
@@ -132,6 +133,7 @@ const initialize = (element, viz_data) => {
       .attr("id", "ventagli");
   }
   ventaglio = g_ventagli.selectAll(".ventaglio");
+  // areaLabel = g_ventagli.selectAll(".areaLabel");
 
   projection = d3.geoMercator().fitSize([width, height], {
     type: "FeatureCollection",
@@ -327,6 +329,16 @@ const update = (viz_data) => {
     .each(function (d) {
       drawVentaglio(d, d3.select(this));
     });
+
+  // areaLabel = g_ventagli
+  //   .selectAll(".areaLabel")
+  //   .data(data, (d) => d.code)
+  //   .join("text")
+  //   .attr("class", "areaLabel")
+  //   .attr("font-size", 8)
+  //   .attr("x", d=>d.x)
+  //   .attr("y", d=>d.y)
+  //   .text(d=>d.label);
 
   ticked(); // positions ventagli in correct place
 
