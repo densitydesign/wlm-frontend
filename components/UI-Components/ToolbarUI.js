@@ -203,25 +203,18 @@ export default function ToolbarUI({
 				<br />
 				Last database snapshot: {maxDate}
 			</p> */}
-      {parentData && filterData && (
-        <WhatsNew
-          data={parentData}
-          filterData={filterData}
-          setFilterData={setFilterData}
-        />
-      )}
       {/* <SwitchUI
         label="Show Delta"
         checked={showDelta}
         setChecked={setShowDelta}
       /> */}
-      <h6>Timeframe</h6>
+      <h6>Time frame</h6>
       <DropdownUI
         label="View"
         items={timeFrameData.items}
         value={selectedTimeFrame}
         setValue={setSelectedTimeFrame}
-        defaultLabel="Select a timeframe"
+        defaultLabel="Select a time frame"
         disabled={timeFrameData.disabled}
         hideReset={true}
       />
@@ -230,31 +223,35 @@ export default function ToolbarUI({
           <p className={classNames("text-small", "mb-2")}>
             A slice is{" "}
             <Badge bg="light-gray" text="dark">
-              {timeStep}
+              {timeStep || "..."}
             </Badge>{" "}
             from{" "}
             <Badge bg="light-gray" text="dark">
-              {dateFrom}
+              {dateFrom || "..."}
             </Badge>{" "}
             to{" "}
             <Badge bg="light-gray" text="dark">
-              {dateTo}
+              {dateTo || "..."}
             </Badge>
           </p>
         </>
       )}
       {selectedTimeFrame.label === "Custom interval" && (
         <>
-          <DropdownGroupUI
-            label="From"
-            items={startDateItems}
-            disabled={selectedTimeFrame.label !== "Custom interval"}
-          />
-          <DropdownGroupUI
-            label="To"
-            items={endDateItems}
-            disabled={selectedTimeFrame.label !== "Custom interval"}
-          />
+          <div className={classNames("d-flex", "align-items-center")}>
+            <DropdownGroupUI
+              className={classNames(styles.small)}
+              label="From"
+              items={startDateItems}
+              disabled={selectedTimeFrame.label !== "Custom interval"}
+            />
+            <DropdownGroupUI
+              className={classNames(styles.small, "ms-1")}
+              label="to"
+              items={endDateItems}
+              disabled={selectedTimeFrame.label !== "Custom interval"}
+            />
+          </div>
           <span className={classNames("d-flex", "align-items-center", "mb-2")}>
             <BsExclamationTriangleFill
               className={classNames("me-2", "mb-1")}
@@ -274,7 +271,13 @@ export default function ToolbarUI({
           </p>
         </>
       )}
-
+      {parentData && filterData && (
+        <WhatsNew
+          data={parentData}
+          filterData={filterData}
+          setFilterData={setFilterData}
+        />
+      )}
       <h6>Timeline</h6>
       {/* <div className={classNames("d-flex", "justify-content-between")}>
         <ButtonGroupUI

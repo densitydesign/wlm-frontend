@@ -37,16 +37,25 @@ export default function DropdownUI({
 
         <Dropdown.Menu style={{ maxHeight: "50vh", overflowY: "auto" }}>
           {d3_groups(items, (d) => d.group).map((d, i) => (
-            <span key={"span"+i}>
+            <span key={"span" + i}>
               {d[0] && (
                 <>
-                  <Dropdown.Header className="py-0 pb-2" key={"h"+i}>{d[0]}</Dropdown.Header>
-                  <Dropdown.Divider key={"d"+i} className="my-0" />
+                  <Dropdown.Header
+                    className={classNames(
+                      styles.dropDownHeader,
+                      "pt-2",
+                      "pb-2"
+                    )}
+                    key={"h" + i}
+                  >
+                    Group: {d[0]}
+                  </Dropdown.Header>
+                  {/* <Dropdown.Divider key={"d" + i} className="my-0" /> */}
                 </>
               )}
               {d[1].map((dd, ii) => (
                 <Dropdown.Item
-                  key={"item-"+ii}
+                  key={"item-" + ii}
                   eventKey={ii}
                   onClick={() => {
                     setValue(dd);

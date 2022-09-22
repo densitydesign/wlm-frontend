@@ -14,7 +14,17 @@ html {
 	--initial-small-label-size: 7;
 }
 
+.badge {
+	font-weight: 500;
+	text-transform: uppercase;
+}
+
 .text-small {
 	font-size: 0.82rem;
 	line-height: 0.93rem;
+}
+
+h6 {
+	// text-transform: uppercase;
+	font-weight: 600;
 }
