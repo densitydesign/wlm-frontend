@@ -1,9 +1,9 @@
 import { DropdownButton, Dropdown, ButtonGroup } from "react-bootstrap";
 import classNames from "classnames";
 import styles from "./UI-Components.module.scss";
-export default function DropdownGroupUI({ label, items, disabled }) {
+export default function DropdownGroupUI({ label, items, disabled, className }) {
 	return (
-		<div className={classNames("d-flex", "justify-content-start", "align-items-center", "mb-2")}>
+		<div className={classNames(className, "d-flex", "justify-content-start", "align-items-center", "mb-2")}>
 			{label && <span>{label}</span>}
 			<ButtonGroup className={classNames({ "ms-1": label })} aria-label="Basic example">
 				{items.map((d, i) => (

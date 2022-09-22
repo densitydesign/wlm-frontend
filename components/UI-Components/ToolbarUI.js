@@ -4,6 +4,7 @@ import {
   DatePickerUI,
   DropdownUI,
   DropdownGroupUI,
+  SwitchUI,
 } from "./";
 import {
   BsExclamationTriangleFill,
@@ -67,6 +68,9 @@ export default function ToolbarUI({
   setFilterData,
 
   mapData,
+  //
+  showDelta,
+  setShowDelta,
 }) {
   const [show, setShow] = useState(false);
 
@@ -199,50 +203,56 @@ export default function ToolbarUI({
 				<br />
 				Last database snapshot: {maxDate}
 			</p> */}
-      {parentData && filterData && (
-        <WhatsNew
-          data={parentData}
-          filterData={filterData}
-          setFilterData={setFilterData}
-        />
-      )}
-      <h6>Timeframe</h6>
+      {/* <SwitchUI
+        label="Show Delta"
+        checked={showDelta}
+        setChecked={setShowDelta}
+      /> */}
+      <h6>Time frame</h6>
       <DropdownUI
         label="View"
         items={timeFrameData.items}
         value={selectedTimeFrame}
         setValue={setSelectedTimeFrame}
-        defaultLabel="Select a timeframe"
+        defaultLabel="Select a time frame"
         disabled={timeFrameData.disabled}
         hideReset={true}
       />
       {selectedTimeFrame.label !== "Custom interval" && (
         <>
-          <p className={classNames("mb-2")}>
-            From{" "}
-            <Badge bg="lightBlue" text="blue-jeans">
-              {dateFrom}
+          <p className={classNames("text-small", "mb-2")}>
+            A slice is{" "}
+            <Badge bg="light-gray" text="dark">
+              {timeStep || "..."}
+            </Badge>{" "}
+            from{" "}
+            <Badge bg="light-gray" text="dark">
+              {dateFrom || "..."}
             </Badge>{" "}
             to{" "}
-            <Badge bg="lightBlue" text="blue-jeans">
-              {dateTo}
+            <Badge bg="light-gray" text="dark">
+              {dateTo || "..."}
             </Badge>
           </p>
         </>
       )}
       {selectedTimeFrame.label === "Custom interval" && (
         <>
-          <DropdownGroupUI
-            label="From"
-            items={startDateItems}
-            disabled={selectedTimeFrame.label !== "Custom interval"}
-          />
-          <DropdownGroupUI
-            label="To"
-            items={endDateItems}
-            disabled={selectedTimeFrame.label !== "Custom interval"}
-          />
-           <span className={classNames("d-flex", "align-items-center", "mb-2")}>
+          <div className={classNames("d-flex", "align-items-center")}>
+            <DropdownGroupUI
+              className={classNames(styles.small)}
+              label="From"
+              items={startDateItems}
+              disabled={selectedTimeFrame.label !== "Custom interval"}
+            />
+            <DropdownGroupUI
+              className={classNames(styles.small, "ms-1")}
+              label="to"
+              items={endDateItems}
+              disabled={selectedTimeFrame.label !== "Custom interval"}
+            />
+          </div>
+          <span className={classNames("d-flex", "align-items-center", "mb-2")}>
             <BsExclamationTriangleFill
               className={classNames("me-2", "mb-1")}
               style={{ color: "var(--bs-interactive)" }}
@@ -253,18 +263,24 @@ export default function ToolbarUI({
               data retrieval may take several minutes
             </p>
           </span>
+          <p className={classNames("text-small", "mb-2")}>
+            A slice is{" "}
+            <Badge bg="light-gray" text="dark">
+              {timeStep}
+            </Badge>
+          </p>
         </>
       )}
-      <p className={classNames("text-small", "mb-2")}>
-        A slice is{" "}
-        <Badge bg="light-gray" text="dark">
-          {timeStep}
-        </Badge>
-      </p>
-
+      {parentData && filterData && (
+        <WhatsNew
+          data={parentData}
+          filterData={filterData}
+          setFilterData={setFilterData}
+        />
+      )}
       <h6>Timeline</h6>
-      <div className={classNames("d-flex", "justify-content-between")}>
-        {/* <ButtonGroupUI
+      {/* <div className={classNames("d-flex", "justify-content-between")}>
+        <ButtonGroupUI
 					label="Play"
 					items={[
 						{ content: <BsFillPlayFill />, onClickAction: (e) => console.log(e) },
@@ -274,7 +290,7 @@ export default function ToolbarUI({
 						{ content: <BsArrowRepeat />, onClickAction: (e) => console.log(e) },
 					]}
 					disabled={true}
-				/> */}
+				/>
         <ButtonUI
           label="Save"
           content={<BsDownload />}
@@ -284,7 +300,7 @@ export default function ToolbarUI({
         <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
           <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
         </Modal>
-      </div>
+      </div> */}
       {parentData && filterData && (
         <AreaChart data={parentData} filterData={filterData} />
       )}

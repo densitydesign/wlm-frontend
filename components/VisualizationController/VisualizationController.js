@@ -26,6 +26,7 @@ export default function VisualizationController() {
   const [ventagli, setVentagli] = useState();
   const [parentData, setParentData] = useState();
   const [filterData, setFilterData] = useState();
+  const [showDelta, setShowDelta] = useState(false);
 
   // uses OSM admin levels for future compatibility
   const [lvl4, setLvl4] = useState([]); // Regions
@@ -130,6 +131,7 @@ export default function VisualizationController() {
         if (dateFrom) {
           setDateFrom(dateFrom);
         } else {
+          console.log(selectedTimeFrame.label);
           const dateRange = selectedTimeFrame.getDateRange(
             domain.last_snapshot
           );
@@ -285,7 +287,6 @@ export default function VisualizationController() {
         setDateFrom(newDateFrom);
       }
       if (dateFrom !== newDateFrom) {
-        console.log(dateFrom, newDateFrom);
         setDateFrom(newDateFrom);
       }
     }
@@ -357,6 +358,9 @@ export default function VisualizationController() {
         selectedTimeFrame.label
       );
     }
+    if (showDelta) {
+      parameters.showDeltaPar = encodeURIComponent(showDelta);
+    }
     const temp = [];
     for (const key in parameters) {
       temp.push(key + "=" + parameters[key]);
@@ -381,7 +385,7 @@ export default function VisualizationController() {
     dateFrom,
     dateTo,
     loading,
-    selectedTimeFrame,
+    // selectedTimeFrame // try to remove to prevent double fetchData() executions
   ]);
 
   useEffect(() => {
@@ -424,11 +428,23 @@ export default function VisualizationController() {
           const index = newVentagli.extent.indexOf(elm);
           if (index > -1) newVentagli.extent.splice(index, 1);
         });
+
+      if (showDelta) {
+        newVentagli.data.forEach((area) => {
+          const baseline = JSON.parse(JSON.stringify(area.history[0].groups));
+          area.history.forEach((date) => {
+            date.groups.forEach((g, i) => {
+              g.oldValue = g.value;
+              g.value -= baseline[i].value;
+            });
+          });
+        });
+      }
       return newVentagli;
     } else {
       return undefined;
     }
-  }, [filterData, ventagli]);
+  }, [filterData, ventagli, showDelta]);
 
   const mapData = {
     ventagli: filteredVentagli,
@@ -495,6 +511,9 @@ export default function VisualizationController() {
             filterData={filterData}
             setFilterData={setFilterData}
             mapData={mapData}
+            //
+            showDelta={showDelta}
+            setShowDelta={setShowDelta}
           />
         </Col>
         <Col className={classNames("h-100", "position-relative")}>
