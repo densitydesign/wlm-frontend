@@ -203,11 +203,6 @@ export default function ToolbarUI({
 				<br />
 				Last database snapshot: {maxDate}
 			</p> */}
-      {/* <SwitchUI
-        label="Show Delta"
-        checked={showDelta}
-        setChecked={setShowDelta}
-      /> */}
       <h6>Time frame</h6>
       <DropdownUI
         label="View"
@@ -271,6 +266,12 @@ export default function ToolbarUI({
           </p>
         </>
       )}
+      <SwitchUI
+        className={classNames("text-small", "mb-2")}
+        label="Show increment only"
+        checked={showDelta}
+        setChecked={setShowDelta}
+      />
       {parentData && filterData && (
         <WhatsNew
           data={parentData}

@@ -159,7 +159,6 @@ const initialize = (element, viz_data) => {
 };
 
 const update = (viz_data) => {
-  // console.log("update", viz_data);
   const {
     data,
     extent,
@@ -172,7 +171,9 @@ const update = (viz_data) => {
     setSelectedRegion,
     setSelectedProvince,
     setSelectedMunicipality,
+    showDelta
   } = viz_data;
+  // console.log("update", data);
 
   if (viz_data.viewbox) {
     width = viz_data.viewbox.width;
@@ -327,7 +328,7 @@ const update = (viz_data) => {
       }
     })
     .each(function (d) {
-      drawVentaglio(d, d3.select(this));
+      drawVentaglio(d, d3.select(this), showDelta);
     });
 
   // areaLabel = g_ventagli

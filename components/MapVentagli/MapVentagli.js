@@ -18,6 +18,7 @@ export default function MapVentagli({
 	typology,
 	dateFrom,
 	dateTo,
+	showDelta,
 	viewbox,
 }) {
 	const svgEl = useRef();
@@ -61,6 +62,7 @@ export default function MapVentagli({
 			typology,
 			dateFrom,
 			dateTo,
+			showDelta,
 			viewbox,
 		};
 		update(_cloneDeep(data_for_viz));

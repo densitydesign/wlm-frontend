@@ -1,9 +1,10 @@
 import classNames from "classnames";
 import styles from "./UI-Components.module.scss";
-export default function SwitchUI({ label, checked, setChecked, disabled }) {
+export default function SwitchUI({ label, checked, setChecked, disabled, className }) {
   return (
     <div
       className={classNames(
+        className,
         "d-flex",
         "justify-content-start",
         "align-items-center",

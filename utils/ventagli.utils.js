@@ -21,7 +21,7 @@ let rotation;
 const initLabelSize = 8;
 const initAxisLabelSize = 7;
 
-const drawVentaglio = (datum, ventaglio) => {
+const drawVentaglio = (datum, ventaglio, showDelta) => {
   // console.log("drawing ventagli", [datum], ventaglio);
   const data = [datum];
 
@@ -184,21 +184,24 @@ const drawVentaglio = (datum, ventaglio) => {
     .attr("stroke", (d) => d3.color(colors[d.label]).darker(2))
     .attr("stroke-width", 2)
     .attr("stroke-linejoin", "round")
-    .attr("font-size", 8)
-    .attr("font-weight", 600)
+    .attr("font-size", 6)
+    .attr("font-weight", 500)
     .attr("x", (d) => {
       const r = d.outerRadius;
       let a = fanOpening / 2;
-      a = d.index % 2 === 0 ? a : -a;
+      // a = d.index % 2 === 0 ? a : -a;
       return polarToCartesian(0, 0, r, a).x;
     })
     .attr("y", (d) => {
       const r = d.outerRadius;
       const a = fanOpening / 2;
-      return polarToCartesian(0, 0, r, a).y + 9;
+      return polarToCartesian(0, 0, r, a).y + 7;
     })
-    .attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
-    .text((d) => d.value.toLocaleString());
+    // .attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
+    .attr("text-anchor", "start")
+    .text((d) =>
+      showDelta ? "+" + d.value.toLocaleString() : d.value.toLocaleString()
+    );
 
   tick
     .selectAll(".axisLabel")
@@ -209,21 +212,24 @@ const drawVentaglio = (datum, ventaglio) => {
     .join("text")
     .classed("axisLabel", true)
     .attr("fill", (d) => d3.color(colors[d.label]).brighter(3))
-    .attr("font-size", 8)
-    .attr("font-weight", 600)
+    .attr("font-size", 6)
+    .attr("font-weight", 500)
     .attr("x", (d) => {
       const r = d.outerRadius;
       let a = fanOpening / 2;
-      a = d.index % 2 === 0 ? a : -a;
+      // a = d.index % 2 === 0 ? a : -a;
       return polarToCartesian(0, 0, r, a).x;
     })
     .attr("y", (d) => {
       const r = d.outerRadius;
       const a = fanOpening / 2;
-      return polarToCartesian(0, 0, r, a).y + 9;
+      return polarToCartesian(0, 0, r, a).y + 7;
     })
     .attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
-    .text((d) => d.value.toLocaleString());
+    .attr("text-anchor", "start")
+    .text((d) =>
+      showDelta ? "+" + d.value.toLocaleString() : d.value.toLocaleString()
+    );
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -338,7 +344,8 @@ function dataTick(d) {
   const data = [];
   const temp = [];
   const groups = d.history.slice(-1)[0].groups;
-  for (let i = groups.length - 1; i >= 0; i--) {
+  // for (let i = groups.length - 1; i >= 0; i--) {
+  for (let i = 0; i < groups.length; i++) {
     const g = groups[i];
     if (g.value === 0) continue;
     const outerRadius = g.outerRadius;
@@ -353,7 +360,7 @@ function dataTick(d) {
       data.push(group);
     }
   }
-  return data;
+  return data.reverse();
 }
 
 export { colors, collisionRadius, drawVentaglio };
