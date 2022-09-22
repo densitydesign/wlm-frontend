@@ -131,6 +131,7 @@ export default function VisualizationController() {
         if (dateFrom) {
           setDateFrom(dateFrom);
         } else {
+          console.log(selectedTimeFrame.label);
           const dateRange = selectedTimeFrame.getDateRange(
             domain.last_snapshot
           );
@@ -286,7 +287,6 @@ export default function VisualizationController() {
         setDateFrom(newDateFrom);
       }
       if (dateFrom !== newDateFrom) {
-        console.log(dateFrom, newDateFrom);
         setDateFrom(newDateFrom);
       }
     }
@@ -359,9 +359,7 @@ export default function VisualizationController() {
       );
     }
     if (showDelta) {
-      parameters.showDeltaPar = encodeURIComponent(
-        showDelta
-      );
+      parameters.showDeltaPar = encodeURIComponent(showDelta);
     }
     const temp = [];
     for (const key in parameters) {
@@ -387,8 +385,7 @@ export default function VisualizationController() {
     dateFrom,
     dateTo,
     loading,
-    selectedTimeFrame,
-    showDelta
+    // selectedTimeFrame // try to remove to prevent double fetchData() executions
   ]);
 
   useEffect(() => {
@@ -443,7 +440,6 @@ export default function VisualizationController() {
           });
         });
       }
-
       return newVentagli;
     } else {
       return undefined;

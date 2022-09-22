@@ -1,6 +1,7 @@
 import * as d3 from "d3";
+
 import { colors, drawVentaglio } from "../../utils/ventagli.utils";
-import coastlinesData from "./coastlines.json";
+// import coastlinesData from "./coastlines.json";
 
 const t_duration = 350;
 
@@ -184,28 +185,6 @@ const update = (viz_data) => {
     .exponent(1 / 2)
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
     .range([0, 70]);
-
-//   coastlines = g_coastlines
-//     .selectAll(".coastlines")
-//     .data(coastlinesData.features)
-//     .join("path")
-//     .attr("d", (d) => render(d.geometry))
-//     .attr("stroke", colors.coastlines)
-// 	.attr("stroke-linecap", "round")
-//     .attr("stroke-linejoin", "round")
-// 	.attr("stroke-width", 10)
-
-	// coastlines = g_coastlines
-  //   .selectAll(".coastlines")
-  //   .data(coastlinesData.features)
-  //   .join("path")
-  //   .attr("d", (d) => render(d.geometry))
-	// .attr('fill', colors.terrainLight)
-  //   .attr("stroke", colors.terrainLightOuter)
-	// .attr("stroke-linecap", "round")
-  //   .attr("stroke-linejoin", "round")
-	// .attr("stroke-width", initStrokeWidth + "px")
-
 
   region = g_regions
     .selectAll(".region")

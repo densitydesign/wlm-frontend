@@ -2,6 +2,7 @@ import styles from "./MapVentagli.module.scss";
 import classNames from "classnames";
 import { useRef, useEffect } from "react";
 import { initialize, update } from "./MapVentagli.render";
+import { cloneDeep as _cloneDeep } from "lodash";
 
 export default function MapVentagli({
 	ventagli,
@@ -62,8 +63,7 @@ export default function MapVentagli({
 			dateTo,
 			viewbox,
 		};
-		// console.log("update",data_for_viz);
-		update(data_for_viz);
+		update(_cloneDeep(data_for_viz));
 	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality, viewbox]);
 
 	const svg_ns = {

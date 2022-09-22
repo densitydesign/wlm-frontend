@@ -6,7 +6,7 @@ let svg,
 	margin = {
 		left: 20,
 		right: 1,
-		top: 30,
+		top: 5,
 		bottom: 20,
 	},
 	areaChart,

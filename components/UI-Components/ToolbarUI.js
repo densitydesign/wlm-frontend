@@ -4,7 +4,7 @@ import {
   DatePickerUI,
   DropdownUI,
   DropdownGroupUI,
-  SwitchUI
+  SwitchUI,
 } from "./";
 import {
   BsExclamationTriangleFill,
@@ -70,7 +70,7 @@ export default function ToolbarUI({
   mapData,
   //
   showDelta,
-  setShowDelta
+  setShowDelta,
 }) {
   const [show, setShow] = useState(false);
 
@@ -210,7 +210,11 @@ export default function ToolbarUI({
           setFilterData={setFilterData}
         />
       )}
-      <SwitchUI label="Show Delta" checked={showDelta} setChecked={setShowDelta} />
+      {/* <SwitchUI
+        label="Show Delta"
+        checked={showDelta}
+        setChecked={setShowDelta}
+      /> */}
       <h6>Timeframe</h6>
       <DropdownUI
         label="View"
@@ -223,13 +227,17 @@ export default function ToolbarUI({
       />
       {selectedTimeFrame.label !== "Custom interval" && (
         <>
-          <p className={classNames("mb-2")}>
-            From{" "}
-            <Badge bg="lightBlue" text="blue-jeans">
+          <p className={classNames("text-small", "mb-2")}>
+            A slice is{" "}
+            <Badge bg="light-gray" text="dark">
+              {timeStep}
+            </Badge>{" "}
+            from{" "}
+            <Badge bg="light-gray" text="dark">
               {dateFrom}
             </Badge>{" "}
             to{" "}
-            <Badge bg="lightBlue" text="blue-jeans">
+            <Badge bg="light-gray" text="dark">
               {dateTo}
             </Badge>
           </p>
@@ -247,7 +255,7 @@ export default function ToolbarUI({
             items={endDateItems}
             disabled={selectedTimeFrame.label !== "Custom interval"}
           />
-           <span className={classNames("d-flex", "align-items-center", "mb-2")}>
+          <span className={classNames("d-flex", "align-items-center", "mb-2")}>
             <BsExclamationTriangleFill
               className={classNames("me-2", "mb-1")}
               style={{ color: "var(--bs-interactive)" }}
@@ -258,18 +266,18 @@ export default function ToolbarUI({
               data retrieval may take several minutes
             </p>
           </span>
+          <p className={classNames("text-small", "mb-2")}>
+            A slice is{" "}
+            <Badge bg="light-gray" text="dark">
+              {timeStep}
+            </Badge>
+          </p>
         </>
       )}
-      <p className={classNames("text-small", "mb-2")}>
-        A slice is{" "}
-        <Badge bg="light-gray" text="dark">
-          {timeStep}
-        </Badge>
-      </p>
 
       <h6>Timeline</h6>
-      <div className={classNames("d-flex", "justify-content-between")}>
-        {/* <ButtonGroupUI
+      {/* <div className={classNames("d-flex", "justify-content-between")}>
+        <ButtonGroupUI
 					label="Play"
 					items={[
 						{ content: <BsFillPlayFill />, onClickAction: (e) => console.log(e) },
@@ -279,7 +287,7 @@ export default function ToolbarUI({
 						{ content: <BsArrowRepeat />, onClickAction: (e) => console.log(e) },
 					]}
 					disabled={true}
-				/> */}
+				/>
         <ButtonUI
           label="Save"
           content={<BsDownload />}
@@ -289,7 +297,7 @@ export default function ToolbarUI({
         <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
           <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
         </Modal>
-      </div>
+      </div> */}
       {parentData && filterData && (
         <AreaChart data={parentData} filterData={filterData} />
       )}
