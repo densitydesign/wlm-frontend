@@ -8,8 +8,7 @@ import { GoHeart } from "react-icons/go";
 import classNames from "classnames";
 
 const contestsPaths = {
-  "2022: Castelli e fortificazioni":
-    "/#typology=57&dateFrom=2022-09-01&dateTo=2022-09-18&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
+  2022: "/#dateFrom=2022-09-01&dateTo=2022-09-18&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
   2021: "/#dateFrom=2021-09-01&dateTo=2021-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
   2020: "/#dateFrom=2020-09-01&dateTo=2020-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
   2019: "/#dateFrom=2019-09-01&dateTo=2019-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
@@ -76,7 +75,7 @@ export default function NavMenu() {
         </Dropdown.Item>
         <Dropdown.Header>Contests</Dropdown.Header>
 
-        {Object.keys(contestsPaths).map((d, i) => (
+        {Object.keys(contestsPaths).reverse().map((d, i) => (
           <Dropdown.Item
             key={"cp" + i}
             href={contestsPaths[d]}
