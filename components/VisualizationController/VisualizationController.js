@@ -446,28 +446,33 @@ export default function VisualizationController() {
         });
 
       if (showDelta) {
-        let newExtent = _cloneDeep(newVentagli.extent).map((g) => ({
+        let data = _cloneDeep(newVentagli.data);
+        let extent = _cloneDeep(newVentagli.extent).map((g) => ({
           ...g,
           value: [0, 0],
         }));
 
-        newVentagli.data.forEach((area) => {
+        data.forEach((area) => {
           const baseline = _cloneDeep(area.history[0].groups);
           area.history.forEach((date) => {
             date.groups.forEach((g, i) => {
               g.oldValue = g.value;
               g.baseline = baseline[i].value;
               g.value -= baseline[i].value;
-              if (i>0) g.value += date.groups[i-1].value;
-              // adjust newExtent
-              if (newExtent[i].value[0] > g.value)
-                newExtent[i].value[0] = g.value;
-              if (newExtent[i].value[1] < g.value)
-                newExtent[i].value[1] = g.value;
+              g.valueInc =
+                i > 0 ? date.groups[i - 1].valueInc + g.value : g.value;
+              // if (i>0) g.value += date.groups[i-1].value;
+              // adjust extent
+              g.value = g.valueInc;
+              if (extent[i].value[0] > g.value) extent[i].value[0] = g.value;
+              if (extent[i].value[1] < g.value) extent[i].value[1] = g.value;
             });
           });
         });
-        newVentagli.extent = newExtent;
+
+        // console.log(data, extent);
+        newVentagli.data = data;
+        newVentagli.extent = extent;
       }
 
       return newVentagli;
@@ -491,7 +496,7 @@ export default function VisualizationController() {
     dateFrom: dateFrom,
     dateTo: dateTo,
     isFetching: isFetching,
-    showDelta: showDelta
+    showDelta: showDelta,
   };
 
   return (
