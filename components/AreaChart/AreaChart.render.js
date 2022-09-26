@@ -80,9 +80,7 @@ const update = (data, filterData, showDelta) => {
 		});
 
 	const quantityExtent = d3.extent(amounts);
-	console.log(data)
 	const _domain = [showDelta ? data.data[0].history[0].groups[0].value : 0, quantityExtent[1]]
-	console.log(_domain)
 	quantityScale.domain(_domain).range([height - margin.bottom, margin.top]);
 	const qTicks = quantityScale.ticks(5);
 	const qTicksFormat = quantityScale.tickFormat(5, "~s");
