@@ -187,7 +187,7 @@ const update = (viz_data) => {
   scaleRadius
     .exponent(1 / 2)
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
-    .range([0, 70]);
+    .range([0, 50]);
 
   region = g_regions
     .selectAll(".region")

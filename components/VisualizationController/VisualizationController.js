@@ -551,7 +551,7 @@ export default function VisualizationController() {
         </Col>
         <Col className={classNames("h-100", "position-relative")}>
           <>
-            {!loading && filteredVentagli && <MapVentagli {...mapData} />}
+            {!loading && filteredVentagli && <MapVentagli key="main-map" {...mapData} />}
             {!(!loading && filteredVentagli) && <PlaceholderMapVentagli />}
             <LicenseAttribution />
             {(loading || isFetching) && <Fetching />}

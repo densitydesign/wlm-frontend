@@ -296,19 +296,23 @@ export default function ToolbarUI({
 					]}
 					disabled={true}
 				/>
-        <ButtonUI
-          label="Save"
-          content={<BsDownload />}
-          onClickAction={() => setShow(true)}
-          disabled={false}
-        />
-        <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
-          <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
-        </Modal>
       </div> */}
       {parentData && filterData && (
-        <AreaChart data={parentData} filterData={filterData} showDelta={showDelta} />
+        <AreaChart
+          data={parentData}
+          filterData={filterData}
+          showDelta={showDelta}
+        />
       )}
+      <ButtonUI
+        label="Save"
+        content={<BsDownload />}
+        onClickAction={() => setShow(true)}
+        disabled={false}
+      />
+      <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
+        <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
+      </Modal>
     </div>
   );
 }
