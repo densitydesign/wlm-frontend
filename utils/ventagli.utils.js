@@ -200,7 +200,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     // .attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
     .attr("text-anchor", "start")
     .text((d) =>
-      showDelta ? "+" + d.value.toLocaleString() : d.value.toLocaleString()
+    showDelta ? "+" + d.deltaValue.toLocaleString() : d.value.toLocaleString()
     );
 
   tick
@@ -228,7 +228,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
     .attr("text-anchor", "start")
     .text((d) =>
-      showDelta ? "+" + d.value.toLocaleString() : d.value.toLocaleString()
+      showDelta ? "+" + d.deltaValue.toLocaleString() : d.value.toLocaleString()
     );
 };
 

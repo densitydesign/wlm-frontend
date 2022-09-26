@@ -16,7 +16,12 @@ const labelsDict = {
   },
 };
 
-export default function WhatsNew({ data, filterData, setFilterData }) {
+export default function WhatsNew({
+  data,
+  filterData,
+  setFilterData,
+  showDelta,
+}) {
   const [max, setMax] = useState();
   useEffect(() => {
     const scaleMax = d3Max(
@@ -27,7 +32,7 @@ export default function WhatsNew({ data, filterData, setFilterData }) {
   return (
     <>
       <h6>What&apos;s new</h6>
-      <div className="mb-3">
+      <div className="mb-2">
         {data.extent.map((d, i) => (
           <Group
             key={i}
@@ -35,6 +40,7 @@ export default function WhatsNew({ data, filterData, setFilterData }) {
             max={max}
             filterData={filterData}
             setFilterData={setFilterData}
+            showDelta={showDelta}
           />
         ))}
       </div>
@@ -42,7 +48,7 @@ export default function WhatsNew({ data, filterData, setFilterData }) {
   );
 }
 
-function Group({ group, max, filterData, setFilterData }) {
+function Group({ group, max, filterData, setFilterData, showDelta }) {
   const initialStatus = filterData.find((f) => group.label === f.label).active;
   const [checked, setChecked] = useState(initialStatus);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -64,10 +70,10 @@ function Group({ group, max, filterData, setFilterData }) {
   useEffect(() => {
     const newStatus = filterData.find((f) => group.label === f.label).active;
     setChecked(newStatus);
-    const _disabled =
-      filterData.filter((d) => d.active).length < 2 && checked === true;
+    let _disabled =
+    showDelta || filterData.filter((d) => d.active).length < 2 && checked === true;
     setIsDisabled(_disabled);
-  }, [filterData]);
+  }, [filterData, showDelta]);
 
   return (
     <div className={classNames(styles.group)}>

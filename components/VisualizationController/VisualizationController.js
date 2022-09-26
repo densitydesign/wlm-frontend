@@ -458,12 +458,9 @@ export default function VisualizationController() {
             date.groups.forEach((g, i) => {
               g.oldValue = g.value;
               g.baseline = baseline[i].value;
-              g.value -= baseline[i].value;
-              g.valueInc =
-                i > 0 ? date.groups[i - 1].valueInc + g.value : g.value;
-              // if (i>0) g.value += date.groups[i-1].value;
-              // adjust extent
-              g.value = g.valueInc;
+              g.deltaValue = g.value - baseline[i].value;
+              // adjust value and extent
+              g.value = g.deltaValue;
               if (extent[i].value[0] > g.value) extent[i].value[0] = g.value;
               if (extent[i].value[1] < g.value) extent[i].value[1] = g.value;
             });

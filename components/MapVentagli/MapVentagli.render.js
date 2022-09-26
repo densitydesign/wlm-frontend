@@ -412,6 +412,7 @@ function compileVentagliData(data, arr) {
       area.y = centroidUnknown[1];
     }
     area.maxRadius = scaleRadius(area.maxValue);
+    //
     area.history.forEach((date) => {
       const groups = date.groups;
       date.groups.forEach((group, i) => {

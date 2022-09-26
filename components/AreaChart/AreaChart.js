@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useEffect, useRef } from "react";
 import { initialize as init_areaChart, update as update_areaChart } from "./AreaChart.render";
 
-export default function AreaChart({ data, filterData }) {
+export default function AreaChart({ data, filterData, showDelta }) {
 	const svgEl = useRef();
 
 	useEffect(() => {
@@ -11,8 +11,8 @@ export default function AreaChart({ data, filterData }) {
 	}, []);
 
 	useEffect(() => {
-		update_areaChart(data, filterData);
-	}, [data, filterData]);
+		update_areaChart(data, filterData, showDelta);
+	}, [data, filterData, showDelta]);
 
 	return (
 		<div className={classNames(styles.areaChart, "d-flex", "justify-content-center", "align-items-center")}>
