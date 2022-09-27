@@ -44,11 +44,12 @@ export default function DropdownUI({
                     className={classNames(
                       styles.dropDownHeader,
                       "pt-2",
+                      {"pt-4":i>0},
                       "pb-2"
                     )}
                     key={"h" + i}
                   >
-                    Group: {d[0]}
+                    Group {d[0]}
                   </Dropdown.Header>
                   {/* <Dropdown.Divider key={"d" + i} className="my-0" /> */}
                 </>

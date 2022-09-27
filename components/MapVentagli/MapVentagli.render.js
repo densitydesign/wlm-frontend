@@ -154,7 +154,12 @@ const initialize = (element, viz_data) => {
       ventaglio.call(handleOverlappings);
     });
 
-  svg.call(zoom);
+  svg
+    .call(zoom)
+    .on("touchstart.zoom", null)
+    .on("touchmove.zoom", null)
+    .on("touchend.zoom", null)
+    .on("touchcancel.zoom", null);
   update(viz_data);
 };
 
@@ -171,7 +176,7 @@ const update = (viz_data) => {
     setSelectedRegion,
     setSelectedProvince,
     setSelectedMunicipality,
-    showDelta
+    showDelta,
   } = viz_data;
   // console.log("update", data);
 
