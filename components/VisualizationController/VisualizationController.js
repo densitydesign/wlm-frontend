@@ -63,6 +63,9 @@ export default function VisualizationController() {
   const setParmsAndFetch = () => {
     const parameters = {};
     const parametersFetchData = {};
+    if (showDelta!==undefined) {
+      parameters.showDeltaPar = encodeURIComponent(showDelta);
+    }
     if (selectedRegion) {
       parameters.selectedRegion = encodeURIComponent(selectedRegion.label);
       parametersFetchData.selectedRegion = selectedRegion;
@@ -93,9 +96,6 @@ export default function VisualizationController() {
       parameters.selectedTimeFramePar = encodeURIComponent(
         selectedTimeFrame.label
       );
-    }
-    if (showDelta) {
-      parameters.showDeltaPar = encodeURIComponent(showDelta);
     }
     const temp = [];
     for (const key in parameters) {
@@ -161,6 +161,7 @@ export default function VisualizationController() {
           selectedMunicipality,
           filterDataParams,
           selectedTimeFramePar,
+          showDeltaPar
         } = vizParameters;
 
         if (typology) {
@@ -202,6 +203,10 @@ export default function VisualizationController() {
             .map((d) => d.split(":"))
             .map((d) => ({ label: d[0], active: d[1] === "true" }));
           setFilterData(decoded_filterData);
+        }
+
+        if (showDeltaPar) {
+          setShowDelta(showDeltaPar==="true")
         }
 
         // Check selected areas and set loading to false to trigger data fetching
@@ -401,6 +406,7 @@ export default function VisualizationController() {
     dateFrom,
     dateTo,
     loading,
+    showDelta
     // selectedTimeFrame // try to remove to prevent double fetchData() executions
   ]);
 
@@ -551,7 +557,9 @@ export default function VisualizationController() {
         </Col>
         <Col className={classNames("h-100", "position-relative")}>
           <>
-            {!loading && filteredVentagli && <MapVentagli key="main-map" {...mapData} />}
+            {!loading && filteredVentagli && (
+              <MapVentagli key="main-map" {...mapData} />
+            )}
             {!(!loading && filteredVentagli) && <PlaceholderMapVentagli />}
             <LicenseAttribution />
             {(loading || isFetching) && <Fetching />}
