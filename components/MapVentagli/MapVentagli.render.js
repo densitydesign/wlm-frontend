@@ -159,7 +159,6 @@ const initialize = (element, viz_data) => {
 };
 
 const update = (viz_data) => {
-  // console.log("update", viz_data);
   const {
     data,
     extent,
@@ -172,7 +171,9 @@ const update = (viz_data) => {
     setSelectedRegion,
     setSelectedProvince,
     setSelectedMunicipality,
+    showDelta
   } = viz_data;
+  // console.log("update", data);
 
   if (viz_data.viewbox) {
     width = viz_data.viewbox.width;
@@ -186,7 +187,7 @@ const update = (viz_data) => {
   scaleRadius
     .exponent(1 / 2)
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
-    .range([0, 70]);
+    .range([0, 50]);
 
   region = g_regions
     .selectAll(".region")
@@ -327,7 +328,7 @@ const update = (viz_data) => {
       }
     })
     .each(function (d) {
-      drawVentaglio(d, d3.select(this));
+      drawVentaglio(d, d3.select(this), showDelta);
     });
 
   // areaLabel = g_ventagli
@@ -411,6 +412,7 @@ function compileVentagliData(data, arr) {
       area.y = centroidUnknown[1];
     }
     area.maxRadius = scaleRadius(area.maxValue);
+    //
     area.history.forEach((date) => {
       const groups = date.groups;
       date.groups.forEach((group, i) => {

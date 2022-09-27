@@ -41,7 +41,7 @@ export default function ExportTools({ closeFunct, mapData }) {
 		<>
 			<div className={classNames(styles.exportTools, "d-flex", "flex-column", "align-items-center", "justify-content-between", "p-3")}>
 				<div className={classNames(styles.preview, { [styles.computer]: target === "computer" }, { [styles.mobile]: target === "mobile" }, "mb-3")}>
-					<MapVentagli {...mapData} viewbox={viewbox} />
+					<MapVentagli key="export-map" {...mapData} viewbox={viewbox} />
 				</div>
 
 				<div className={classNames("w-100", "d-flex", "flex-row", "justify-content-between")}>

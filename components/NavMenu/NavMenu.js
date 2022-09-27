@@ -8,13 +8,17 @@ import { GoHeart } from "react-icons/go";
 import classNames from "classnames";
 
 const contestsPaths = {
-  2022: "/#dateFrom=2022-09-01&dateTo=2022-09-18&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
-  2021: "/#dateFrom=2021-09-01&dateTo=2021-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
-  2020: "/#dateFrom=2020-09-01&dateTo=2020-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
-  2019: "/#dateFrom=2019-09-01&dateTo=2019-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
-  2018: "/#dateFrom=2018-09-01&dateTo=2018-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
-  2017: "/#dateFrom=2017-09-01&dateTo=2017-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
-  2016: "/#dateFrom=2017-09-01&dateTo=2017-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse",
+  2022: "/#dateFrom=2022-09-01&dateTo=2022-09-18&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2021: "/#dateFrom=2021-09-01&dateTo=2021-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2020: "/#dateFrom=2020-09-01&dateTo=2020-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2019: "/#dateFrom=2019-09-01&dateTo=2019-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2018: "/#dateFrom=2018-09-01&dateTo=2018-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2017: "/#dateFrom=2017-09-01&dateTo=2017-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2016: "/#dateFrom=2017-09-01&dateTo=2017-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2015: "/#dateFrom=2015-09-01&dateTo=2015-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2014: "/#dateFrom=2014-09-01&dateTo=2014-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2013: "/#dateFrom=2013-09-01&dateTo=2013-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
+  2012: "/#dateFrom=2012-09-01&dateTo=2012-09-30&selectedTimeFramePar=Custom%20interval&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWIki%3Afalse&showDeltaPar=true",
 };
 
 const HairyMenu = forwardRef(({ children, onClick }, ref) => (

@@ -203,11 +203,6 @@ export default function ToolbarUI({
 				<br />
 				Last database snapshot: {maxDate}
 			</p> */}
-      {/* <SwitchUI
-        label="Show Delta"
-        checked={showDelta}
-        setChecked={setShowDelta}
-      /> */}
       <h6>Time frame</h6>
       <DropdownUI
         label="View"
@@ -272,11 +267,21 @@ export default function ToolbarUI({
         </>
       )}
       {parentData && filterData && (
-        <WhatsNew
-          data={parentData}
-          filterData={filterData}
-          setFilterData={setFilterData}
-        />
+        <>
+          <WhatsNew
+            data={parentData}
+            filterData={filterData}
+            setFilterData={setFilterData}
+            showDelta={showDelta}
+          />
+          <SwitchUI
+            className={classNames("text-small", "mb-2")}
+            label="Show increment only"
+            checked={showDelta}
+            setChecked={setShowDelta}
+            disabled={filterData.filter((d) => d.active).length !== 1}
+          />
+        </>
       )}
       <h6>Timeline</h6>
       {/* <div className={classNames("d-flex", "justify-content-between")}>
@@ -291,18 +296,26 @@ export default function ToolbarUI({
 					]}
 					disabled={true}
 				/>
-        <ButtonUI
-          label="Save"
-          content={<BsDownload />}
-          onClickAction={() => setShow(true)}
-          disabled={false}
-        />
-        <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
-          <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
-        </Modal>
       </div> */}
       {parentData && filterData && (
-        <AreaChart data={parentData} filterData={filterData} />
+        <AreaChart
+          data={parentData}
+          filterData={filterData}
+          showDelta={showDelta}
+        />
+      )}
+      {false && (
+        <>
+          <ButtonUI
+            label="Save"
+            content={<BsDownload />}
+            onClickAction={() => setShow(true)}
+            disabled={false}
+          />
+          <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
+            <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
+          </Modal>
+        </>
       )}
     </div>
   );

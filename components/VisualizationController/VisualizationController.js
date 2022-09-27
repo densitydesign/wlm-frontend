@@ -17,6 +17,7 @@ import {
 } from "../../utils/fetchData.utils";
 import LicenseAttribution from "../LicenseAttribution/LicenseAttribution";
 const { DateTime } = require("luxon");
+import { cloneDeep as _cloneDeep } from "lodash";
 
 export default function VisualizationController() {
   const { asPath } = useRouter();
@@ -62,6 +63,9 @@ export default function VisualizationController() {
   const setParmsAndFetch = () => {
     const parameters = {};
     const parametersFetchData = {};
+    if (showDelta!==undefined) {
+      parameters.showDeltaPar = encodeURIComponent(showDelta);
+    }
     if (selectedRegion) {
       parameters.selectedRegion = encodeURIComponent(selectedRegion.label);
       parametersFetchData.selectedRegion = selectedRegion;
@@ -93,9 +97,6 @@ export default function VisualizationController() {
         selectedTimeFrame.label
       );
     }
-    if (showDelta) {
-      parameters.showDeltaPar = encodeURIComponent(showDelta);
-    }
     const temp = [];
     for (const key in parameters) {
       temp.push(key + "=" + parameters[key]);
@@ -112,7 +113,7 @@ export default function VisualizationController() {
         setTimeStep
       );
     }
-  }
+  };
 
   // Decode URL, load geographies and domain (themes + max date)
   useEffect(() => {
@@ -160,6 +161,7 @@ export default function VisualizationController() {
           selectedMunicipality,
           filterDataParams,
           selectedTimeFramePar,
+          showDeltaPar
         } = vizParameters;
 
         if (typology) {
@@ -201,6 +203,10 @@ export default function VisualizationController() {
             .map((d) => d.split(":"))
             .map((d) => ({ label: d[0], active: d[1] === "true" }));
           setFilterData(decoded_filterData);
+        }
+
+        if (showDeltaPar) {
+          setShowDelta(showDeltaPar==="true")
         }
 
         // Check selected areas and set loading to false to trigger data fetching
@@ -280,12 +286,12 @@ export default function VisualizationController() {
           code: d.properties.code,
         }));
         setProvincesList(_provincesList);
-        setParmsAndFetch()
+        setParmsAndFetch();
       });
     } else {
       setLvl6([]);
       setProvincesList([]);
-      setParmsAndFetch()
+      setParmsAndFetch();
     }
   }, [selectedRegion]);
 
@@ -305,12 +311,12 @@ export default function VisualizationController() {
           })
         );
         setMunicipalitiesList(_municipalitiesList);
-        setParmsAndFetch()
+        setParmsAndFetch();
       });
     } else {
       setLvl8([]);
       setMunicipalitiesList([]);
-      setParmsAndFetch()
+      setParmsAndFetch();
     }
   }, [selectedProvince]);
 
@@ -390,8 +396,8 @@ export default function VisualizationController() {
     }
   }, [selectedTimeFrame]);
 
-  useEffect(()=>{
-    setParmsAndFetch()
+  useEffect(() => {
+    setParmsAndFetch();
   }, [
     // selectedRegion,
     // selectedProvince,
@@ -400,6 +406,7 @@ export default function VisualizationController() {
     dateFrom,
     dateTo,
     loading,
+    showDelta
     // selectedTimeFrame // try to remove to prevent double fetchData() executions
   ]);
 
@@ -445,16 +452,32 @@ export default function VisualizationController() {
         });
 
       if (showDelta) {
-        newVentagli.data.forEach((area) => {
-          const baseline = JSON.parse(JSON.stringify(area.history[0].groups));
+        let data = _cloneDeep(newVentagli.data);
+        let extent = _cloneDeep(newVentagli.extent).map((g) => ({
+          ...g,
+          value: [0, 0],
+        }));
+
+        data.forEach((area) => {
+          const baseline = _cloneDeep(area.history[0].groups);
           area.history.forEach((date) => {
             date.groups.forEach((g, i) => {
               g.oldValue = g.value;
-              g.value -= baseline[i].value;
+              g.baseline = baseline[i].value;
+              g.deltaValue = g.value - baseline[i].value;
+              // adjust value and extent
+              g.value = g.deltaValue;
+              if (extent[i].value[0] > g.value) extent[i].value[0] = g.value;
+              if (extent[i].value[1] < g.value) extent[i].value[1] = g.value;
             });
           });
         });
+
+        // console.log(data, extent);
+        newVentagli.data = data;
+        newVentagli.extent = extent;
       }
+
       return newVentagli;
     } else {
       return undefined;
@@ -476,6 +499,7 @@ export default function VisualizationController() {
     dateFrom: dateFrom,
     dateTo: dateTo,
     isFetching: isFetching,
+    showDelta: showDelta,
   };
 
   return (
@@ -533,7 +557,9 @@ export default function VisualizationController() {
         </Col>
         <Col className={classNames("h-100", "position-relative")}>
           <>
-            {!loading && filteredVentagli && <MapVentagli {...mapData} />}
+            {!loading && filteredVentagli && (
+              <MapVentagli key="main-map" {...mapData} />
+            )}
             {!(!loading && filteredVentagli) && <PlaceholderMapVentagli />}
             <LicenseAttribution />
             {(loading || isFetching) && <Fetching />}
