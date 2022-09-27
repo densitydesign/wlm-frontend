@@ -5,6 +5,7 @@ import { Dropdown, DropdownButton, Button } from "react-bootstrap";
 import styles from "./NavMenu.module.scss";
 import { HiMenu } from "react-icons/hi";
 import { GoHeart } from "react-icons/go";
+import { GiSpottedBug } from "react-icons/gi";
 import classNames from "classnames";
 
 const contestsPaths = {
@@ -61,16 +62,21 @@ export default function NavMenu() {
       <Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
         Wiki
         <GoHeart />
-        Monuments
+        Monuments <span className="small" style={{textTransform:"uppercase", opacity: 0.7, fontWeight:500}}>alpha 0.2</span>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className={classNames("w-100")}>
         <Dropdown.Item href={`/`} onClick={(e) => forceNavigation(e, `/`)}>
           Map
         </Dropdown.Item>
-        {/* <Link href={`/list`} passHref>
-					<Dropdown.Item>List</Dropdown.Item>
-				</Link> */}
+        <Link
+          href={`https://github.com/densitydesign/wlm-frontend/issues`}
+          passHref
+        >
+          <Dropdown.Item>
+            <span style={{ color: "var(--bs-indigo)" }}>Report a bug <GiSpottedBug/></span>
+          </Dropdown.Item>
+        </Link>
         {/* <Link href={`/about`} passHref>
 					<Dropdown.Item>About</Dropdown.Item>
 				</Link> */}
@@ -79,15 +85,17 @@ export default function NavMenu() {
         </Dropdown.Item>
         <Dropdown.Header>Contests</Dropdown.Header>
 
-        {Object.keys(contestsPaths).reverse().map((d, i) => (
-          <Dropdown.Item
-            key={"cp" + i}
-            href={contestsPaths[d]}
-            onClick={(e) => forceNavigation(e, contestsPaths[d])}
-          >
-            {d}
-          </Dropdown.Item>
-        ))}
+        {Object.keys(contestsPaths)
+          .reverse()
+          .map((d, i) => (
+            <Dropdown.Item
+              key={"cp" + i}
+              href={contestsPaths[d]}
+              onClick={(e) => forceNavigation(e, contestsPaths[d])}
+            >
+              {d}
+            </Dropdown.Item>
+          ))}
 
         {/* <Dropdown.Item
           href={pathContest2022}
