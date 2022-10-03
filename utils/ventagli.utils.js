@@ -105,7 +105,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
       (exit) => exit.remove()
     );
 
-  ventaglio
+  let outlineVentaglio = ventaglio
     .selectAll(".labelOutline")
     .data(
       (d) => [d],
@@ -113,30 +113,23 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     )
     .join("text")
     .attr("stroke", "#FFF")
-    .attr("stroke-width", 3)
+    .attr("stroke-width", 2)
     .attr("stroke-linejoin", "round")
-    .attr("opacity", 0.8)
+    .attr("opacity", 0.7)
     .attr("text-anchor", "middle")
     .attr("font-size", initLabelSize)
     .attr("class", "labelOutline")
     .attr("y", 1 * 12)
     .text((d) => d.label || "Unknown Region")
-    .raise();
 
-  ventaglio
-    .selectAll(".label")
-    .data(
-      (d) => [d],
-      (d) => d.code
-    )
-    .join("text")
+  outlineVentaglio.clone(true)
+    .attr("stroke", "none")
     .attr("transform", "translate(0,0) scale(1)")
     .attr("text-anchor", "middle")
     .attr("font-size", initLabelSize)
     .attr("class", "label")
     .attr("y", 1 * 12)
     .text((d) => d.label || "Unknown Region")
-    .raise();
 
   let g_ticks = ventaglio.select(".ticks");
   if (g_ticks.empty()) {
@@ -172,7 +165,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-width", 0.5)
     .attr("fill", "none");
 
-  tick
+    let labelTick = tick
     .selectAll(".axisOutline")
     .data(
       (d) => [d],
@@ -203,17 +196,12 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     showDelta ? "+" + d.deltaValue.toLocaleString() : d.value.toLocaleString()
     );
 
-  tick
-    .selectAll(".axisLabel")
-    .data(
-      (d) => [d],
-      (d) => d
-    )
-    .join("text")
+  labelTick.clone()
     .classed("axisLabel", true)
     .attr("fill", (d) => d3.color(colors[d.label]).brighter(3))
     .attr("font-size", 6)
     .attr("font-weight", 500)
+    .attr("stroke", "none")
     .attr("x", (d) => {
       const r = d.outerRadius;
       let a = fanOpening / 2;

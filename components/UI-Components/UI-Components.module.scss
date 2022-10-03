@@ -5,6 +5,27 @@
   overflow-y: scroll;
 }
 
+.sideBar {
+  --margin-top: calc(var(--bs-gutter-x) * 0.5);
+  height: 100%;
+  margin-top: var(--margin-top);
+}
+
+.sideBar .menu {
+  padding-left: 8px;
+  margin-top: var(--margin-top);
+}
+
+.sideBar ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.sideBar ul li {
+  margin-bottom: calc(var(--bs-gutter-x)*0.2);
+  font-size: 0.9rem;
+}
+
 .small {
   font-size: 0.82rem;
   line-height: normal;
