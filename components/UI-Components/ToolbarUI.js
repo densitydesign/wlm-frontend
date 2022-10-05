@@ -162,7 +162,7 @@ export default function ToolbarUI({
 
   return (
     <div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
-      <NavMenu />
+      <NavMenu page="map"/>
       <h6>Monuments</h6>
       <DropdownUI
         label="Region"
