@@ -18,7 +18,7 @@ const colors = {
 const collisionRadius = 70;
 const fanOpening = 150;
 let rotation;
-const initLabelSize = 8;
+const initLabelSize = 10;
 const initAxisLabelSize = 7;
 
 const drawVentaglio = (datum, ventaglio, showDelta) => {
@@ -26,17 +26,6 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
   const data = [datum];
 
   rotation = fanOpening / data[0].history.length;
-
-  // ventaglio
-  // 	.selectAll(".collisionArea")
-  // 	.data(
-  // 		(d) => [d],
-  // 		(d) => d.code
-  // 	)
-  // 	.join("circle")
-  // 	.attr("class", "collisionArea")
-  // 	.attr("r", (d) => d.maxRaius || d.history.slice(-1)[0].groups.slice(-1)[0].outerRadius)
-  // 	.lower();
 
   ventaglio
     .selectAll(".tickBg")
@@ -120,7 +109,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-width", 2)
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
-    .attr("y", 1 * 12)
+    .attr("y", 1 * 13)
     .selectAll("tspan")
     .data(
       (d) => [d],
@@ -153,7 +142,11 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     )
     .join("g")
     .attr("data-tick", (d, i) => d.label + d.value)
-    .classed("tick", true);
+    .classed("tick", true)
+    .on("mouseenter", function(){
+      console.log(this)
+      d3.select(this).raise()
+    });
 
   tick
     .selectAll(".axis")
@@ -182,11 +175,11 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .join("text")
     .classed("axisLabel", true)
     .attr("paint-order", "stroke")
-    .attr("stroke", (d) => d3.color(colors[d.label]).darker(1))
+    .attr("stroke", (d) => d3.color(colors[d.label]).darker(2))
     .attr("stroke-width", 2)
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
-    .attr("font-size", initLabelSize * 0.75)
+    .attr("font-size", initLabelSize * 0.7)
     .attr("font-weight", 500)
     .attr("x", (d) => {
       const r = d.outerRadius;
