@@ -16,6 +16,8 @@ let svg,
   g_coastlines,
   coastlines,
   g_geographies,
+  bg_unknown_region,
+  bg_unknown_region_margin = 25,
   g_regions,
   region,
   g_provinces,
@@ -109,6 +111,14 @@ const initialize = (element, viz_data) => {
       .attr("id", "regions");
   }
 
+  bg_unknown_region = g_geographies.select(".unknown-region-bg");
+  if (bg_unknown_region.empty()) {
+    bg_unknown_region = g_geographies
+      .append("rect")
+      .classed("unknown-region-bg", true)
+      .attr("id", "unknown-region-bg");
+  }
+
   g_provinces = g_geographies.select(".provinces");
   if (g_provinces.empty()) {
     g_provinces = g_geographies
@@ -146,6 +156,10 @@ const initialize = (element, viz_data) => {
     .zoom()
     .scaleExtent([1, 1 << 10])
     .extent([
+      [0, 0],
+      [width, height],
+    ])
+    .translateExtent([
       [0, 0],
       [width, height],
     ])
@@ -193,6 +207,12 @@ const update = (viz_data) => {
     .exponent(1 / 2)
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
     .range([0, 50]);
+
+  bg_unknown_region
+    .attr("x", width - (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
+    .attr("width", (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
+    .attr("height", (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
+    .attr("fill", "white");
 
   region = g_regions
     .selectAll(".region")
@@ -404,9 +424,11 @@ function compileVentagliData(data, arr) {
       area.x = centroid[0];
       area.y = centroid[1];
     } else {
-      const centroidUnknown = projection([12.4, 39.3]);
-      area.x = centroidUnknown[0];
-      area.y = centroidUnknown[1];
+      // const centroidUnknown = projection([12.4, 39.3]);
+      // area.x = centroidUnknown[0];
+      // area.y = centroidUnknown[1];
+      area.x = width - scaleRadius.range()[1] - bg_unknown_region_margin;
+      area.y = scaleRadius.range()[1] * 1.3 + bg_unknown_region_margin;
     }
     area.maxRadius = scaleRadius(area.maxValue);
     //
