@@ -336,15 +336,7 @@ const update = (viz_data) => {
       drawVentaglio(d, d3.select(this), showDelta);
     });
 
-  // areaLabel = g_ventagli
-  //   .selectAll(".areaLabel")
-  //   .data(data, (d) => d.code)
-  //   .join("text")
-  //   .attr("class", "areaLabel")
-  //   .attr("font-size", 8)
-  //   .attr("x", d=>d.x)
-  //   .attr("y", d=>d.y)
-  //   .text(d=>d.label);
+  ventaglio.call(handleOverlappings);
 
   ticked(); // positions ventagli in correct place
 
@@ -454,7 +446,7 @@ function handleOverlappings(selection) {
       const e_maxRadius = e.history
         .slice(-1)[0]
         .groups.slice(-1)[0].outerRadius;
-      const _threshold = ((d_maxRadius + e_maxRadius) / _k) * 0.7;
+      const _threshold = ((d_maxRadius + e_maxRadius) / _k) * 0.8;
       if (_dist < _threshold) {
         const selected_d = d3.select(elm_d);
         const selected_e = d3.select(elm_e);
