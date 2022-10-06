@@ -72,7 +72,17 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     )
     .join("g")
     .attr("class", "snapshot")
-    .attr("transform", (d, i) => `rotate(${-fanOpening / 2 + rotation * i})`);
+    .attr("transform", (d, i) => `rotate(${-fanOpening / 2 + rotation * i})`)
+    .attr("title", (d) => d.date);
+
+  snapshot
+    .selectAll("title")
+    .data(
+      (d) => [d.date],
+      (d) => d.date
+    )
+    .join("title")
+    .text((d) => d);
 
   snapshot
     .selectAll(".status")
@@ -143,9 +153,8 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .join("g")
     .attr("data-tick", (d, i) => d.label + d.value)
     .classed("tick", true)
-    .on("mouseenter", function(){
-      console.log(this)
-      d3.select(this).raise()
+    .on("mouseenter", function () {
+      d3.select(this).raise();
     });
 
   tick
