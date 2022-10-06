@@ -212,7 +212,8 @@ const update = (viz_data) => {
     .attr("x", width - (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
     .attr("width", (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
     .attr("height", (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
-    .attr("fill", "white");
+    .attr("fill", "white")
+    .attr("opacity", 0.6);
 
   region = g_regions
     .selectAll(".region")
