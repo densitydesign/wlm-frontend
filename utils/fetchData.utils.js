@@ -3,7 +3,7 @@ import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
 const dataCacheMode = "default";
-const geoCacheMode = "default";
+const geoCacheMode = "force-cache";
 
 const timeFrameData = {
   items: [

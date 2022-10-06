@@ -105,31 +105,39 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
       (exit) => exit.remove()
     );
 
-  let outlineVentaglio = ventaglio
-    .selectAll(".labelOutline")
+  ventaglio
+    .selectAll(".label")
     .data(
       (d) => [d],
       (d) => d.code
     )
     .join("text")
-    .attr("stroke", "#FFF")
-    .attr("stroke-width", 2)
-    .attr("stroke-linejoin", "round")
-    .attr("opacity", 0.7)
-    .attr("text-anchor", "middle")
-    .attr("font-size", initLabelSize)
-    .attr("class", "labelOutline")
-    .attr("y", 1 * 12)
-    .text((d) => d.label || "Unknown Region")
-
-  outlineVentaglio.clone(true)
-    .attr("stroke", "none")
-    .attr("transform", "translate(0,0) scale(1)")
     .attr("text-anchor", "middle")
     .attr("font-size", initLabelSize)
     .attr("class", "label")
+    .attr("paint-order", "stroke")
+    .attr("stroke", "white")
+    .attr("stroke-width", 2)
+    .attr("stroke-linecap", "round")
+    .attr("stroke-linejoin", "round")
     .attr("y", 1 * 12)
-    .text((d) => d.label || "Unknown Region")
+    .selectAll("tspan")
+    .data(
+      (d) => [d],
+      (d) => d.code
+    )
+    .join("tspan")
+    .text((d) => d.label || "Unknown Region");
+
+  ventaglio
+    .selectAll(".label")
+    .clone(true)
+    .attr("stroke", "none")
+    .attr("paint-order", null)
+    .attr("stroke", null)
+    .attr("stroke-width", null)
+    .attr("stroke-linecap", null)
+    .attr("stroke-linejoin", null);
 
   let g_ticks = ventaglio.select(".ticks");
   if (g_ticks.empty()) {
@@ -165,43 +173,21 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-width", 0.5)
     .attr("fill", "none");
 
-    let labelTick = tick
-    .selectAll(".axisOutline")
+  tick
+    .selectAll(".axisLabel")
     .data(
       (d) => [d],
       (d) => d
     )
     .join("text")
-    .classed("axisOutline", true)
-    .attr("opacity", 0.8)
-    .attr("stroke", (d) => d3.color(colors[d.label]).darker(2))
-    .attr("stroke-width", 2)
-    .attr("stroke-linejoin", "round")
-    .attr("font-size", 6)
-    .attr("font-weight", 500)
-    .attr("x", (d) => {
-      const r = d.outerRadius;
-      let a = fanOpening / 2;
-      // a = d.index % 2 === 0 ? a : -a;
-      return polarToCartesian(0, 0, r, a).x;
-    })
-    .attr("y", (d) => {
-      const r = d.outerRadius;
-      const a = fanOpening / 2;
-      return polarToCartesian(0, 0, r, a).y + 7;
-    })
-    // .attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
-    .attr("text-anchor", "start")
-    .text((d) =>
-    showDelta ? "+" + d.deltaValue.toLocaleString() : d.value.toLocaleString()
-    );
-
-  labelTick.clone()
     .classed("axisLabel", true)
-    .attr("fill", (d) => d3.color(colors[d.label]).brighter(3))
-    .attr("font-size", 6)
+    .attr("paint-order", "stroke")
+    .attr("stroke", (d) => d3.color(colors[d.label]).darker(1))
+    .attr("stroke-width", 2)
+    .attr("stroke-linecap", "round")
+    .attr("stroke-linejoin", "round")
+    .attr("font-size", initLabelSize * 0.75)
     .attr("font-weight", 500)
-    .attr("stroke", "none")
     .attr("x", (d) => {
       const r = d.outerRadius;
       let a = fanOpening / 2;
@@ -213,11 +199,26 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
       const a = fanOpening / 2;
       return polarToCartesian(0, 0, r, a).y + 7;
     })
-    .attr("text-anchor", (d) => (d.index % 2 === 0 ? "start" : "end"))
     .attr("text-anchor", "start")
+    .selectAll("tspan")
+    .data(
+      (d) => [d],
+      (d) => d
+    )
+    .join("tspan")
     .text((d) =>
       showDelta ? "+" + d.deltaValue.toLocaleString() : d.value.toLocaleString()
     );
+  tick
+    .selectAll(".axisLabel")
+    .clone(true)
+    .attr("stroke", "none")
+    .attr("paint-order", null)
+    .attr("stroke", null)
+    .attr("stroke-width", null)
+    .attr("stroke-linecap", null)
+    .attr("stroke-linejoin", null)
+    .attr("fill", (d) => d3.color(colors[d.label]).brighter(3));
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
