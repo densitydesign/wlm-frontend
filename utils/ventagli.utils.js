@@ -18,7 +18,7 @@ const colors = {
 const collisionRadius = 70;
 const fanOpening = 150;
 let rotation;
-const initLabelSize = 10;
+const initLabelSize = 11;
 const initAxisLabelSize = 7;
 
 const drawVentaglio = (datum, ventaglio, showDelta) => {
@@ -109,7 +109,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-width", 2)
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
-    .attr("y", 1 * 13)
+    .attr("y", 1 * 15)
     .selectAll("tspan")
     .data(
       (d) => [d],
@@ -179,7 +179,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-width", 2)
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
-    .attr("font-size", initLabelSize * 0.7)
+    .attr("font-size", initLabelSize * 0.6)
     .attr("font-weight", 500)
     .attr("x", (d) => {
       const r = d.outerRadius;
