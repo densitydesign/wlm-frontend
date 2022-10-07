@@ -5,8 +5,8 @@ export default function StatusSymbol({ status }) {
     <span
       style={{
         display: "inline-block",
-        width: "1rem",
-        height: "1rem",
+        width: "0.7rem",
+        height: "0.7rem",
         backgroundColor: colors[status],
         borderRadius: "50%",
         border: "1px solid #333",

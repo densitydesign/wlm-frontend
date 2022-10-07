@@ -1,0 +1,44 @@
+.dataGridContainer {
+  height: 90vh;
+  position: relative;
+
+  .dataGrid {
+    height: 100%;
+    overflow: scroll;
+    position: relative;
+
+    :global .rdt_TableHead {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: white;
+    }
+    :global .rdt_TableRow {
+      min-height: 2rem;
+    }
+    :global .rdt_TableCol {
+      padding: 0;
+      // min-width: 0;
+      // max-width: initial;
+    }
+    :global .rdt_TableCell {
+      padding: 0;
+      // min-width: 0;
+      // max-width: initial;
+    }
+  }
+
+  .monumentLabel {
+    margin-bottom: 0.1rem;
+  }
+  .monumentCodes {
+    font-size: 0.75rem;
+  }
+
+  // div {
+  //   &:last-of-type {
+  //     position: sticky;
+  //     bottom: 0;
+  //   }
+  // }
+}

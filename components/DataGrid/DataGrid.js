@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
 import DataTable, { defaultThemes } from "react-data-table-component";
 import { apiBaseUrl } from "../../utils/fetchData.utils";
 import StatusSymbol from "./StatusSymbol";
 import { DateTime } from "luxon";
+import styles from "./DataGrid.module.scss";
+import classNames from "classnames";
 
 export default function DataGrid({
   regionsList,
@@ -33,48 +34,69 @@ export default function DataGrid({
   data,
   setData,
 }) {
-  const totalRows = data.count;
+  const totalRows = data?.count || 0;
   const perPage = pageSize;
   const columns = [
     {
       id: "current_commons_state",
-      name: "Commons",
+      name: "Commons status",
       sortable: false,
-      width: "50px",
+      minWidth: "40px",
+      maxWidth: "40px",
       selector: (row) => row["current_commons_state"],
       cell: (row) => <StatusSymbol status={row["current_commons_state"]} />,
+      style: {
+        // minWidth: "1.5rem",
+        // maxWidth: "1.5rem",
+        display: "flex",
+        alignItems: "center",
+        // justifyContent: "center"
+      },
     },
     {
       id: "current_wlm_state",
-      name: "WLM",
+      name: "WLM status",
       sortable: false,
-      width: "50px",
+      minWidth: "40px",
+      maxWidth: "40px",
       selector: (row) => row["current_wlm_state"],
       cell: (row) => <StatusSymbol status={row["current_wlm_state"]} />,
+      style: {
+        // minWidth: "1.5rem",
+        // maxWidth: "1.5rem",
+        display: "flex",
+        alignItems: "center",
+        // justifyContent: "center"
+      },
     },
     {
       id: "label",
       name: "Label / Q / WLM ID",
       sortable: true,
-      width: "30%",
+      maxWidth: "25%",
       selector: (row) => row["q_number"],
       cell: (row) => (
-        <p className="m-0">
-          <a
-            href={apiBaseUrl + "/api/monument/by-q/" + row["q_number"]}
-            target="_blank"
-          >
-            {row["label"]}
-          </a>{" "}
-          /{" "}
-          <a
-            href={"https://www.wikidata.org/wiki/" + row["q_number"]}
-            target="_blank"
-          >
-            {row["q_number"]}
-          </a>
-          {row["wlm_id"] && <> / {row["wlm_id"]}</>}
-        </p>
+        <span className={classNames("w-100", "m-0", "d-flex", "flex-column")}>
+          <span className={classNames(styles.monumentLabel, "text-truncate")}>
+            <a
+              // href={apiBaseUrl + "/api/monument/by-q/" + row["q_number"]}
+              href={"https://www.wikidata.org/wiki/" + row["q_number"]}
+              target="_blank"
+            >
+              {row["q_number"]} {row["label"] || "[Missing label]"}
+            </a>{" "}
+          </span>
+          {/* <span className={classNames(styles.monumentCodes)}>
+            Q number:{" "}
+            <a
+              href={"https://www.wikidata.org/wiki/" + row["q_number"]}
+              target="_blank"
+            >
+              {row["q_number"]}
+            </a>
+            {row["wlm_id"] && <> WLM ID: {row["wlm_id"]}</>}
+          </span> */}
+        </span>
       ),
     },
     {
@@ -182,20 +204,23 @@ export default function DataGrid({
     }
   };
   return (
-    <DataTable
-      title="Monuments"
-      columns={columns}
-      data={data.results}
-      progressPending={loading}
-      pagination
-      paginationServer
-      paginationRowsPerPageOptions={paginationRowsPerPageOptions}
-      paginationTotalRows={totalRows}
-      paginationPerPage={perPage}
-      onChangeRowsPerPage={setPageSize}
-      onChangePage={setPageNumber}
-      sortServer
-      onSort={handleSort}
-    />
+    <div className={classNames(styles.dataGridContainer)}>
+      <DataTable
+        // title="Monuments"
+        className={styles.dataGrid}
+        columns={columns}
+        data={data?.results || []}
+        progressPending={loading}
+        pagination
+        paginationServer
+        paginationRowsPerPageOptions={paginationRowsPerPageOptions}
+        paginationTotalRows={totalRows}
+        paginationPerPage={perPage}
+        onChangeRowsPerPage={setPageSize}
+        onChangePage={setPageNumber}
+        sortServer
+        onSort={handleSort}
+      />
+    </div>
   );
 }

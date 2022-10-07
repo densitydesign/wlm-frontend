@@ -8,7 +8,7 @@ import { apiBaseUrl } from "../../utils/fetchData.utils";
 import ToolsPanel from "./ToolsPanel";
 import DataGrid from "../DataGrid";
 
-const paginationRowsPerPageOptions = [25, 50, 100, 250, 500, 1000];
+const paginationRowsPerPageOptions = [100, 250, 500, 1000, 5000];
 
 export default function ListController() {
   const [regionsList, setRegionsList] = useState([]);
