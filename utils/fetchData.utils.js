@@ -3,7 +3,7 @@ import { json } from "d3";
 
 const apiBaseUrl = "https://wlm.inmagik.com";
 const dataCacheMode = "default";
-const geoCacheMode = "force-cache";
+const geoCacheMode = "default";
 
 const timeFrameData = {
   items: [
@@ -101,8 +101,20 @@ const dateRanges = {
   years: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022],
 };
 
+const explorationModes = [
+  {
+    label: "Wiki Loves Monuments",
+    value: "wlm",
+  },
+  {
+    label: "All Commons",
+    value: "commons",
+  },
+];
+
 const fetchData = (
   {
+    explModeValue,
     selectedRegion,
     selectedProvince,
     selectedMunicipality,
@@ -123,20 +135,20 @@ const fetchData = (
 
   if (selectedMunicipality) {
     // in municipality
-    dataUrl += `/api/municipality/${selectedMunicipality.code}/wlm/`;
-    parentDataUrl += `/api/municipality/${selectedMunicipality.code}/wlm/`;
+    dataUrl += `/api/municipality/${selectedMunicipality.code}/${explModeValue}/`;
+    parentDataUrl += `/api/municipality/${selectedMunicipality.code}/${explModeValue}/`;
   } else if (selectedProvince) {
     // municipalities in province
-    dataUrl += `/api/province/${selectedProvince.code}/wlm-areas/`;
-    parentDataUrl += `/api/province/${selectedProvince.code}/wlm/`;
+    dataUrl += `/api/province/${selectedProvince.code}/${explModeValue}-areas/`;
+    parentDataUrl += `/api/province/${selectedProvince.code}/${explModeValue}/`;
   } else if (selectedRegion) {
     // provinces in region
-    dataUrl += `/api/region/${selectedRegion.code}/wlm-areas/`;
-    parentDataUrl += `/api/region/${selectedRegion.code}/wlm/`;
+    dataUrl += `/api/region/${selectedRegion.code}/${explModeValue}-areas/`;
+    parentDataUrl += `/api/region/${selectedRegion.code}/${explModeValue}/`;
   } else {
     // no area selected, do all italian regions
-    dataUrl += `/api/region/wlm-regions/`;
-    parentDataUrl += `/api/region/wlm-aggregate`;
+    dataUrl += `/api/region/${explModeValue}-regions/`;
+    parentDataUrl += `/api/region/${explModeValue}-aggregate`;
   }
 
   if (dataUrl) {
@@ -219,4 +231,5 @@ export {
   timeFrameData,
   dateRanges,
   geoCacheMode,
+  explorationModes,
 };
