@@ -23,6 +23,7 @@ export default function ListController() {
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState(paginationRowsPerPageOptions[0]);
   const [pageNumber, setPageNumber] = useState(1);
+  const [ordering, setOrdering] = useState();
   //
   const [data, setData] = useState();
 
@@ -45,11 +46,13 @@ export default function ListController() {
     setTheme,
     loading,
     setLoading,
-		paginationRowsPerPageOptions,
+    paginationRowsPerPageOptions,
     pageSize,
     setPageSize,
     pageNumber,
     setPageNumber,
+    ordering,
+    setOrdering,
     data,
     setData,
   };
@@ -111,6 +114,7 @@ export default function ListController() {
     if (theme) queryParams.theme = encodeURIComponent(theme.id);
     if (pageSize) queryParams.page_size = encodeURIComponent(pageSize);
     if (pageNumber) queryParams.page = encodeURIComponent(pageNumber);
+    if (ordering) queryParams.ordering = encodeURIComponent(ordering);
     //
     const temp = [];
     for (const key in queryParams) {
@@ -123,7 +127,7 @@ export default function ListController() {
       setData(data);
       setLoading(false);
     });
-  }, [region, province, municipality, theme, pageSize, pageNumber]);
+  }, [region, province, municipality, theme, pageSize, pageNumber, ordering]);
 
   return (
     <Container fluid>
@@ -131,7 +135,7 @@ export default function ListController() {
         <Col lg={3}>
           <ToolsPanel {...componentsData} />
         </Col>
-        <Col lg={9}>{data?.count > 0 && <DataGrid {...componentsData} />}</Col>
+        <Col lg={9}><DataGrid {...componentsData} /></Col>
       </Row>
     </Container>
   );
