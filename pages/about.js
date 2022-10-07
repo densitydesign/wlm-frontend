@@ -56,6 +56,7 @@ export default function Page() {
               <a
                 href="https://github.com/densitydesign/wlm-backend/blob/server/server/wlm/main/WIKI_CANDIDATE_TYPES.csv"
                 target="_blank"
+                rel="noreferrer"
               >
                 certain types of description
               </a>
