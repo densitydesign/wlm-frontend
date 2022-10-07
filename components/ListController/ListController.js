@@ -8,6 +8,8 @@ import { apiBaseUrl } from "../../utils/fetchData.utils";
 import ToolsPanel from "./ToolsPanel";
 import DataGrid from "../DataGrid";
 
+const paginationRowsPerPageOptions = [25, 50, 100, 250, 500, 1000];
+
 export default function ListController() {
   const [regionsList, setRegionsList] = useState([]);
   const [region, setRegion] = useState();
@@ -19,7 +21,7 @@ export default function ListController() {
   const [theme, setTheme] = useState();
   //
   const [loading, setLoading] = useState(true);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(paginationRowsPerPageOptions[0]);
   const [pageNumber, setPageNumber] = useState(1);
   //
   const [data, setData] = useState();
@@ -43,6 +45,7 @@ export default function ListController() {
     setTheme,
     loading,
     setLoading,
+		paginationRowsPerPageOptions,
     pageSize,
     setPageSize,
     pageNumber,
@@ -99,7 +102,7 @@ export default function ListController() {
   }, [province]);
 
   useEffect(() => {
-		setLoading(true);
+    setLoading(true);
     const queryParams = { format: "json" };
     if (region) queryParams.region = encodeURIComponent(region.code);
     if (province) queryParams.province = encodeURIComponent(province.code);
@@ -114,7 +117,9 @@ export default function ListController() {
       temp.push(key + "=" + queryParams[key]);
     }
     const searchString = "?" + temp.join("&");
-    d3Json(apiBaseUrl + "/api/monument/" + searchString).then((data) => {
+    const request = apiBaseUrl + "/api/monument/" + searchString;
+    console.log(request);
+    d3Json(request).then((data) => {
       setData(data);
       setLoading(false);
     });
