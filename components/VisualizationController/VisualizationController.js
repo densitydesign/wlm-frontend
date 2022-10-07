@@ -172,7 +172,6 @@ export default function VisualizationController() {
         } = vizParameters;
 
         if (explModeValue) {
-          console.log(explModeValue);
           const correspondingMode = explorationModes.find(
             (d) => d.value == explModeValue
           );
