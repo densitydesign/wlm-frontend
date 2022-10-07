@@ -41,26 +41,31 @@ export default function Page() {
             lg={{ span: 7, offset: 1 }}
           >
             <blockquote>
-              <em>WikiLovesMonuments - Data visualization</em> is realized by
-              DensityDesign Lab and Wikimedia Italia. The online visualization
-              keeps track of how many Italian monuments are mapped on Wikidata,
-              and how many of those are photographed at least once.
+              <em>WikiLovesMonuments - Data visualization</em> is an online
+              visualization keeps track of how many Italian monuments are mapped
+              on Wikidata, and how many of those are photographed at least once.
             </blockquote>
 
             <p>
               &#8220;Monument&#8221; is an umbrella term that collects many
               definitions of cultural properties. In our work, we define a
-              monument starting from Wikidata.
-              <br /> First we query Wikidata for all items located in Italy (
-              <span class="font-monospace">?monument wdt:P17 wd:Q38</span>) that
-              present certain types of description, or &#8220;instance of&#8221;
-              (
-              <span class="font-monospace">
+              monument starting from Wikidata. First we query Wikidata for all
+              items located in Italy (
+              <span className="font-monospace">?monument wdt:P17 wd:Q38</span>)
+              that present{" "}
+              <a
+                href="https://github.com/densitydesign/wlm-backend/blob/server/server/wlm/main/WIKI_CANDIDATE_TYPES.csv"
+                target="_blank"
+              >
+                certain types of description
+              </a>
+              , or &#8220;instance of&#8221; (
+              <span className="font-monospace">
                 ?monument wdt:P31/wdt:P279* ?types
               </span>
               ). Then we merge them with all the items that participate to the
               Italian WLM contest (
-              <span class="font-monospace">?monument p:P2186 ?wlmId</span>).
+              <span className="font-monospace">?monument p:P2186 ?wlmId</span>).
             </p>
 
             <p>
@@ -98,9 +103,13 @@ export default function Page() {
               personal use or study, but requires a further authorization for
               any other purpose, such as the commercial use.
             </p>
+            <p>
+              The project is realized by DensityDesign Lab and Wikimedia Italia,
+              with the help of Inmagik.
+            </p>
 
             <div className="credits">
-              <em>A project developed by:</em>
+              <em>Credits:</em>
               <div>
                 <em>Wikimedia Italia</em>
                 <ul>
@@ -118,7 +127,12 @@ export default function Page() {
                 </ul>
               </div>
               <div>
-                In collaboration with Inmagik
+                <em>Inmagik</em>
+                <ul>
+                  {["Mauro Bianchi"].map((dd) => (
+                    <li key={dd}>{dd}</li>
+                  ))}
+                </ul>
               </div>
             </div>
             <LicenseAttribution />
