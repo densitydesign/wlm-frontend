@@ -82,6 +82,7 @@ export default function DataGrid({
               // href={apiBaseUrl + "/api/monument/by-q/" + row["q_number"]}
               href={"https://www.wikidata.org/wiki/" + row["q_number"]}
               target="_blank"
+              rel="noreferrer"
             >
               {row["q_number"]} {row["label"] || "[Missing label]"}
             </a>{" "}
@@ -91,6 +92,7 @@ export default function DataGrid({
             <a
               href={"https://www.wikidata.org/wiki/" + row["q_number"]}
               target="_blank"
+              rel="noreferrer"
             >
               {row["q_number"]}
             </a>
