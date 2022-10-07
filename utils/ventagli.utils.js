@@ -10,6 +10,7 @@ const colors = {
   coastlines: "#e7fdfe",
   white: "#ffffff",
   onWIki: "#C3C5C3",
+  onWiki: "#C3C5C3",
   inContest: "#F8FF0E",
   photographed: "#22B8B4",
   interactive: "#FF004D",

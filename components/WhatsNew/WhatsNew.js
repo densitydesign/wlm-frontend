@@ -8,6 +8,9 @@ const labelsDict = {
   onWIki: {
     explained: "Monuments on Wikidata",
   },
+  onWiki: {
+    explained: "Monuments on Wikidata",
+  },
   inContest: {
     explained: "Monuments in contest",
   },
