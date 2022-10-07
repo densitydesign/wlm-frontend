@@ -14,6 +14,7 @@ import {
   fetchData,
   dataCacheMode,
   geoCacheMode,
+  explorationModes,
 } from "../../utils/fetchData.utils";
 import LicenseAttribution from "../LicenseAttribution/LicenseAttribution";
 const { DateTime } = require("luxon");
@@ -29,6 +30,7 @@ export default function VisualizationController() {
   const [parentData, setParentData] = useState();
   const [filterData, setFilterData] = useState();
   const [showDelta, setShowDelta] = useState(false);
+  const [explorationMode, setExplorationMode] = useState();
 
   // uses OSM admin levels for future compatibility
   const [lvl4, setLvl4] = useState([]); // Regions
@@ -63,7 +65,11 @@ export default function VisualizationController() {
   const setParmsAndFetch = () => {
     const parameters = {};
     const parametersFetchData = {};
-    if (showDelta!==undefined) {
+    if (explorationMode) {
+      parameters.explModeValue = encodeURIComponent(explorationMode.value);
+      parametersFetchData.explModeValue = explorationMode.value;
+    }
+    if (showDelta !== undefined) {
       parameters.showDeltaPar = encodeURIComponent(showDelta);
     }
     if (selectedRegion) {
@@ -153,6 +159,7 @@ export default function VisualizationController() {
           );
         }
         const {
+          explModeValue,
           typology,
           dateFrom,
           dateTo,
@@ -161,8 +168,18 @@ export default function VisualizationController() {
           selectedMunicipality,
           filterDataParams,
           selectedTimeFramePar,
-          showDeltaPar
+          showDeltaPar,
         } = vizParameters;
+
+        if (explModeValue) {
+          console.log(explModeValue);
+          const correspondingMode = explorationModes.find(
+            (d) => d.value == explModeValue
+          );
+          setExplorationMode(correspondingMode);
+        } else {
+          setExplorationMode(explorationModes[0]);
+        }
 
         if (typology) {
           const correspondingType = fetchedTypologiesList.find(
@@ -206,7 +223,7 @@ export default function VisualizationController() {
         }
 
         if (showDeltaPar) {
-          setShowDelta(showDeltaPar==="true")
+          setShowDelta(showDeltaPar === "true");
         }
 
         // Check selected areas and set loading to false to trigger data fetching
@@ -324,7 +341,7 @@ export default function VisualizationController() {
     if (parentData) {
       const _filterData = parentData.extent.map((d) => {
         let active = true;
-        if (filterData) {
+        if (filterData && filterData.find((f) => f.label === d.label)) {
           active = filterData.find((f) => f.label === d.label).active;
         }
         return {
@@ -402,13 +419,18 @@ export default function VisualizationController() {
     // selectedRegion,
     // selectedProvince,
     selectedMunicipality,
+    explorationMode,
     typology,
     dateFrom,
     dateTo,
     loading,
-    showDelta
+    showDelta,
     // selectedTimeFrame // try to remove to prevent double fetchData() executions
   ]);
+
+  useEffect(() => {
+    setFilterData(undefined);
+  }, [explorationMode]);
 
   useEffect(() => {
     if (filterData) {
@@ -507,6 +529,9 @@ export default function VisualizationController() {
       <Row className={classNames("h-100")}>
         <Col className={classNames("h-100", "pe-sm-3", "pe-md-0")} lg={3}>
           <ToolbarUI
+            explorationModes={explorationModes}
+            explorationMode={explorationMode}
+            setExplorationMode={setExplorationMode}
             regions={{ items: regionsList, disabled: !regionsList.length }}
             selectedRegion={selectedRegion}
             setSelectedRegion={setSelectedRegion}
