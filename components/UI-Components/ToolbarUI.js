@@ -23,6 +23,10 @@ import ExportTools from "../ExportTools/ExportTools";
 import { DateTime } from "luxon";
 
 export default function ToolbarUI({
+  explorationModes,
+  explorationMode,
+  setExplorationMode,
+
   regions,
   selectedRegion,
   setSelectedRegion,
@@ -162,7 +166,14 @@ export default function ToolbarUI({
 
   return (
     <div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
-      <NavMenu page="map"/>
+      <NavMenu page="map" />
+      <DropdownUI
+        label="Explore"
+        items={explorationModes}
+        value={explorationMode}
+        setValue={setExplorationMode}
+        hideReset={true}
+      />
       <h6>Monuments</h6>
       <DropdownUI
         label="Region"

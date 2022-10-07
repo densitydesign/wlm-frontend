@@ -87,7 +87,7 @@ export default function DropdownUI({
 }
 
 DropdownUI.defaultProps = {
-  transferSelection: (value) =>
+  setValue: (value) =>
     console.warn(
       "No function specified for rtansferring the selection to parent. Value:",
       value

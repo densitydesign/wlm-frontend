@@ -62,78 +62,81 @@ export default function NavMenu(props) {
   if (pageStatus === "about") {
     return (
       <Dropdown className={classNames("mb-2")} autoClose={true}>
-      <Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
-        Wiki
-        <GoHeart />
-        Monuments <span className="small" style={{textTransform:"uppercase", opacity: 0.7, fontWeight:500}}>alpha 0.2</span>
-      </Dropdown.Toggle>
+        <Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
+          Wiki
+          <GoHeart />
+          Monuments{" "}
+          <span
+            className="small"
+            style={{
+              textTransform: "uppercase",
+              opacity: 0.7,
+              fontWeight: 500,
+            }}
+          >
+            alpha 0.2
+          </span>
+        </Dropdown.Toggle>
 
-      <Dropdown.Menu className={classNames("w-100")}>
-      <Link
-          href={`/`}
-          passHref
-        >
-        <Dropdown.Item>
-          Map
-        </Dropdown.Item>
-        </Link>
-        <Link
-          href={`/about`}
-          passHref
-        >
-        <Dropdown.Item>
-          About the project
-        </Dropdown.Item>
-        </Link>
-        <Link
-          href={`https://github.com/densitydesign/wlm-frontend/issues`}
-          passHref
-        >
-          <Dropdown.Item>
-            <span style={{ color: "var(--bs-indigo)" }}>Report a bug <GiSpottedBug/></span>
-          </Dropdown.Item>
-        </Link>
-        {/* <Link href={`/about`} passHref>
+        <Dropdown.Menu className={classNames("w-100")}>
+          <Link href={`/`} passHref>
+            <Dropdown.Item>Map</Dropdown.Item>
+          </Link>
+          <Link href={`/list`} passHref>
+            <Dropdown.Item>List</Dropdown.Item>
+          </Link>
+          <Link href={`/about`} passHref>
+            <Dropdown.Item>About the project</Dropdown.Item>
+          </Link>
+          <Link
+            href={`https://github.com/densitydesign/wlm-frontend/issues`}
+            passHref
+          >
+            <Dropdown.Item>
+              <span style={{ color: "var(--bs-indigo)" }}>
+                Report a bug <GiSpottedBug />
+              </span>
+            </Dropdown.Item>
+          </Link>
+          {/* <Link href={`/about`} passHref>
 					<Dropdown.Item>About</Dropdown.Item>
 				</Link> */}
-        <Dropdown.Item href="https://www.wikimedia.it/wiki-loves-monuments/">
-          WikiLovesMonuments
-        </Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-    )
+          <Dropdown.Item href="https://www.wikimedia.it/wiki-loves-monuments/">
+            WikiLovesMonuments
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
   }
   return (
     <Dropdown className={classNames("mb-2")} autoClose={true}>
       <Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
         Wiki
         <GoHeart />
-        Monuments <span className="small" style={{textTransform:"uppercase", opacity: 0.7, fontWeight:500}}>alpha 0.2</span>
+        Monuments{" "}
+        <span
+          className="small"
+          style={{ textTransform: "uppercase", opacity: 0.7, fontWeight: 500 }}
+        >
+          alpha 0.2
+        </span>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className={classNames("w-100")}>
-      <Link
-          href={`/`}
-          passHref
-        >
-        <Dropdown.Item>
-          Map
-        </Dropdown.Item>
+        <Link href={`/`} passHref>
+          <Dropdown.Item>Map</Dropdown.Item>
         </Link>
-        <Link
-          href={`/about`}
-          passHref
-        >
-        <Dropdown.Item>
-          About the project
-        </Dropdown.Item>
+        <Link href={`/about`} passHref>
+          <Dropdown.Item>About the project</Dropdown.Item>
         </Link>
         <Link
           href={`https://github.com/densitydesign/wlm-frontend/issues`}
           passHref
         >
           <Dropdown.Item>
-            <span style={{ color: "var(--bs-indigo)" }}>Report a bug <GiSpottedBug/></span>
+            <span style={{ color: "var(--bs-indigo)" }}>
+              Report a bug <GiSpottedBug />
+            </span>
           </Dropdown.Item>
         </Link>
         {/* <Link href={`/about`} passHref>
@@ -143,8 +146,7 @@ export default function NavMenu(props) {
           WikiLovesMonuments
         </Dropdown.Item>
         <Dropdown.Header>Contests</Dropdown.Header>
-        {
-        Object.keys(contestsPaths)
+        {Object.keys(contestsPaths)
           .reverse()
           .map((d, i) => (
             <Dropdown.Item
@@ -154,9 +156,7 @@ export default function NavMenu(props) {
             >
               {d}
             </Dropdown.Item>
-          ))
-          
-          }
+          ))}
 
         {/* <Dropdown.Item
           href={pathContest2022}

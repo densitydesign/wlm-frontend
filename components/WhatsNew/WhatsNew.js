@@ -15,8 +15,12 @@ const labelsDict = {
     explained: "Monuments in contest",
   },
   photographed: {
-    explained: "Photographed for the first time",
+    explained: "Photographed during the contest at least once",
   },
+  withPicture: {
+    explained: "Depicted on Commons at least once",
+  },
+  onWikidataOnly: { explained: "Monuments on Wikidata" },
 };
 
 export default function WhatsNew({
@@ -52,7 +56,7 @@ export default function WhatsNew({
 }
 
 function Group({ group, max, filterData, setFilterData, showDelta }) {
-  const initialStatus = filterData.find((f) => group.label === f.label).active;
+  const initialStatus = filterData.find((f) => group.label === f.label)?.active === true;
   const [checked, setChecked] = useState(initialStatus);
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -74,7 +78,8 @@ function Group({ group, max, filterData, setFilterData, showDelta }) {
     const newStatus = filterData.find((f) => group.label === f.label).active;
     setChecked(newStatus);
     let _disabled =
-    showDelta || filterData.filter((d) => d.active).length < 2 && checked === true;
+      showDelta ||
+      (filterData.filter((d) => d.active).length < 2 && checked === true);
     setIsDisabled(_disabled);
   }, [filterData, showDelta]);
 
