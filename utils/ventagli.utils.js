@@ -15,6 +15,8 @@ const colors = {
   photographed: "#22B8B4",
   interactive: "#FF004D",
   withPicture: "#ff8f4a",
+  // withPicture: "#ff7fa9",
+  // withPicture: "#0978AB",
   onWikidataOnly: "#C3C5C3",
 };
 
