@@ -130,7 +130,7 @@ export default function ListController() {
   }, [region, province, municipality, theme, pageSize, pageNumber, ordering]);
 
   return (
-    <Container fluid>
+    <Container fluid className={classNames(styles.listPage)}>
       <Row>
         <Col lg={3}>
           <ToolsPanel {...componentsData} />

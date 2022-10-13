@@ -167,13 +167,13 @@ export default function ToolbarUI({
   return (
     <div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
       <NavMenu page="map" />
-      {/* <DropdownUI
+      <DropdownUI
         label="Explore"
         items={explorationModes}
         value={explorationMode}
         setValue={setExplorationMode}
         hideReset={true}
-      /> */}
+      />
       <h6>Monuments</h6>
       <DropdownUI
         label="Region"

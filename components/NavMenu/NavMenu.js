@@ -98,9 +98,6 @@ export default function NavMenu(props) {
               </span>
             </Dropdown.Item>
           </Link>
-          {/* <Link href={`/about`} passHref>
-					<Dropdown.Item>About</Dropdown.Item>
-				</Link> */}
           <Dropdown.Item href="https://www.wikimedia.it/wiki-loves-monuments/">
             WikiLovesMonuments
           </Dropdown.Item>
