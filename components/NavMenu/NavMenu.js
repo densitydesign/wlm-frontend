@@ -59,52 +59,6 @@ export default function NavMenu(props) {
 
   const pageStatus = props.page;
 
-  if (pageStatus === "about") {
-    return (
-      <Dropdown className={classNames("mb-2")} autoClose={true}>
-        <Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
-          Wiki
-          <GoHeart />
-          Monuments{" "}
-          <span
-            className="small"
-            style={{
-              textTransform: "uppercase",
-              opacity: 0.7,
-              fontWeight: 500,
-            }}
-          >
-            alpha 0.2
-          </span>
-        </Dropdown.Toggle>
-
-        <Dropdown.Menu className={classNames("w-100")}>
-          <Link href={`/`} passHref>
-            <Dropdown.Item>Map</Dropdown.Item>
-          </Link>
-          <Link href={`/list`} passHref>
-            <Dropdown.Item>List</Dropdown.Item>
-          </Link>
-          <Link href={`/about`} passHref>
-            <Dropdown.Item>About the project</Dropdown.Item>
-          </Link>
-          <Link
-            href={`https://github.com/densitydesign/wlm-frontend/issues`}
-            passHref
-          >
-            <Dropdown.Item>
-              <span style={{ color: "var(--bs-indigo)" }}>
-                Report a bug <GiSpottedBug />
-              </span>
-            </Dropdown.Item>
-          </Link>
-          <Dropdown.Item href="https://www.wikimedia.it/wiki-loves-monuments/">
-            WikiLovesMonuments
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-    );
-  }
   return (
     <Dropdown className={classNames("mb-2")} autoClose={true}>
       <Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
@@ -122,6 +76,9 @@ export default function NavMenu(props) {
       <Dropdown.Menu className={classNames("w-100")}>
         <Link href={`/`} passHref>
           <Dropdown.Item>Map</Dropdown.Item>
+        </Link>
+        <Link href={`/list`} passHref>
+          <Dropdown.Item>List</Dropdown.Item>
         </Link>
         <Link href={`/about`} passHref>
           <Dropdown.Item>About the project</Dropdown.Item>
@@ -142,37 +99,22 @@ export default function NavMenu(props) {
         <Dropdown.Item href="https://www.wikimedia.it/wiki-loves-monuments/">
           WikiLovesMonuments
         </Dropdown.Item>
-        <Dropdown.Header>Contests</Dropdown.Header>
-        {Object.keys(contestsPaths)
-          .reverse()
-          .map((d, i) => (
-            <Dropdown.Item
-              key={"cp" + i}
-              href={contestsPaths[d]}
-              onClick={(e) => forceNavigation(e, contestsPaths[d])}
-            >
-              {d}
-            </Dropdown.Item>
-          ))}
-
-        {/* <Dropdown.Item
-          href={pathContest2022}
-          onClick={(e) => forceNavigation(e, pathContest2022)}
-        >
-          2022: Castelli e fortificazioni
-        </Dropdown.Item> */}
-        {/* <Dropdown.Item
-          href={pathContest2021}
-          onClick={(e) => forceNavigation(e, pathContest2021)}
-        >
-          Concorso 2021
-        </Dropdown.Item> */}
-        {/* <Dropdown.Item
-					href={`/#selectedRegion=Umbria&dateFrom=2020-09-01&dateTo=2020-09-30`}
-					onClick={(e) => forceNavigation(e, `/#selectedRegion=Umbria&dateFrom=2020-09-01&dateTo=2020-09-30`)}
-				>
-					Concorso 2020
-				</Dropdown.Item> */}
+        {router.route === "/" && (
+          <>
+            <Dropdown.Header>Contests</Dropdown.Header>
+            {Object.keys(contestsPaths)
+              .reverse()
+              .map((d, i) => (
+                <Dropdown.Item
+                  key={"cp" + i}
+                  href={contestsPaths[d]}
+                  onClick={(e) => forceNavigation(e, contestsPaths[d])}
+                >
+                  {d}
+                </Dropdown.Item>
+              ))}
+          </>
+        )}
       </Dropdown.Menu>
     </Dropdown>
   );
