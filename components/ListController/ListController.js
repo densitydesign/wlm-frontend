@@ -8,7 +8,7 @@ import { apiBaseUrl } from "../../utils/fetchData.utils";
 import ToolsPanel from "./ToolsPanel";
 import DataGrid from "../DataGrid";
 
-const paginationRowsPerPageOptions = [100, 250, 500, 1000, 5000];
+const paginationRowsPerPageOptions = [50, 100, 250, 500, 1000];
 
 export default function ListController() {
   const [regionsList, setRegionsList] = useState([]);
@@ -122,7 +122,6 @@ export default function ListController() {
     }
     const searchString = "?" + temp.join("&");
     const request = apiBaseUrl + "/api/monument/" + searchString;
-    console.log(request);
     d3Json(request).then((data) => {
       setData(data);
       setLoading(false);
@@ -130,7 +129,7 @@ export default function ListController() {
   }, [region, province, municipality, theme, pageSize, pageNumber, ordering]);
 
   return (
-    <Container fluid>
+    <Container fluid className={classNames(styles.listPage)}>
       <Row>
         <Col lg={3}>
           <ToolsPanel {...componentsData} />

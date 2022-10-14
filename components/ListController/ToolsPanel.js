@@ -1,7 +1,9 @@
+import { colors, labelsDict, glossary } from "../../utils/ventagli.utils";
 import styles from "./ListController.module.scss";
 import classNames from "classnames";
 import NavMenu from "../NavMenu";
 import { DropdownUI } from "../UI-Components";
+import { QuickLinks } from "../QuickLinks";
 
 export default function ToolsPanel({
   regionsList,
@@ -26,6 +28,7 @@ export default function ToolsPanel({
   return (
     <div className={classNames("d-flex", "flex-column")}>
       <NavMenu />
+      <QuickLinks/>
       <h6>Areas</h6>
       <DropdownUI
         defaultLabel={"Select a region"}
@@ -56,9 +59,40 @@ export default function ToolsPanel({
         setValue={setTheme}
         disabled={!themesList.length}
       />
-      <h6>Status Filter</h6>
-      <h6>Export</h6>
-      <h6>Legend</h6>
+      {/* <h6>Status Filter</h6>
+      <h6>Export</h6> */}
+      <h6>Glossary</h6>
+      {/* <ul style={{
+        paddingLeft: 0,
+        fontSize: "0.8rem"
+      }}>
+        {
+          Object.entries(labelsDict).map(key => {
+            console.log(colors[key[0]])
+            return <li style={{listStyle: "none"}}>
+                <span style={{
+                    display: "inline-block",
+                    backgroundColor: colors[key[0]],
+                    width: 20,
+                    height: 10,
+                    marginRight: 10,
+                    borderRadius: "2px",
+                    border: "1.5px solid #333",
+                    borderColor: d3color(colors[key[0]] || "#fff").darker(1),
+                  }}>
+                </span>
+                  {labelsDict[key[0]].explained}
+              </li>
+          })
+        }
+      </ul> */}
+      <div style={{
+        fontSize: "0.8rem"
+      }}>
+        {glossary.map(glossary => (
+          <p key={glossary}>{glossary}</p>
+        ))}
+      </div>
     </div>
   );
 }

@@ -39,128 +39,120 @@ export default function DataGrid({
   const columns = [
     {
       id: "current_commons_state",
-      name: "Commons status",
+      name: "Commons Status",
       sortable: false,
-      minWidth: "40px",
-      maxWidth: "40px",
-      selector: (row) => row["current_commons_state"],
       cell: (row) => <StatusSymbol status={row["current_commons_state"]} />,
       style: {
-        // minWidth: "1.5rem",
-        // maxWidth: "1.5rem",
         display: "flex",
         alignItems: "center",
-        // justifyContent: "center"
+        justifyContent: "center",
       },
     },
     {
       id: "current_wlm_state",
-      name: "WLM status",
+      name: "WLM Status",
       sortable: false,
-      minWidth: "40px",
-      maxWidth: "40px",
-      selector: (row) => row["current_wlm_state"],
       cell: (row) => <StatusSymbol status={row["current_wlm_state"]} />,
       style: {
-        // minWidth: "1.5rem",
-        // maxWidth: "1.5rem",
         display: "flex",
         alignItems: "center",
-        // justifyContent: "center"
+        justifyContent: "center",
       },
     },
     {
       id: "label",
-      name: "Label / Q / WLM ID",
+      name: "Name (link to map)",
       sortable: true,
-      maxWidth: "25%",
-      selector: (row) => row["q_number"],
-      cell: (row) => (
-        <span className={classNames("w-100", "m-0", "d-flex", "flex-column")}>
-          <span className={classNames(styles.monumentLabel, "text-truncate")}>
+      cell: (row) => {
+        if (row["position"]?.coordinates) {
+          return (
             <a
-              // href={apiBaseUrl + "/api/monument/by-q/" + row["q_number"]}
-              href={"https://www.wikidata.org/wiki/" + row["q_number"]}
+              className="text-truncate"
+              href={`https://www.openstreetmap.org/?mlat=${row["position"].coordinates[1]}&mlon=${row["position"].coordinates[0]}#map=16/${row["position"].coordinates[1]}/${row["position"].coordinates[0]}`}
               target="_blank"
               rel="noreferrer"
             >
-              {row["q_number"]} {row["label"] || "[Missing label]"}
-            </a>{" "}
-          </span>
-          {/* <span className={classNames(styles.monumentCodes)}>
-            Q number:{" "}
-            <a
-              href={"https://www.wikidata.org/wiki/" + row["q_number"]}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {row["q_number"]}
+              {row["label"]}
             </a>
-            {row["wlm_id"] && <> WLM ID: {row["wlm_id"]}</>}
-          </span> */}
-        </span>
+          );
+        } else {
+          return <>{row["label"]}</>;
+        }
+      },
+    },
+    {
+      id: "q_number",
+      name: "Q Number",
+      sortable: true,
+      cell: (row) => (
+        <a
+          className="text-truncate"
+          href={"https://www.wikidata.org/wiki/" + row["q_number"]}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {row["q_number"]}
+        </a>
       ),
     },
     {
-      id: "pictures",
-      name: "Pictures",
+      id: "wlm_id",
+      name: "WLM ID",
+      sortable: true,
+      selector: (row) => row["wlm_id"],
+    },
+    {
+      id: "wlm_pictures",
+      name: "WLM\nPictures",
       sortable: false,
-      width: "50px",
-      selector: (row) => row["pictures"],
       cell: (row) => {
-        return row["pictures"].length;
+        return row["pictures"].filter((d) => d.wlm_image).length;
       },
     },
-    // {
-    //   id: "municipality_label",
-    //   name: "Municipality",
-    //   sortable: false,
-    //   maxWidth: "150px",
-    //   selector: (row) => row["municipality_label"],
-    //   // cell: (row) => row,
-    // },
-    // {
-    //   id: "province_label",
-    //   name: "Province",
-    //   sortable: false,
-    //   maxWidth: "150px",
-    //   selector: (row) => row["province_label"],
-    //   // cell: (row) => row,
-    // },
-    // {
-    //   id: "region_label",
-    //   name: "Region",
-    //   sortable: false,
-    //   maxWidth: "150px",
-    //   selector: (row) => row["region_label"],
-    //   // cell: (row) => row,
-    // },
     {
-      id: "location",
-      name: "Location",
+      id: "wd_relevant_pictures",
+      name: "Relevant Pictures",
       sortable: false,
-      width: "200px",
+      cell: (row) => {
+        return row["pictures"].filter((d) => d.relevant_image).length;
+      },
+    },
+    {
+      id: "municipality_label",
+      name: "Municipality",
+      sortable: false,
+      maxWidth: "150px",
       selector: (row) => row["municipality_label"],
-      cell: (row) =>
-        [
-          row["municipality_label"],
-          row["province_label"],
-          row["region_label"],
-        ].join(", "),
+    },
+    {
+      id: "province_label",
+      name: "Province",
+      sortable: false,
+      maxWidth: "150px",
+      selector: (row) => row["province_label"],
+    },
+    {
+      id: "region_label",
+      name: "Region",
+      sortable: false,
+      maxWidth: "150px",
+      selector: (row) => row["region_label"],
     },
     {
       id: "wikidata_creation_date",
-      name: "WD Creation",
+      name: "Creation Date\non Wikidata",
       sortable: false,
-      width: "200px",
+      width: "120px",
       selector: (row) =>
-        DateTime.fromISO(row["wikidata_creation_date"]).toLocaleString(),
+        row["wikidata_creation_date"]
+          ? DateTime.fromISO(row["wikidata_creation_date"]).toLocaleString()
+          : null,
     },
     {
       id: "wlm_auth_start_date",
-      name: "WLM Authorization",
+      name: "WLM\nAuthorization Date",
       sortable: true,
-      width: "200px",
+      width: "150px",
       selector: (row) =>
         row["wlm_auth_start_date"]
           ? DateTime.fromISO(row["wlm_auth_start_date"]).toLocaleString()
@@ -168,9 +160,9 @@ export default function DataGrid({
     },
     {
       id: "first_wlm_image_date",
-      name: "First WLM Pic",
+      name: "First\nWLM Picture",
       sortable: true,
-      width: "200px",
+      width: "150px",
       selector: (row) =>
         row["first_wlm_image_date"]
           ? DateTime.fromISO(row["first_wlm_image_date"]).toLocaleString()
@@ -178,32 +170,85 @@ export default function DataGrid({
     },
     {
       id: "first_commons_image_date",
-      name: "First Commons Pic",
+      name: "First\nCommons Picture",
       sortable: true,
-      width: "200px",
+      width: "150px",
       selector: (row) =>
         row["first_commons_image_date"]
           ? DateTime.fromISO(row["first_commons_image_date"]).toLocaleString()
           : null,
     },
-    // {
-    //   id: "wlm_id",
-    //   name: "WLM ID",
-    //   sortable: true,
-    //   maxWidth: "150px",
-    //   selector: (row) => row["wlm_id"],
-    //   // cell: (row) => row,
-    // },
   ];
   const handleSort = async (column, sortDirection) => {
     if (column?.id) {
       /// reach out to some API and get new data using or sortField and sortDirection
       // e.g. https://api.github.com/search/repositories?q=blog&sort=${column.sortField}&order=${sortDirection}
-
-      console.log(column, sortDirection);
       const parameter = sortDirection === "asc" ? column.id : "-" + column.id;
       setOrdering(parameter);
     }
+  };
+  //  Internally, customStyles will deep merges your customStyles with the default styling.
+  const customStyles = {
+    table: {
+      style: {
+        // color: theme.text.primary,
+        backgroundColor: "transparent",
+      },
+    },
+    rows: {
+      style: {
+        minHeight: "2.5rem", // override the row height
+        "&:nth-child(even)": {
+          backgroundColor: "#f9f9f9",
+        },
+      },
+    },
+    headRow: {
+      style: {
+        backgroundColor: "var(--bs-lightBlue)",
+        borderRadius: "4px 4px 0 0",
+        // minHeight: "30.91px",
+        color: "var(--bs-blue-jeans)",
+        fontWeight: 700,
+        // whiteSpace: "pre-wrap"
+      },
+    },
+    headCells: {
+      style: {
+        paddingLeft: "0.4rem", // override the cell padding for head cells
+        paddingRight: "0.4rem",
+        '&[data-column-id="label"]': {
+          minWidth: "250px",
+        },
+        div: {
+          whiteSpace: "pre-wrap",
+        },
+        '&[data-column-id="current_commons_state"], &[data-column-id="current_wlm_state"]':
+          {
+            minWidth: "78px",
+            maxWidth: "78px",
+            display: "flex",
+            justifyContent: "center",
+            div: {
+              textAlign:"center"
+            },
+          },
+      },
+    },
+    cells: {
+      style: {
+        paddingLeft: "0.4rem", // override the cell padding for data cells
+        paddingRight: "0.4rem",
+        '&[data-column-id="label"]': {
+          minWidth: "250px",
+        },
+        '&[data-column-id="current_commons_state"], &[data-column-id="current_wlm_state"]':
+          {
+            minWidth: "78px",
+            maxWidth: "78px",
+          },
+      },
+    },
   };
   return (
     <div className={classNames(styles.dataGridContainer)}>
@@ -222,6 +267,9 @@ export default function DataGrid({
         onChangePage={setPageNumber}
         sortServer
         onSort={handleSort}
+        customStyles={customStyles}
+        fixedHeader={true}
+        fixedHeaderScrollHeight={"calc(100% - 56px)"}
       />
     </div>
   );

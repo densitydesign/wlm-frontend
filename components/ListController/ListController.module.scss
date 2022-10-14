@@ -1,0 +1,6 @@
+.listPage {
+  --margin-top: calc(var(--bs-gutter-x) * 0.5);
+  margin-top: var(--margin-top);
+  // height: calc(100% - var(--margin-top) * 2);
+  // overflow-y: scroll;
+}

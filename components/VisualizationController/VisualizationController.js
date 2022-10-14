@@ -72,6 +72,11 @@ export default function VisualizationController() {
     if (showDelta !== undefined) {
       parameters.showDeltaPar = encodeURIComponent(showDelta);
     }
+    if (filterData) {
+      parameters.filterDataParams = encodeURIComponent(
+        filterData.map((d) => d.label + ":" + d.active.toString()).join(";")
+      );
+    }
     if (selectedRegion) {
       parameters.selectedRegion = encodeURIComponent(selectedRegion.label);
       parametersFetchData.selectedRegion = selectedRegion;
