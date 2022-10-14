@@ -59,8 +59,8 @@ export default function ToolsPanel({
         setValue={setTheme}
         disabled={!themesList.length}
       />
-      <h6>Status Filter</h6>
-      <h6>Export</h6>
+      {/* <h6>Status Filter</h6>
+      <h6>Export</h6> */}
       <h6>Glossary</h6>
       {/* <ul style={{
         paddingLeft: 0,
