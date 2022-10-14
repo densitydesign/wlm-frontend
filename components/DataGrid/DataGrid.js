@@ -42,20 +42,20 @@ export default function DataGrid({
       name: "Commons",
       sortable: false,
       cell: (row) => <StatusSymbol status={row["current_commons_state"]} />,
-      style: {
-        display: "flex",
-        alignItems: "center",
-      },
+      // style: {
+      //   display: "flex",
+      //   alignItems: "center",
+      // },
     },
     {
       id: "current_wlm_state",
       name: "WLM",
       sortable: false,
       cell: (row) => <StatusSymbol status={row["current_wlm_state"]} />,
-      style: {
-        display: "flex",
-        alignItems: "center",
-      },
+      // style: {
+      //   display: "flex",
+      //   alignItems: "center",
+      // },
     },
     {
       id: "label",
@@ -66,7 +66,6 @@ export default function DataGrid({
           return (
             <a
               className="text-truncate"
-              href={"https://www.wikidata.org/wiki/" + row["q_number"]}
               href={`https://www.openstreetmap.org/?mlat=${row["position"].coordinates[1]}&mlon=${row["position"].coordinates[0]}#map=15/${row["position"].coordinates[1]}/${row["position"].coordinates[0]}`}
               target="_blank"
               rel="noreferrer"
@@ -101,12 +100,19 @@ export default function DataGrid({
       selector: (row) => row["wlm_id"],
     },
     {
-      id: "pictures",
-      name: "Pictures",
+      id: "wlm_pictures",
+      name: "WLM Pictures",
       sortable: false,
-      selector: (row) => row["pictures"],
       cell: (row) => {
-        return row["pictures"].length;
+        return row["pictures"].filter((d) => d.wlm_image).length;
+      },
+    },
+    {
+      id: "wd_relevant_pictures",
+      name: "WD Rel. Pictures",
+      sortable: false,
+      cell: (row) => {
+        return row["pictures"].filter((d) => d.relevant_image).length;
       },
     },
     {
@@ -200,7 +206,7 @@ export default function DataGrid({
       style: {
         backgroundColor: "var(--bs-lightBlue)",
         borderRadius: "3px 3px 0 0",
-        minHeight: "30.91px",
+        // minHeight: "30.91px",
         color: "var(--bs-blue-jeans)",
         fontWeight: 700,
       },

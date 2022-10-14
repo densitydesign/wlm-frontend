@@ -122,7 +122,6 @@ export default function ListController() {
     }
     const searchString = "?" + temp.join("&");
     const request = apiBaseUrl + "/api/monument/" + searchString;
-    console.log(request);
     d3Json(request).then((data) => {
       setData(data);
       setLoading(false);
