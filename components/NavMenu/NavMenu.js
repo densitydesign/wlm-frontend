@@ -74,12 +74,6 @@ export default function NavMenu(props) {
       </Dropdown.Toggle>
 
       <Dropdown.Menu className={classNames("w-100")}>
-        <Link href={`/`} passHref>
-          <Dropdown.Item>Map</Dropdown.Item>
-        </Link>
-        <Link href={`/list`} passHref>
-          <Dropdown.Item>List</Dropdown.Item>
-        </Link>
         <Link href={`/about`} passHref>
           <Dropdown.Item>About the project</Dropdown.Item>
         </Link>
