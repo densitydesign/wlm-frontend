@@ -39,23 +39,25 @@ export default function DataGrid({
   const columns = [
     {
       id: "current_commons_state",
-      name: "Commons",
+      name: "Commons Status",
       sortable: false,
       cell: (row) => <StatusSymbol status={row["current_commons_state"]} />,
-      // style: {
-      //   display: "flex",
-      //   alignItems: "center",
-      // },
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      },
     },
     {
       id: "current_wlm_state",
-      name: "WLM",
+      name: "WLM Status",
       sortable: false,
       cell: (row) => <StatusSymbol status={row["current_wlm_state"]} />,
-      // style: {
-      //   display: "flex",
-      //   alignItems: "center",
-      // },
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      },
     },
     {
       id: "label",
@@ -121,7 +123,6 @@ export default function DataGrid({
       sortable: false,
       maxWidth: "150px",
       selector: (row) => row["municipality_label"],
-      // cell: (row) => row,
     },
     {
       id: "province_label",
@@ -129,7 +130,6 @@ export default function DataGrid({
       sortable: false,
       maxWidth: "150px",
       selector: (row) => row["province_label"],
-      // cell: (row) => row,
     },
     {
       id: "region_label",
@@ -137,7 +137,6 @@ export default function DataGrid({
       sortable: false,
       maxWidth: "150px",
       selector: (row) => row["region_label"],
-      // cell: (row) => row,
     },
     {
       id: "wikidata_creation_date",
@@ -145,7 +144,9 @@ export default function DataGrid({
       sortable: false,
       width: "200px",
       selector: (row) =>
-        DateTime.fromISO(row["wikidata_creation_date"]).toLocaleString(),
+        row["wikidata_creation_date"]
+          ? DateTime.fromISO(row["wikidata_creation_date"]).toLocaleString()
+          : null,
     },
     {
       id: "wlm_auth_start_date",
@@ -209,6 +210,7 @@ export default function DataGrid({
         // minHeight: "30.91px",
         color: "var(--bs-blue-jeans)",
         fontWeight: 700,
+        // whiteSpace: "pre-wrap"
       },
     },
     headCells: {
@@ -218,9 +220,18 @@ export default function DataGrid({
         '&[data-column-id="label"]': {
           minWidth: "250px",
         },
+        div: {
+          whiteSpace: "pre-wrap",
+        },
         '&[data-column-id="current_commons_state"], &[data-column-id="current_wlm_state"]':
           {
-            maxWidth: "80px",
+            minWidth: "78px",
+            maxWidth: "78px",
+            display: "flex",
+            justifyContent: "center",
+            div: {
+              textAlign:"center"
+            },
           },
       },
     },
@@ -233,7 +244,8 @@ export default function DataGrid({
         },
         '&[data-column-id="current_commons_state"], &[data-column-id="current_wlm_state"]':
           {
-            maxWidth: "80px",
+            minWidth: "78px",
+            maxWidth: "78px",
           },
       },
     },
