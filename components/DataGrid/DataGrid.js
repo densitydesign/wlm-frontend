@@ -61,16 +61,23 @@ export default function DataGrid({
       id: "label",
       name: "Name",
       sortable: true,
-      cell: (row) => (
-        <a
-          className="text-truncate"
-          href={"https://www.wikidata.org/wiki/" + row["q_number"]}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {row["label"]}
-        </a>
-      ),
+      cell: (row) => {
+        if (row["position"]?.coordinates) {
+          return (
+            <a
+              className="text-truncate"
+              href={"https://www.wikidata.org/wiki/" + row["q_number"]}
+              href={`https://www.openstreetmap.org/?mlat=${row["position"].coordinates[1]}&mlon=${row["position"].coordinates[0]}#map=15/${row["position"].coordinates[1]}/${row["position"].coordinates[0]}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {row["label"]}
+            </a>
+          );
+        } else {
+          return <>{row["label"]}</>;
+        }
+      },
     },
     {
       id: "q_number",
@@ -202,6 +209,9 @@ export default function DataGrid({
       style: {
         paddingLeft: "0.4rem", // override the cell padding for head cells
         paddingRight: "0.4rem",
+        '&[data-column-id="label"]': {
+          minWidth: "250px",
+        },
         '&[data-column-id="current_commons_state"], &[data-column-id="current_wlm_state"]':
           {
             maxWidth: "80px",
@@ -212,6 +222,9 @@ export default function DataGrid({
       style: {
         paddingLeft: "0.4rem", // override the cell padding for data cells
         paddingRight: "0.4rem",
+        '&[data-column-id="label"]': {
+          minWidth: "250px",
+        },
         '&[data-column-id="current_commons_state"], &[data-column-id="current_wlm_state"]':
           {
             maxWidth: "80px",
