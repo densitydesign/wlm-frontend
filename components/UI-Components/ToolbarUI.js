@@ -21,6 +21,7 @@ import { useMemo, useState } from "react";
 import { Modal, Badge } from "react-bootstrap";
 import ExportTools from "../ExportTools/ExportTools";
 import { DateTime } from "luxon";
+import { QuickLinks } from "../QuickLinks";
 
 export default function ToolbarUI({
   explorationModes,
@@ -167,6 +168,7 @@ export default function ToolbarUI({
   return (
     <div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
       <NavMenu page="map" />
+      <QuickLinks/>
       <DropdownUI
         label="Explore"
         items={explorationModes}

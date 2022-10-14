@@ -3,8 +3,7 @@ import styles from "./ListController.module.scss";
 import classNames from "classnames";
 import NavMenu from "../NavMenu";
 import { DropdownUI } from "../UI-Components";
-import {color as d3color} from "d3"
-
+import { QuickLinks } from "../QuickLinks";
 
 export default function ToolsPanel({
   regionsList,
@@ -29,6 +28,7 @@ export default function ToolsPanel({
   return (
     <div className={classNames("d-flex", "flex-column")}>
       <NavMenu />
+      <QuickLinks/>
       <h6>Areas</h6>
       <DropdownUI
         defaultLabel={"Select a region"}

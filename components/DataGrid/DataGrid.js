@@ -61,14 +61,14 @@ export default function DataGrid({
     },
     {
       id: "label",
-      name: "Name",
+      name: "Name (link to map)",
       sortable: true,
       cell: (row) => {
         if (row["position"]?.coordinates) {
           return (
             <a
               className="text-truncate"
-              href={`https://www.openstreetmap.org/?mlat=${row["position"].coordinates[1]}&mlon=${row["position"].coordinates[0]}#map=15/${row["position"].coordinates[1]}/${row["position"].coordinates[0]}`}
+              href={`https://www.openstreetmap.org/?mlat=${row["position"].coordinates[1]}&mlon=${row["position"].coordinates[0]}#map=16/${row["position"].coordinates[1]}/${row["position"].coordinates[0]}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -103,7 +103,7 @@ export default function DataGrid({
     },
     {
       id: "wlm_pictures",
-      name: "WLM Pictures",
+      name: "WLM\nPictures",
       sortable: false,
       cell: (row) => {
         return row["pictures"].filter((d) => d.wlm_image).length;
@@ -111,7 +111,7 @@ export default function DataGrid({
     },
     {
       id: "wd_relevant_pictures",
-      name: "WD Rel. Pictures",
+      name: "Relevant Pictures",
       sortable: false,
       cell: (row) => {
         return row["pictures"].filter((d) => d.relevant_image).length;
@@ -140,9 +140,9 @@ export default function DataGrid({
     },
     {
       id: "wikidata_creation_date",
-      name: "WD Creation",
+      name: "Creation Date\non Wikidata",
       sortable: false,
-      width: "200px",
+      width: "120px",
       selector: (row) =>
         row["wikidata_creation_date"]
           ? DateTime.fromISO(row["wikidata_creation_date"]).toLocaleString()
@@ -150,9 +150,9 @@ export default function DataGrid({
     },
     {
       id: "wlm_auth_start_date",
-      name: "WLM Authorization",
+      name: "WLM\nAuthorization Date",
       sortable: true,
-      width: "200px",
+      width: "150px",
       selector: (row) =>
         row["wlm_auth_start_date"]
           ? DateTime.fromISO(row["wlm_auth_start_date"]).toLocaleString()
@@ -160,9 +160,9 @@ export default function DataGrid({
     },
     {
       id: "first_wlm_image_date",
-      name: "First WLM Pic",
+      name: "First\nWLM Picture",
       sortable: true,
-      width: "200px",
+      width: "150px",
       selector: (row) =>
         row["first_wlm_image_date"]
           ? DateTime.fromISO(row["first_wlm_image_date"]).toLocaleString()
@@ -170,9 +170,9 @@ export default function DataGrid({
     },
     {
       id: "first_commons_image_date",
-      name: "First Commons Pic",
+      name: "First\nCommons Picture",
       sortable: true,
-      width: "200px",
+      width: "150px",
       selector: (row) =>
         row["first_commons_image_date"]
           ? DateTime.fromISO(row["first_commons_image_date"]).toLocaleString()
@@ -206,7 +206,7 @@ export default function DataGrid({
     headRow: {
       style: {
         backgroundColor: "var(--bs-lightBlue)",
-        borderRadius: "3px 3px 0 0",
+        borderRadius: "4px 4px 0 0",
         // minHeight: "30.91px",
         color: "var(--bs-blue-jeans)",
         fontWeight: 700,
