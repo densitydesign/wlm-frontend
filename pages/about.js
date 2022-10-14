@@ -40,69 +40,43 @@ export default function Page() {
             className={classNames("pe-sm-3", "pe-md-0", "aboutContent")}
             lg={{ span: 7, offset: 1 }}
           >
-            <blockquote>
-              <em>WikiLovesMonuments - Data visualization</em> is an online
-              visualization keeps track of how many Italian monuments are mapped
-              on Wikidata, and how many of those are photographed at least once.
-            </blockquote>
-
             <p>
-              &#8220;Monument&#8221; is an umbrella term that collects many
-              definitions of cultural properties. In our work, we define a
-              monument starting from Wikidata. First we query Wikidata for all
-              items located in Italy (
-              <span className="font-monospace">?monument wdt:P17 wd:Q38</span>)
-              that present{" "}
-              <a
-                href="https://github.com/densitydesign/wlm-backend/blob/server/server/wlm/main/WIKI_CANDIDATE_TYPES.csv"
-                target="_blank"
-                rel="noreferrer"
-              >
-                certain types of description
-              </a>
-              , or &#8220;instance of&#8221; (
-              <span className="font-monospace">
-                ?monument wdt:P31/wdt:P279* ?types
-              </span>
-              ). Then we merge them with all the items that participate to the
-              Italian WLM contest (
-              <span className="font-monospace">?monument p:P2186 ?wlmId</span>).
-            </p>
-
-            <p>
-              Users can explore the data about monuments across temporal
-              horizons, geographical areas and themes. For every parameter
-              configuration, the application visualizes a number of data-driven
-              fan, one for each geographical entity (regions, provinces,
-              municipalities).
-            </p>
-
-            <p>
-              In a fan, each slice represents a variable time unit like a day, a
-              month or a year. A slice is divided into different areas according
-              to the exploration mode selected by the user: Wiki Loves Monuments
-              or All Commons.
+              <em>data.wikilovesmonuments.it</em> is a visualization platform
+              designed and built around Wiki Loves Monuments Italy (WLM), a
+              contest that fosters the Wikimedia Community to depict and share
+              photographs of monuments on Wikimedia Commons, under an open
+              license. Additionally, it also keeps track of how many Italian
+              monuments are depicted on Wikimedia Commons, even if pictures are
+              not related to WLM.
             </p>
             <p>
-              In the first case (explore Wiki Loves Monuments) a slice is
-              divided into three concentric areas, representing how many items
-              fall in the following three status: gray for the ones that are on
-              Wikidata, yellow for the subset of monuments that participate in
-              the contest, and green for the ones that, during the contest, have
-              been photographed at least once.
-              <br />
-              In the second case (explore all Commons) a slice is divided into
-              two areas, representing in grey the amount of monuments that are
-              on Wikidata and in orange the amount of photographed ones.
+              “Monument” is an umbrella term that collects many definitions of
+              cultural properties. In our work, we define a monument starting
+              from Wikidata. First we query Wikidata for all items located in
+              Italy that present certain types of description, or “instance of”.
+              Then we merge them with all the items that participate to the
+              Italian WLM contest.
             </p>
             <p>
-              It is necessary to perform this differentiation due to a
-              limitation introduced by the Italian &#8220;Code of Cultural
-              Heritage and Landscape&#8221; (Legislative Decree No. 42, dated
-              January 22, 2004, and its subsequent amendments). The legislative
-              decree allows the reproduction of Italian cultural property for
-              personal use or study, but requires a further authorization for
-              any other purpose, such as the commercial use.
+              Users can explore the data about monuments across temporal ranges,
+              geographical areas and themes. Taking into account these
+              parameters, the application visualizes a number of data-driven
+              fans, one for each geographical entity (regions, provinces,
+              municipalities). In a fan, each slice represents a variable time
+              unit, like a day, a month, or a year. A slice is divided into
+              different areas according to the exploration mode selected by the
+              user: “Wiki Loves Monuments” or “All Commons”.
+            </p>
+            <p>
+              For the exploration mode Wiki Loves Monuments, a fan slice is
+              divided into three areas, representing how many items fall in the
+              following three statuses: gray for the ones that are on Wikidata,
+              yellow for the subset that also participate in the contest, and
+              green for the ones that, during the contest, have been
+              photographed (at least once). For the exploration mode All
+              Commons, a slice is divided into two areas, representing in gray
+              the amount of monuments that are on Wikidata and in orange the
+              amount of photographed ones.
             </p>
             <p>
               The project is realized by DensityDesign Lab and Wikimedia Italia,
