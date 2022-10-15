@@ -41,46 +41,61 @@ export default function Page() {
             lg={{ span: 7, offset: 1 }}
           >
             <p>
-              <em>data.wikilovesmonuments.it</em> is a visualization platform
-              designed and built around Wiki Loves Monuments Italy (WLM), a
-              contest that fosters the Wikimedia Community to depict and share
-              photographs of monuments on Wikimedia Commons, under an open
-              license. Additionally, it also keeps track of how many Italian
-              monuments are depicted on Wikimedia Commons, even if pictures are
-              not related to WLM.
+              <strong>data.wikilovesmonuments.it</strong> is an online
+              visualization that keeps track of how many Italian monuments are
+              documented on Wikidata, and how many of those are photographed at
+              least once.
             </p>
             <p>
               “Monument” is an umbrella term that collects many definitions of
-              cultural properties. In our work, we define a monument starting
-              from Wikidata. First we query Wikidata for all items located in
-              Italy that present certain types of description, or “instance of”.
-              Then we merge them with all the items that participate to the
-              Italian WLM contest.
+              cultural properties. In this project, it is considered a monument
+              any{" "}
+              <a href="https://www.wikidata.org/wiki/Help:Items">
+                Wikidata item
+              </a>{" "}
+              located in Italy which is an instance of peculiar types (for
+              example Church, Castle, …) or that participates in the{" "}
+              <a href="https://it.wikipedia.org/wiki/Progetto:Wiki_Loves_Monuments_2022">
+                Italian Wiki Loves Monument contest
+              </a>
+              .
             </p>
             <p>
-              Users can explore the data about monuments across temporal ranges,
-              geographical areas and themes. Taking into account these
-              parameters, the application visualizes a number of data-driven
-              fans, one for each geographical entity (regions, provinces,
-              municipalities). In a fan, each slice represents a variable time
-              unit, like a day, a month, or a year. A slice is divided into
-              different areas according to the exploration mode selected by the
-              user: “Wiki Loves Monuments” or “All Commons”.
+              The goal is to provide a geographical and temporal overview of the
+              evolution of photographic documentation, both in relation to the
+              “Wiki Loves Monuments” contest and to the Commons in general.
             </p>
             <p>
-              For the exploration mode Wiki Loves Monuments, a fan slice is
-              divided into three areas, representing how many items fall in the
-              following three statuses: gray for the ones that are on Wikidata,
-              yellow for the subset that also participate in the contest, and
-              green for the ones that, during the contest, have been
-              photographed (at least once). For the exploration mode All
-              Commons, a slice is divided into two areas, representing in gray
-              the amount of monuments that are on Wikidata and in orange the
-              amount of photographed ones.
+              In the first case, you can see the monuments aggregated into three
+              main categories: an estimate of monuments present on Wikidata,
+              monuments that are part of the context, and monuments photographed
+              one or more times. The second category is needed due to{" "}
+              <a href="https://en.wikipedia.org/wiki/Freedom_of_panorama#Italy">
+                a limitation introduced by the Italian government
+              </a>{" "}
+              stating that you need authorization from the monument’s owner to
+              upload a picture of it using a Creative Commons license compliant
+              with the Commons policies.
             </p>
             <p>
-              The project is realized by DensityDesign Lab and Wikimedia Italia,
-              with the help of Inmagik.
+              The second view allows you to see two main categories: the
+              monuments documented on Wikidata and the ones that have at least
+              one picture on the Commons depicting them. Some monuments have
+              been photographed outside the Wiki Loves Monuments contest.
+            </p>
+            <p>
+              You can filter space and time in both views, moving from the
+              national overview to single municipalities.
+            </p>
+            <p>
+              Finally, you can explore the monuments in a given area in a
+              tabular form, checking their status at the current moment.
+            </p>
+            <p>
+              The project is realized by{" "}
+              <a href="https://densitydesign.org/">DensityDesign Lab</a> and{" "}
+              <a href="https://www.wikimedia.it/">Wikimedia Italia</a>, with the
+              help of <a href="https://inmagik.com/">Inmagik</a>.
             </p>
 
             <div className="credits">
