@@ -38,17 +38,6 @@ export default function DataGrid({
   const perPage = pageSize;
   const columns = [
     {
-      id: "current_commons_state",
-      name: "Commons Status",
-      sortable: false,
-      cell: (row) => <StatusSymbol status={row["current_commons_state"]} />,
-      style: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      },
-    },
-    {
       id: "current_wlm_state",
       name: "WLM Status",
       sortable: false,
@@ -60,8 +49,20 @@ export default function DataGrid({
       },
     },
     {
+      id: "current_commons_state",
+      name: "Commons Status",
+      sortable: false,
+      cell: (row) => <StatusSymbol status={row["current_commons_state"]} />,
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      },
+    },
+
+    {
       id: "label",
-      name: "Name (link to map)",
+      name: "Name\n(coordinates link)",
       sortable: true,
       cell: (row) => {
         if (row["position"]?.coordinates) {
@@ -102,19 +103,46 @@ export default function DataGrid({
       selector: (row) => row["wlm_id"],
     },
     {
-      id: "wlm_pictures",
+      id: "pictures_wlm_count",
       name: "WLM\nPictures",
-      sortable: false,
+      sortable: true,
       cell: (row) => {
-        return row["pictures"].filter((d) => d.wlm_image).length;
+        if (row["pictures_wlm_count"].toString() !== "0") {
+          return (
+            <a
+              className="text-truncate"
+              // href={"https://www.wikidata.org/wiki/" + row["q_number"] + "#P18"}
+              href={`https://commons.wikimedia.org/w/index.php?search=%22${row["wlm_id"]}%22&title=Special:MediaSearch&go=Go&type=image`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {row["pictures_wlm_count"]}
+            </a>
+          );
+        } else {
+          return row["pictures_wlm_count"];
+        }
       },
     },
     {
-      id: "wd_relevant_pictures",
-      name: "Relevant Pictures",
-      sortable: false,
+      id: "pictures_commons_count",
+      name: "Relevant\nPictures",
+      sortable: true,
       cell: (row) => {
-        return row["pictures"].filter((d) => d.relevant_image).length;
+        if (row["pictures_commons_count"].toString() !== "0") {
+          return (
+            <a
+              className="text-truncate"
+              href={"https://www.wikidata.org/wiki/" + row["q_number"] + "#P18"}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {row["pictures_commons_count"]}
+            </a>
+          );
+        } else {
+          return row["pictures_commons_count"];
+        }
       },
     },
     {
@@ -230,7 +258,7 @@ export default function DataGrid({
             display: "flex",
             justifyContent: "center",
             div: {
-              textAlign:"center"
+              textAlign: "center",
             },
           },
       },
