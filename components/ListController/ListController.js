@@ -103,7 +103,7 @@ export default function ListController() {
         setMunicipalitiesList(_municipalitiesList);
       });
     } else {
-      setProvincesList([]);
+      setMunicipalitiesList([]);
     }
   }, [province]);
 
