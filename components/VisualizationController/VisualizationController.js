@@ -334,23 +334,6 @@ export default function VisualizationController() {
     }
   }, [selectedProvince]);
 
-  useEffect(() => {
-    console.log("update parentData", parentData);
-    if (parentData) {
-      const _filterData = parentData.extent.map((d) => {
-        let active = true;
-        if (filterData && filterData.find((f) => f.label === d.label)) {
-          active = filterData.find((f) => f.label === d.label).active;
-        }
-        return {
-          label: d.label,
-          active: active,
-        };
-      });
-      setFilterData(_filterData);
-    }
-  }, [parentData]);
-
   // Hooks to handle time intervals and date changes
   useEffect(() => {
     if (dateFrom) {
@@ -427,11 +410,28 @@ export default function VisualizationController() {
   ]);
 
   useEffect(() => {
-    console.log("update exploration mode")
-    console.log("filterData", JSON.stringify(filterData))
-    setFilterData(undefined);
-    console.log("filterData", JSON.stringify(filterData))
-  }, [explorationMode]);
+    console.log("update parentData", parentData);
+    if (parentData) {
+      const _filterData = parentData.extent.map((d) => {
+        let active = true;
+        if (filterData && filterData.find((f) => f.label === d.label)) {
+          active = filterData.find((f) => f.label === d.label).active;
+        }
+        return {
+          label: d.label,
+          active: active,
+        };
+      });
+      setFilterData(_filterData);
+    }
+  }, [parentData, explorationMode]);
+
+  // useEffect(() => {
+  //   console.log("update exploration mode")
+  //   console.log("filterData", JSON.stringify(filterData))
+  //   setFilterData(undefined);
+  //   console.log("filterData", JSON.stringify(filterData))
+  // }, []);
 
   useEffect(() => {
     const temp_obj = Object.fromEntries(
