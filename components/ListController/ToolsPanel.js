@@ -3,7 +3,7 @@ import styles from "./ListController.module.scss";
 import classNames from "classnames";
 import NavMenu from "../NavMenu";
 import { DropdownUI, SwitchUI } from "../UI-Components";
-import { QuickLinks } from "../QuickLinks";
+import {QuickLinks} from "../QuickLinks";
 
 export default function ToolsPanel({
   regionsList,

@@ -1,7 +1,7 @@
 import {
   ButtonUI,
   ButtonGroupUI,
-  DatePickerUI,
+  // DatePickerUI,
   DropdownUI,
   DropdownGroupUI,
   SwitchUI,
@@ -21,7 +21,9 @@ import { useMemo, useState } from "react";
 import { Modal, Badge } from "react-bootstrap";
 import ExportTools from "../ExportTools/ExportTools";
 import { DateTime } from "luxon";
-import { QuickLinks } from "../QuickLinks";
+import { useRouter } from "next/router";
+
+import QuickLinks from "../QuickLinks/QuickLinks";
 
 export default function ToolbarUI({
   explorationModes,
@@ -77,6 +79,7 @@ export default function ToolbarUI({
   showDelta,
   setShowDelta,
 }) {
+  const router = useRouter();
   const [show, setShow] = useState(false);
 
   const startDateItems = useMemo(() => {

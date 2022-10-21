@@ -5,7 +5,7 @@ export default function DropdownGroupUI({ label, items, disabled, className }) {
 	return (
 		<div className={classNames(className, "d-flex", "justify-content-start", "align-items-center", "mb-2")}>
 			{label && <span>{label}</span>}
-			<ButtonGroup className={classNames({ "ms-1": label })} aria-label="Basic example">
+			<ButtonGroup className={classNames({ "ms-1": label })} aria-label="Dropdown button">
 				{items.map((d, i) => (
 					<DropdownButton
 						className={classNames(styles.btnWlm)}
