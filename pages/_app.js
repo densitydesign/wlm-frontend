@@ -14,11 +14,19 @@ import { useRouter } from "next/router";
 
 import SSRProvider from "react-bootstrap/SSRProvider";
 
+import { init } from "@socialgouv/matomo-next";
+
+const MATOMO_URL = "https://matomo.wikimedia.it/";
+const MATOMO_SITE_ID = "16";
+
 function MyApp({ Component, pageProps }) {
 	const router = useRouter();
 	useEffect(() => {
 		typeof document !== undefined ? require("bootstrap/dist/js/bootstrap") : null;
 	}, [router.events]);
+	useEffect(() => {
+    init({ url: MATOMO_URL, siteId: MATOMO_SITE_ID });
+  }, []);
 	return (
 		<SSRProvider>
 			<Component {...pageProps} />
