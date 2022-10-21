@@ -69,14 +69,6 @@ export default function VisualizationController() {
       parameters.explModeValue = encodeURIComponent(explorationMode.value);
       parametersFetchData.explModeValue = explorationMode.value;
     }
-    if (showDelta !== undefined) {
-      parameters.showDeltaPar = encodeURIComponent(showDelta);
-    }
-    if (filterData) {
-      parameters.filterDataParams = encodeURIComponent(
-        filterData.map((d) => d.label + ":" + d.active.toString()).join(";")
-      );
-    }
     if (selectedRegion) {
       parameters.selectedRegion = encodeURIComponent(selectedRegion.label);
       parametersFetchData.selectedRegion = selectedRegion;
@@ -223,6 +215,7 @@ export default function VisualizationController() {
             .split(";")
             .map((d) => d.split(":"))
             .map((d) => ({ label: d[0], active: d[1] === "true" }));
+          console.log("decoded_filterData", decoded_filterData);
           setFilterData(decoded_filterData);
         }
 
@@ -342,6 +335,7 @@ export default function VisualizationController() {
   }, [selectedProvince]);
 
   useEffect(() => {
+    console.log("update parentData", parentData);
     if (parentData) {
       const _filterData = parentData.extent.map((d) => {
         let active = true;
@@ -428,33 +422,37 @@ export default function VisualizationController() {
     dateFrom,
     dateTo,
     loading,
-    showDelta,
+    // showDelta,
     // selectedTimeFrame // try to remove to prevent double fetchData() executions
   ]);
 
   useEffect(() => {
+    console.log("update exploration Mode")
     setFilterData(undefined);
   }, [explorationMode]);
 
   useEffect(() => {
+    const temp_obj = Object.fromEntries(
+      location.hash
+        .split("#")[1]
+        .split("&")
+        .map((d) => d.split("=").map((dd) => decodeURIComponent(dd)))
+    );
     if (filterData) {
-      const temp_obj = Object.fromEntries(
-        location.hash
-          .split("#")[1]
-          .split("&")
-          .map((d) => d.split("=").map((dd) => decodeURIComponent(dd)))
-      );
       temp_obj.filterDataParams = encodeURIComponent(
         filterData.map((d) => d.label + ":" + d.active.toString()).join(";")
       );
-      const temp = [];
-      for (const key in temp_obj) {
-        temp.push(key + "=" + temp_obj[key]);
-      }
-      const newHashPath = "#" + temp.join("&");
-      location.replace(newHashPath);
     }
-  }, [filterData]);
+    if (showDelta !== undefined) {
+      temp_obj.showDeltaPar = encodeURIComponent(showDelta);
+    }
+    const temp = [];
+    for (const key in temp_obj) {
+      temp.push(key + "=" + temp_obj[key]);
+    }
+    const newHashPath = "#" + temp.join("&");
+    location.replace(newHashPath);
+  }, [filterData, showDelta]);
 
   const filteredVentagli = useMemo(() => {
     if (filterData && ventagli) {
