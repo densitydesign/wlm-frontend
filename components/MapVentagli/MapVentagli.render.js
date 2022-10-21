@@ -337,7 +337,6 @@ const update = (viz_data) => {
     .attr("cursor", d=>(d.code === 0 || d.code === "0")?"":"pointer")
     .classed("overlapping", false)
     .on("click", (event, d) => {
-      console.log(d);
       if (d.code === 0 || d.code === "0") {
         // do nothing if unknown region
       } else if (mode === "municipality") {
