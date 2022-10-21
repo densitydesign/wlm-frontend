@@ -19,6 +19,7 @@ export default function ListController() {
   const [municipality, setMunicipality] = useState();
   const [themesList, setThemesList] = useState([]);
   const [theme, setTheme] = useState();
+  const [toReview, setToReview] = useState();
   //
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState(paginationRowsPerPageOptions[0]);
@@ -44,6 +45,8 @@ export default function ListController() {
     setThemesList,
     theme,
     setTheme,
+    toReview,
+    setToReview,
     loading,
     setLoading,
     paginationRowsPerPageOptions,
@@ -112,6 +115,7 @@ export default function ListController() {
     if (municipality)
       queryParams.municipality = encodeURIComponent(municipality.code);
     if (theme) queryParams.theme = encodeURIComponent(theme.id);
+    if (toReview) queryParams.to_review = encodeURIComponent(toReview.toString());
     if (pageSize) queryParams.page_size = encodeURIComponent(pageSize);
     if (pageNumber) queryParams.page = encodeURIComponent(pageNumber);
     if (ordering) queryParams.ordering = encodeURIComponent(ordering);
@@ -126,7 +130,7 @@ export default function ListController() {
       setData(data);
       setLoading(false);
     });
-  }, [region, province, municipality, theme, pageSize, pageNumber, ordering]);
+  }, [region, province, municipality, theme, toReview, pageSize, pageNumber, ordering]);
 
   return (
     <Container fluid className={classNames(styles.listPage)}>
@@ -134,7 +138,9 @@ export default function ListController() {
         <Col lg={3}>
           <ToolsPanel {...componentsData} />
         </Col>
-        <Col lg={9}><DataGrid {...componentsData} /></Col>
+        <Col lg={9}>
+          <DataGrid {...componentsData} />
+        </Col>
       </Row>
     </Container>
   );

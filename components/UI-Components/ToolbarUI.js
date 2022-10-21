@@ -1,7 +1,7 @@
 import {
   ButtonUI,
   ButtonGroupUI,
-  DatePickerUI,
+  // DatePickerUI,
   DropdownUI,
   DropdownGroupUI,
   SwitchUI,
@@ -21,7 +21,9 @@ import { useMemo, useState } from "react";
 import { Modal, Badge } from "react-bootstrap";
 import ExportTools from "../ExportTools/ExportTools";
 import { DateTime } from "luxon";
-import { QuickLinks } from "../QuickLinks";
+import { useRouter } from "next/router";
+
+import QuickLinks from "../QuickLinks/QuickLinks";
 
 export default function ToolbarUI({
   explorationModes,
@@ -77,6 +79,7 @@ export default function ToolbarUI({
   showDelta,
   setShowDelta,
 }) {
+  const router = useRouter();
   const [show, setShow] = useState(false);
 
   const startDateItems = useMemo(() => {
@@ -168,7 +171,7 @@ export default function ToolbarUI({
   return (
     <div className={classNames(styles.toolBar, "d-flex", "flex-column")}>
       <NavMenu page="map" />
-      <QuickLinks/>
+      <QuickLinks />
       <DropdownUI
         label="Explore"
         items={explorationModes}
@@ -296,7 +299,19 @@ export default function ToolbarUI({
           />
         </>
       )}
-      <h6>Timeline</h6>
+      {true && (
+        <>
+          <ButtonUI
+            label="Save"
+            content={<BsDownload />}
+            onClickAction={() => setShow(true)}
+            disabled={false}
+          />
+          <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
+            <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
+          </Modal>
+        </>
+      )}
       {/* <div className={classNames("d-flex", "justify-content-between")}>
         <ButtonGroupUI
 					label="Play"
@@ -316,19 +331,6 @@ export default function ToolbarUI({
           filterData={filterData}
           showDelta={showDelta}
         />
-      )}
-      {false && (
-        <>
-          <ButtonUI
-            label="Save"
-            content={<BsDownload />}
-            onClickAction={() => setShow(true)}
-            disabled={false}
-          />
-          <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
-            <ExportTools closeFunct={() => setShow(false)} mapData={mapData} />
-          </Modal>
-        </>
       )}
     </div>
   );

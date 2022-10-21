@@ -146,6 +146,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     )
     .join("text")
     .attr("text-anchor", "middle")
+    .attr("font-family", "Noto Sans")
     .attr("font-size", initLabelSize)
     .attr("class", "label")
     .attr("paint-order", "stroke")
@@ -153,13 +154,15 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-width", 2)
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
-    .attr("y", 1 * 15)
+    
     .selectAll("tspan")
     .data(
       (d) => [d],
       (d) => d.code
     )
     .join("tspan")
+    .attr("x", 0)
+    .attr("y", 15)
     .text((d) => d.label || "Unknown Region");
 
   ventaglio

@@ -32,7 +32,7 @@ const timeFrameData = {
       getDateRange: (dateTo) => {
         const _dt = DateTime.fromISO(dateTo).endOf("month");
         const _dtISO = _dt.toISO().split("T")[0];
-        const _df = _dt.minus({ months: 11 }).startOf("month");
+        const _df = _dt.minus({ months: 11 }).endOf("month");
         const _dfISO = _df.toISO().split("T")[0];
         return [_dfISO, _dtISO];
       },
@@ -42,7 +42,7 @@ const timeFrameData = {
       getDateRange: (dateTo) => {
         const _dt = DateTime.fromISO(dateTo).endOf("year");
         const _dtISO = _dt.toISO().split("T")[0];
-        const _df = _dt.minus({ years: 4 }).startOf("year");
+        const _df = _dt.minus({ years: 4 }).endOf("year");
         const _dfISO = _df.toISO().split("T")[0];
         return [_dfISO, _dtISO];
       },
@@ -52,7 +52,7 @@ const timeFrameData = {
       getDateRange: (maxDate) => {
         const _dt = DateTime.fromISO(maxDate).endOf("year");
         const _dtISO = _dt.toISO().split("T")[0];
-        const _df = DateTime.fromISO("2012-09-01").startOf("year");
+        const _df = DateTime.fromISO("2012-09-01").endOf("year");
         const _dfISO = _df.toISO().split("T")[0];
         return [_dfISO, _dtISO];
       },

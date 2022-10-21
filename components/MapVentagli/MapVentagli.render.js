@@ -206,7 +206,7 @@ const update = (viz_data) => {
   scaleRadius
     .exponent(1 / 2)
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
-    .range([0, 50]);
+    .range([0, 40]);
 
   bg_unknown_region
     .attr("x", width - (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
@@ -219,7 +219,7 @@ const update = (viz_data) => {
     .selectAll(".region")
     .data(lvl4, (d) => d.properties.code)
     .join("path")
-    .attr("id", (d) => "region-" + d.properties.code)
+    .attr("id", (d) => "r-" + d.properties.label.toLowerCase())
     .attr("class", "region area")
     .attr("fill", colors.terrain)
     .attr("stroke", colors.terrainDark)
@@ -241,7 +241,7 @@ const update = (viz_data) => {
     .data(lvl6, (d) => d.properties.code)
     .join("path")
     .attr("class", "province area")
-    .attr("id", (d) => "province-" + d.properties.code)
+    .attr("id", (d) => "p-" + d.properties.label.toLowerCase())
     .attr("fill", colors.terrain)
     .attr("stroke", colors.terrainDark)
     .attr("stroke-width", initStrokeWidth + "px")
@@ -261,7 +261,7 @@ const update = (viz_data) => {
     .data(lvl8, (d) => d.properties.code)
     .join("path")
     .attr("class", "municipality area")
-    .attr("id", (d) => "municipality-" + d.properties.code)
+    .attr("id", (d) => "m-" + d.properties.label.toLowerCase())
     .attr("fill", colors.terrain)
     .attr("stroke", colors.terrainDark)
     .attr("stroke-width", initStrokeWidth + "px")
@@ -333,11 +333,15 @@ const update = (viz_data) => {
     .data(data, (d) => d.code)
     .join("g")
     .attr("class", "ventaglio")
-    .attr("id", (d) => "ventaglio-" + d.code)
+    .attr("id", (d) => "v-" + d.label)
+    .attr("cursor", d=>(d.code === 0 || d.code === "0")?"":"pointer")
     .classed("overlapping", false)
     .on("click", (event, d) => {
-      if (mode === "municipality") {
-        console.log("Clicked.", d);
+      console.log(d);
+      if (d.code === 0 || d.code === "0") {
+        // do nothing if unknown region
+      } else if (mode === "municipality") {
+        // console.log("Clicked.", d);
         setSelectedMunicipality(undefined);
       } else if (mode === "province") {
         const { code, label } = d;

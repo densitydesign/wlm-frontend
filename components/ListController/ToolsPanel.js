@@ -2,8 +2,8 @@ import { colors, labelsDict, glossary } from "../../utils/ventagli.utils";
 import styles from "./ListController.module.scss";
 import classNames from "classnames";
 import NavMenu from "../NavMenu";
-import { DropdownUI } from "../UI-Components";
-import { QuickLinks } from "../QuickLinks";
+import { DropdownUI, SwitchUI } from "../UI-Components";
+import {QuickLinks} from "../QuickLinks";
 
 export default function ToolsPanel({
   regionsList,
@@ -22,13 +22,15 @@ export default function ToolsPanel({
   setThemesList,
   theme,
   setTheme,
+  toReview,
+  setToReview,
   data,
   setData,
 }) {
   return (
     <div className={classNames("d-flex", "flex-column")}>
       <NavMenu />
-      <QuickLinks/>
+      <QuickLinks />
       <h6>Areas</h6>
       <DropdownUI
         defaultLabel={"Select a region"}
@@ -59,6 +61,13 @@ export default function ToolsPanel({
         setValue={setTheme}
         disabled={!themesList.length}
       />
+      <SwitchUI
+        className={classNames("text-small", "mb-2")}
+        label="Monument waiting for relevant picture"
+        checked={toReview}
+        setChecked={setToReview}
+        disabled={false}
+      />
       {/* <h6>Status Filter</h6>
       <h6>Export</h6> */}
       <h6>Glossary</h6>
@@ -86,10 +95,12 @@ export default function ToolsPanel({
           })
         }
       </ul> */}
-      <div style={{
-        fontSize: "0.8rem"
-      }}>
-        {glossary.map(glossary => (
+      <div
+        style={{
+          fontSize: "0.8rem",
+        }}
+      >
+        {glossary.map((glossary) => (
           <p key={glossary}>{glossary}</p>
         ))}
       </div>
