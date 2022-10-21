@@ -334,10 +334,14 @@ const update = (viz_data) => {
     .join("g")
     .attr("class", "ventaglio")
     .attr("id", (d) => "v-" + d.label)
+    .attr("cursor", d=>(d.code === 0 || d.code === "0")?"":"pointer")
     .classed("overlapping", false)
     .on("click", (event, d) => {
-      if (mode === "municipality") {
-        console.log("Clicked.", d);
+      console.log(d);
+      if (d.code === 0 || d.code === "0") {
+        // do nothing if unknown region
+      } else if (mode === "municipality") {
+        // console.log("Clicked.", d);
         setSelectedMunicipality(undefined);
       } else if (mode === "province") {
         const { code, label } = d;
