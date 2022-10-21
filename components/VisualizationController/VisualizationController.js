@@ -427,8 +427,10 @@ export default function VisualizationController() {
   ]);
 
   useEffect(() => {
-    console.log("update exploration Mode")
+    console.log("update exploration mode")
+    console.log("filterData", JSON.stringify(filterData))
     setFilterData(undefined);
+    console.log("filterData", JSON.stringify(filterData))
   }, [explorationMode]);
 
   useEffect(() => {
