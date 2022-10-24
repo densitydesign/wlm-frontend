@@ -36,10 +36,10 @@ export default function ToggleButtonGroup({
 
 ToggleButtonGroup.defaultProps = {
   radios: [
-    { name: "Active", value: "1" },
-    { name: "Radio", value: "2" },
+    { label: "Option 1", value: "1" },
+    { label: "Option 2", value: "2" },
   ],
-  radioValue: 1,
+  radioValue: "1",
   setRadioValue: (value) =>
     console.warn("No function specified for onClickAction. Value:", value),
 };

@@ -6,6 +6,7 @@ import { groups as d3_groups } from "d3";
 
 export default function DropdownUI({
   label,
+  boldLabel,
   items,
   value,
   setValue,
@@ -22,7 +23,7 @@ export default function DropdownUI({
         "mb-2"
       )}
     >
-      {label && <span>{label}</span>}
+      {label && <span className={classNames({[styles.boldLabel]: boldLabel})}>{label}</span>}
       <Dropdown className={classNames({ "ms-1": label })}>
         <Dropdown.Toggle
           className={classNames(styles.btnWlm)}
@@ -93,6 +94,7 @@ DropdownUI.defaultProps = {
       value
     ),
   defaultLabel: "Select an item",
+  boldLabel: false,
   items: [
     { label: "action 1" },
     { label: "action 2" },

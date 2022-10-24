@@ -24,6 +24,7 @@ import { DateTime } from "luxon";
 import { useRouter } from "next/router";
 
 import QuickLinks from "../QuickLinks/QuickLinks";
+import StatusesFilterComponent from "../StatusesFilterComponent";
 
 export default function ToolbarUI({
   explorationModes,
@@ -178,6 +179,7 @@ export default function ToolbarUI({
         value={explorationMode}
         setValue={setExplorationMode}
         hideReset={true}
+        boldLabel
       />
       <h6>Monuments</h6>
       <DropdownUI
@@ -206,11 +208,12 @@ export default function ToolbarUI({
         disabled={municipalities.disabled}
       />
       <DropdownUI
-        label="Type"
+        label="Typology"
         items={typologiesList}
         value={typology}
         setValue={setTypology}
         disabled={!typologiesList}
+        boldLabel
       />
       {/* <DatePickerUI label="From" min={minDate} max={dateTo} value={dateFrom} transferSelection={setDateFrom} />
 			<DatePickerUI label="To" min={dateFrom} max={maxDate} value={dateTo} transferSelection={setDateTo} />
@@ -219,15 +222,15 @@ export default function ToolbarUI({
 				<br />
 				Last database snapshot: {maxDate}
 			</p> */}
-      <h6>Time frame</h6>
       <DropdownUI
-        label="View"
+        label="Time frame"
         items={timeFrameData.items}
         value={selectedTimeFrame}
         setValue={setSelectedTimeFrame}
         defaultLabel="Select a time frame"
         disabled={timeFrameData.disabled}
         hideReset={true}
+        boldLabel
       />
       {selectedTimeFrame.label !== "Custom interval" && (
         <>
@@ -282,6 +285,14 @@ export default function ToolbarUI({
           </p>
         </>
       )}
+      <h6>Status</h6>
+      <StatusesFilterComponent
+        data={parentData}
+        filterData={filterData}
+        setFilterData={setFilterData}
+        showDelta={showDelta}
+        setShowDelta={setShowDelta}
+      />
       {parentData && filterData && (
         <>
           <WhatsNew
@@ -312,19 +323,6 @@ export default function ToolbarUI({
           </Modal>
         </>
       )}
-      {/* <div className={classNames("d-flex", "justify-content-between")}>
-        <ButtonGroupUI
-					label="Play"
-					items={[
-						{ content: <BsFillPlayFill />, onClickAction: (e) => console.log(e) },
-						{ content: "0.5X", onClickAction: (e) => console.log(e) },
-						{ content: "1X", onClickAction: (e) => console.log(e) },
-						{ content: "2X", onClickAction: (e) => console.log(e) },
-						{ content: <BsArrowRepeat />, onClickAction: (e) => console.log(e) },
-					]}
-					disabled={true}
-				/>
-      </div> */}
       {parentData && filterData && (
         <AreaChart
           data={parentData}
