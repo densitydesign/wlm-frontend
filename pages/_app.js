@@ -41,11 +41,6 @@ function MyApp({ Component, pageProps }) {
     }
   }, [matomoCookie]);
 
-  useEffect(() => {
-    console.log("cookies");
-    console.log(getCookieConsentValue("enableVisitorCount"));
-  });
-
   return (
     <SSRProvider>
       <Component {...pageProps} />
