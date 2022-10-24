@@ -26,7 +26,7 @@ export default function ToggleButtonGroup({
             className={classNames(styles.toggleButton)}
             disabled={radio.disabled}
           >
-            {radio.name}
+            {radio.label}
           </ToggleButton>
         ))}
       </ButtonGroup>

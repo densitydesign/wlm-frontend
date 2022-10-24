@@ -215,7 +215,6 @@ export default function VisualizationController() {
             .split(";")
             .map((d) => d.split(":"))
             .map((d) => ({ label: d[0], active: d[1] === "true" }));
-          console.log("decoded_filterData", decoded_filterData);
           setFilterData(decoded_filterData);
         }
 
@@ -410,7 +409,6 @@ export default function VisualizationController() {
   ]);
 
   useEffect(() => {
-    console.log("update parentData", parentData);
     if (parentData) {
       const _filterData = parentData.extent.map((d) => {
         let active = true;
