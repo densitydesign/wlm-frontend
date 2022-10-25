@@ -38,7 +38,14 @@ export default function RadioButtons({ filterData, setFilterData }) {
             checked={d.active}
             onChange={() => handleChange(d)}
             className={classNames("m-0", "p-0", "me-1")}
-            style={{ marginTop: 0 }}
+            style={{
+              marginTop: 0,
+              backgroundColor: d.active
+                ? d3color(colors[d.label]).darker(0.75)
+                : colors[d.label],
+              border: "none",
+              cursor: "pointer",
+            }}
           />
           <Form.Check.Label
             htmlFor={"radio-" + d.label}
