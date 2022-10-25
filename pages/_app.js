@@ -64,7 +64,7 @@ function MyApp({ Component, pageProps }) {
           fontSize: "0.8rem",
         }}
         onAccept={() => {
-          alert("Thanks for enabling cookies");
+          // alert("Thanks for enabling cookies");
           setMatomoCookie(getCookieConsentValue("enableVisitorCount"));
         }}
         enableDeclineButton
@@ -79,7 +79,7 @@ function MyApp({ Component, pageProps }) {
           fontSize: "0.8rem",
         }}
         onDecline={() => {
-          alert("Cookies are disabled");
+          // alert("Cookies are disabled");
           setMatomoCookie(getCookieConsentValue("enableVisitorCount"));
         }}
         expires={7}
