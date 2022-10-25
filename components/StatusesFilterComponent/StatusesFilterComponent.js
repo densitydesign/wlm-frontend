@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ToggleButtonGroupUI } from "../UI-Components";
 import { Form } from "react-bootstrap";
+import Checkbox from "./Checkbox";
+import Radio from "./Radio";
 
 export default function StatusesFilterComponent({
   data,
@@ -10,7 +12,7 @@ export default function StatusesFilterComponent({
   setShowDelta,
 }) {
   const [radioValue, setRadioValue] = useState(showDelta ? "2" : "1");
-  const [categories, setCategories] = useState(filterData || []);
+  const [categories, setCategories] = useState(filterData || []); // initially filterData is undefined
   useEffect(() => {
     setCategories(filterData || []);
   }, [filterData]);
@@ -26,24 +28,32 @@ export default function StatusesFilterComponent({
         setRadioValue={setRadioValue}
       />
       <Form>
-        {radioValue === "1" && (
-          <>
-            {categories.map((d) => (
-              <Form.Group key={d.label} className="mb-3" controlId="absoluteValues">
-                <Form.Check type="checkbox" label={d.label} checked={true}/>
-              </Form.Group>
-            ))}
-          </>
-        )}
+        <Form.Group className="mb-3" controlId="absoluteValues">
+          {radioValue === "1" && (
+            <>
+              {categories.map((d) => (
+                <Checkbox
+                  group={d}
+                  filterData={filterData}
+                  setFilterData={setFilterData}
+                />
+              ))}
+            </>
+          )}
+        </Form.Group>
         {radioValue === "2" && (
           <>
-            {categories.map((d) => (
-              <Form.Group key={d.label} className="mb-3" controlId="absoluteValues">
+            {categories.map((d, i) => (
+              <Form.Group
+                key={d.label}
+                className="mb-3"
+                controlId="absoluteValues"
+              >
                 <Form.Check
                   type="radio"
                   label={d.label}
                   name="incrementValues"
-                  checked={true}
+                  defaultChecked={i === 0}
                 />
               </Form.Group>
             ))}

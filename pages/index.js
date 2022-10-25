@@ -14,15 +14,15 @@ export default function Home() {
 
         {/* <!-- Google / Search Engine Tags --> */}
         <meta
-          itemprop="name"
+          itemProp="name"
           content="WikiLovesMonuments - Data visualization"
         />
         <meta
-          itemprop="description"
+          itemProp="description"
           content="Explore the data about photographed monuments from WikiLovesMonuments, in the data visualization system developed using WikiData."
         />
         <meta
-          itemprop="image"
+          itemProp="image"
           content="https://data.wikilovesmonuments.it/images/og-image.png"
         />
 

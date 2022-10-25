@@ -29,10 +29,10 @@ const labelsDict = {
     explained: "Monuments in contest",
   },
   photographed: {
-    explained: "Photographed during the contest at least once",
+    explained: "Photographed during the contest",
   },
   withPicture: {
-    explained: "Depicted on Commons at least once",
+    explained: "With at least one photo",
   },
   onWikidataOnly: { explained: "Monuments on Wikidata" },
 };
