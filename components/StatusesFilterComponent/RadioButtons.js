@@ -50,6 +50,7 @@ export default function RadioButtons({ filterData, setFilterData }) {
           <Form.Check.Label
             htmlFor={"radio-" + d.label}
             className={classNames("m-0", "p-0")}
+            style={{ cursor: "pointer" }}
           >
             {labelsDict[d.label].explained}
           </Form.Check.Label>

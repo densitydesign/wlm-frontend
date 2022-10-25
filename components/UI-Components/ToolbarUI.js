@@ -313,8 +313,7 @@ export default function ToolbarUI({
       {true && (
         <>
           <ButtonUI
-            label="Save"
-            content={<BsDownload />}
+            content={<>Export visualization <BsDownload /></>}
             onClickAction={() => setShow(true)}
             disabled={false}
           />
