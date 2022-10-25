@@ -1,5 +1,5 @@
-import { Form, FormCheck } from "react-bootstrap";
-import { useState, useEffect, useCallback } from "react";
+import { Form } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { colors, labelsDict } from "../../utils/ventagli.utils";
 import { color as d3color } from "d3";
 import styles from "./StatusesFilterComponent.module.scss";
@@ -44,8 +44,9 @@ export default function Checkbox({ group, filterData, setFilterData }) {
         <Form.Check.Input
           type="checkbox"
           className={classNames("m-0", "p-0", "me-1")}
-          id={"id-" + labelsDict[group.label].explained}
+          id={"checkbox-" + group.label}
           style={{
+            marginTop: 0,
             backgroundColor: checked
               ? d3color(colors[group.label]).darker(0.75)
               : colors[group.label],
@@ -58,7 +59,7 @@ export default function Checkbox({ group, filterData, setFilterData }) {
         />
         <Form.Check.Label
           className={classNames("m-0", "p-0")}
-          htmlFor={"id-" + labelsDict[group.label].explained}
+          htmlFor={"checkbox-" + group.label}
           style={{ cursor: "pointer" }}
         >
           {labelsDict[group.label].explained}

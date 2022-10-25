@@ -293,7 +293,7 @@ export default function ToolbarUI({
         showDelta={showDelta}
         setShowDelta={setShowDelta}
       />
-      {parentData && filterData && (
+      {/* {parentData && filterData && (
         <>
           <WhatsNew
             data={parentData}
@@ -309,7 +309,7 @@ export default function ToolbarUI({
             disabled={filterData.filter((d) => d.active).length !== 1}
           />
         </>
-      )}
+      )} */}
       {true && (
         <>
           <ButtonUI

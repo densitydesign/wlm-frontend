@@ -69,6 +69,7 @@ function Group({ group, max, filterData, setFilterData, showDelta }) {
   }, [amount, max]);
 
   useEffect(() => {
+    console.log(filterData, group.label)
     const newFilterData = [...filterData];
     newFilterData.find((f) => group.label === f.label).active = checked;
     setFilterData(newFilterData);

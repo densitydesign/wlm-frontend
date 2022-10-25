@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ToggleButtonGroupUI } from "../UI-Components";
 import { Form } from "react-bootstrap";
 import Checkbox from "./Checkbox";
-import Radio from "./Radio";
+import RadioButtons from "./RadioButtons";
 
 export default function StatusesFilterComponent({
   data,
@@ -16,6 +16,19 @@ export default function StatusesFilterComponent({
   useEffect(() => {
     setCategories(filterData || []);
   }, [filterData]);
+  useEffect(() => {
+    if (radioValue === "2") {
+      setShowDelta(true);
+      let newFilterData = filterData;
+      if (filterData.filter((d) => d.active).length > 1) {
+        newFilterData = filterData.map((d, i) => ({ ...d, active: i === 0 }));
+        console.log(newFilterData);
+      }
+      setFilterData(newFilterData);
+    } else {
+      setShowDelta(false);
+    }
+  }, [radioValue]);
   return (
     <>
       <ToggleButtonGroupUI
@@ -28,36 +41,20 @@ export default function StatusesFilterComponent({
         setRadioValue={setRadioValue}
       />
       <Form>
-        <Form.Group className="mb-3" controlId="absoluteValues">
-          {radioValue === "1" && (
-            <>
-              {categories.map((d) => (
-                <Checkbox
-                  group={d}
-                  filterData={filterData}
-                  setFilterData={setFilterData}
-                />
-              ))}
-            </>
-          )}
-        </Form.Group>
-        {radioValue === "2" && (
-          <>
-            {categories.map((d, i) => (
-              <Form.Group
+        {radioValue === "1" && (
+          <Form.Group className="mb-3" controlId="absoluteValues">
+            {categories.map((d) => (
+              <Checkbox
                 key={d.label}
-                className="mb-3"
-                controlId="absoluteValues"
-              >
-                <Form.Check
-                  type="radio"
-                  label={d.label}
-                  name="incrementValues"
-                  defaultChecked={i === 0}
-                />
-              </Form.Group>
+                group={d}
+                filterData={filterData}
+                setFilterData={setFilterData}
+              />
             ))}
-          </>
+          </Form.Group>
+        )}
+        {radioValue === "2" && (
+          <RadioButtons filterData={categories} setFilterData={setFilterData} />
         )}
       </Form>
     </>
