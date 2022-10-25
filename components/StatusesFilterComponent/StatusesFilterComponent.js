@@ -13,22 +13,24 @@ export default function StatusesFilterComponent({
 }) {
   const [radioValue, setRadioValue] = useState(showDelta ? "2" : "1");
   const [categories, setCategories] = useState(filterData || []); // initially filterData is undefined
+
   useEffect(() => {
     setCategories(filterData || []);
   }, [filterData]);
+
   useEffect(() => {
     if (radioValue === "2") {
       setShowDelta(true);
       let newFilterData = filterData;
       if (filterData.filter((d) => d.active).length > 1) {
         newFilterData = filterData.map((d, i) => ({ ...d, active: i === 0 }));
-        console.log(newFilterData);
       }
       setFilterData(newFilterData);
     } else {
       setShowDelta(false);
     }
-  }, [radioValue]);
+  }, [radioValue, categories]);
+  
   return (
     <>
       <ToggleButtonGroupUI
