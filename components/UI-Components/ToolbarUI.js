@@ -291,15 +291,15 @@ export default function ToolbarUI({
         </>
       )}
 
-      {/* <h6>Status</h6>
+      <h6>Status</h6>
       <StatusesFilterComponent
         data={parentData}
         filterData={filterData}
         setFilterData={setFilterData}
         showDelta={showDelta}
         setShowDelta={setShowDelta}
-      /> */}
-      {parentData && filterData && (
+      />
+      {/* {parentData && filterData && (
         <>
           <WhatsNew
             data={parentData}
@@ -320,7 +320,7 @@ export default function ToolbarUI({
             showDelta={showDelta}
           />
         </>
-      )}
+      )} */}
       {/* {true && (
         <>
           <ButtonUI

@@ -27,7 +27,7 @@ export default function Checkbox({ group, filterData, setFilterData }) {
 
   const getLightColor = (hex) => {
     const myColor = d3color(hex);
-    myColor.opacity = 0.15;
+    myColor.opacity = 0.25;
     return myColor;
   };
   return (

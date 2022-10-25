@@ -32,7 +32,7 @@ export default function ToolsPanel({
     <div className={classNames("d-flex", "flex-column")}>
       <NavMenu />
       <QuickLinks />
-      <Accordion>
+      <Accordion defaultActiveKey="1">
         <Accordion.Item eventKey="0">
           <Accordion.Header>Glossary</Accordion.Header>
           <Accordion.Body>
