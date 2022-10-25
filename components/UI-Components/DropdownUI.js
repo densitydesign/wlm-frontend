@@ -13,6 +13,7 @@ export default function DropdownUI({
   defaultLabel,
   disabled,
   hideReset,
+  classNameProp,
 }) {
   return (
     <div
@@ -20,10 +21,15 @@ export default function DropdownUI({
         "d-flex",
         "justify-content-start",
         "align-items-center",
-        "mb-2"
+        "mb-2",
+        classNameProp
       )}
     >
-      {label && <span className={classNames({[styles.boldLabel]: boldLabel})}>{label}</span>}
+      {label && (
+        <span className={classNames({ [styles.boldLabel]: boldLabel })}>
+          {label}
+        </span>
+      )}
       <Dropdown className={classNames({ "ms-1": label })}>
         <Dropdown.Toggle
           className={classNames(styles.btnWlm)}
@@ -45,7 +51,7 @@ export default function DropdownUI({
                     className={classNames(
                       styles.dropDownHeader,
                       "pt-2",
-                      {"pt-4":i>0},
+                      { "pt-4": i > 0 },
                       "pb-2"
                     )}
                     key={"h" + i}

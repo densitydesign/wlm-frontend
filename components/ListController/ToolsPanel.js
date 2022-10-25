@@ -3,7 +3,8 @@ import styles from "./ListController.module.scss";
 import classNames from "classnames";
 import NavMenu from "../NavMenu";
 import { DropdownUI, SwitchUI } from "../UI-Components";
-import {QuickLinks} from "../QuickLinks";
+import { QuickLinks } from "../QuickLinks";
+import { Accordion } from "react-bootstrap";
 
 export default function ToolsPanel({
   regionsList,
@@ -31,79 +32,99 @@ export default function ToolsPanel({
     <div className={classNames("d-flex", "flex-column")}>
       <NavMenu />
       <QuickLinks />
-      <h6>Areas</h6>
-      <DropdownUI
-        defaultLabel={"Select a region"}
-        items={regionsList}
-        value={region}
-        setValue={setRegion}
-        disabled={!regionsList.length}
-      />
-      <DropdownUI
-        defaultLabel={"Select a province"}
-        items={provincesList}
-        value={province}
-        setValue={setProvince}
-        disabled={!provincesList.length}
-      />
-      <DropdownUI
-        defaultLabel={"Select a municipality"}
-        items={municipalitiesList}
-        value={municipality}
-        setValue={setMunicipality}
-        disabled={!municipalitiesList.length}
-      />
-      <h6>Themes</h6>
-      <DropdownUI
-        defaultLabel={"Select a monument type"}
-        items={themesList}
-        value={theme}
-        setValue={setTheme}
-        disabled={!themesList.length}
-      />
-      <SwitchUI
-        className={classNames("text-small", "mb-2")}
-        label="Monument waiting for relevant picture"
-        checked={toReview}
-        setChecked={setToReview}
-        disabled={false}
-      />
-      {/* <h6>Status Filter</h6>
-      <h6>Export</h6> */}
-      <h6>Glossary</h6>
-      {/* <ul style={{
-        paddingLeft: 0,
-        fontSize: "0.8rem"
-      }}>
-        {
-          Object.entries(labelsDict).map(key => {
-            console.log(colors[key[0]])
-            return <li style={{listStyle: "none"}}>
-                <span style={{
-                    display: "inline-block",
-                    backgroundColor: colors[key[0]],
-                    width: 20,
-                    height: 10,
-                    marginRight: 10,
-                    borderRadius: "2px",
-                    border: "1.5px solid #333",
-                    borderColor: d3color(colors[key[0]] || "#fff").darker(1),
-                  }}>
-                </span>
-                  {labelsDict[key[0]].explained}
-              </li>
-          })
-        }
-      </ul> */}
-      <div
-        style={{
-          fontSize: "0.8rem",
-        }}
-      >
-        {glossary.map((glossary) => (
-          <p key={glossary}>{glossary}</p>
-        ))}
-      </div>
+      <Accordion>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>Glossary</Accordion.Header>
+          <Accordion.Body>
+            <div
+              style={{
+                fontSize: "0.8rem",
+              }}
+            >
+              <p className="mb-1">
+                <span className="fw-bold">WLM Coverage</span>: photographic
+                coverage of monuments in relation to the contest
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">Commons Coverage</span>: coverage of
+                monuments in relation to all traceable pictures from Commons
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">WLM Pictures</span>: photographs of
+                the corresponding monument taken during the contest (all
+                editions)
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">Relevant Pictures</span>: photographs
+                of the corresponding monument present on the Wikidata page
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">Creation date on Wikidata</span>:
+                Wikidata page creation date of the corresponding monument
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">WLM authorization date</span>: date of
+                authorization to share pictures under a CC-SA-BY license of the
+                corresponding monument. Corresponds to entry in contest
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">First WLM picture</span>: date of the
+                upload of the first image taken in the contest
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">First WLM picture</span>: date of the
+                upload of the first image taken in the contest
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">First Commons picture</span>: date of
+                the upload of the first image, among all the traceable ones
+              </p>
+            </div>
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="1">
+          <Accordion.Header>Filters</Accordion.Header>
+          <Accordion.Body>
+            <h6>Areas</h6>
+            <DropdownUI
+              defaultLabel={"Select a region"}
+              items={regionsList}
+              value={region}
+              setValue={setRegion}
+              disabled={!regionsList.length}
+            />
+            <DropdownUI
+              defaultLabel={"Select a province"}
+              items={provincesList}
+              value={province}
+              setValue={setProvince}
+              disabled={!provincesList.length}
+            />
+            <DropdownUI
+              defaultLabel={"Select a municipality"}
+              items={municipalitiesList}
+              value={municipality}
+              setValue={setMunicipality}
+              disabled={!municipalitiesList.length}
+            />
+            <h6>Themes</h6>
+            <DropdownUI
+              defaultLabel={"Select a monument type"}
+              items={themesList}
+              value={theme}
+              setValue={setTheme}
+              disabled={!themesList.length}
+            />
+            <SwitchUI
+              className={classNames("text-small", "mb-2")}
+              label="Monument waiting for relevant picture"
+              checked={toReview}
+              setChecked={setToReview}
+              disabled={false}
+            />
+          </Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
     </div>
   );
 }

@@ -180,8 +180,9 @@ export default function ToolbarUI({
         setValue={setExplorationMode}
         hideReset={true}
         boldLabel
+        classNameProp="mb-3"
       />
-      <h6>Monuments</h6>
+      <h6>Areas</h6>
       <DropdownUI
         label="Region"
         items={regions.items}
@@ -206,6 +207,7 @@ export default function ToolbarUI({
         setValue={setSelectedMunicipality}
         defaultLabel="Select a municipality"
         disabled={municipalities.disabled}
+        classNameProp="mb-3"
       />
       <DropdownUI
         label="Typology"
@@ -214,6 +216,7 @@ export default function ToolbarUI({
         setValue={setTypology}
         disabled={!typologiesList}
         boldLabel
+        classNameProp="mb-3"
       />
       {/* <DatePickerUI label="From" min={minDate} max={dateTo} value={dateFrom} transferSelection={setDateFrom} />
 			<DatePickerUI label="To" min={dateFrom} max={maxDate} value={dateTo} transferSelection={setDateTo} />
@@ -222,34 +225,36 @@ export default function ToolbarUI({
 				<br />
 				Last database snapshot: {maxDate}
 			</p> */}
-      <DropdownUI
-        label="Time frame"
-        items={timeFrameData.items}
-        value={selectedTimeFrame}
-        setValue={setSelectedTimeFrame}
-        defaultLabel="Select a time frame"
-        disabled={timeFrameData.disabled}
-        hideReset={true}
-        boldLabel
-      />
-      {selectedTimeFrame.label !== "Custom interval" && (
-        <>
-          <p className={classNames("text-small", "mb-2")}>
-            A slice is{" "}
-            <Badge bg="light-gray" text="dark">
-              {timeStep || "..."}
-            </Badge>{" "}
-            from{" "}
-            <Badge bg="light-gray" text="dark">
-              {dateFrom || "..."}
-            </Badge>{" "}
-            to{" "}
-            <Badge bg="light-gray" text="dark">
-              {dateTo || "..."}
-            </Badge>
-          </p>
-        </>
-      )}
+      <div className="mb-3">
+        <DropdownUI
+          label="Time frame"
+          items={timeFrameData.items}
+          value={selectedTimeFrame}
+          setValue={setSelectedTimeFrame}
+          defaultLabel="Select a time frame"
+          disabled={timeFrameData.disabled}
+          hideReset={true}
+          boldLabel
+        />
+        {selectedTimeFrame.label !== "Custom interval" && (
+          <>
+            <p className={classNames("text-small", "mb-2")}>
+              A slice is{" "}
+              <Badge bg="light-gray" text="dark">
+                {timeStep || "..."}
+              </Badge>{" "}
+              from{" "}
+              <Badge bg="light-gray" text="dark">
+                {dateFrom || "..."}
+              </Badge>{" "}
+              to{" "}
+              <Badge bg="light-gray" text="dark">
+                {dateTo || "..."}
+              </Badge>
+            </p>
+          </>
+        )}
+      </div>
       {selectedTimeFrame.label === "Custom interval" && (
         <>
           <div className={classNames("d-flex", "align-items-center")}>
@@ -285,15 +290,16 @@ export default function ToolbarUI({
           </p>
         </>
       )}
-      <h6>Status</h6>
+
+      {/* <h6>Status</h6>
       <StatusesFilterComponent
         data={parentData}
         filterData={filterData}
         setFilterData={setFilterData}
         showDelta={showDelta}
         setShowDelta={setShowDelta}
-      />
-      {/* {parentData && filterData && (
+      /> */}
+      {parentData && filterData && (
         <>
           <WhatsNew
             data={parentData}
@@ -308,9 +314,14 @@ export default function ToolbarUI({
             setChecked={setShowDelta}
             disabled={filterData.filter((d) => d.active).length !== 1}
           />
+          <AreaChart
+            data={parentData}
+            filterData={filterData}
+            showDelta={showDelta}
+          />
         </>
-      )} */}
-      {true && (
+      )}
+      {/* {true && (
         <>
           <ButtonUI
             content={<>Export visualization <BsDownload /></>}
@@ -322,13 +333,7 @@ export default function ToolbarUI({
           </Modal>
         </>
       )}
-      {parentData && filterData && (
-        <AreaChart
-          data={parentData}
-          filterData={filterData}
-          showDelta={showDelta}
-        />
-      )}
+       */}
     </div>
   );
 }

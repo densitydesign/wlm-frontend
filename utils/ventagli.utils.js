@@ -37,18 +37,6 @@ const labelsDict = {
   onWikidataOnly: { explained: "Monuments on Wikidata" },
 };
 
-const glossary = [
-  "WLM Status: Status for monuments from the point of view of the contest.",
-
-"Common Status: Status for monuments that doesn’t take the contest into account.",
-  "WLM picture (number): Number of photographs that are part of  the contest.", 
-"Relevant picture (number): Number of pages presented in the monument’s Wikidata page.", 
-"Creation on Wikidata: creation date of the monument’s Wikidata page.",
-"WLM Authorization: date the monument received permission to have a photograph on Wikidata under a CC-SA-BY license.", 
-"First WLM pic: date of the first image uploaded during the contest.",
-"First Commons pic: date of the first image uploaded to Commons."
-]
-
 const collisionRadius = 70;
 const fanOpening = 150;
 let rotation;
@@ -154,7 +142,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-width", 2)
     .attr("stroke-linecap", "round")
     .attr("stroke-linejoin", "round")
-    
+
     .selectAll("tspan")
     .data(
       (d) => [d],
@@ -391,4 +379,4 @@ function dataTick(d) {
   return data.reverse();
 }
 
-export { colors, collisionRadius, drawVentaglio, labelsDict, glossary };
+export { colors, collisionRadius, drawVentaglio, labelsDict };
