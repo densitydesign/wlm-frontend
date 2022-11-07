@@ -6,7 +6,7 @@ import {
   update as update_areaChart,
 } from "./AreaChart.render";
 
-export default function AreaChart({ data, filterData, showDelta }) {
+export default function AreaChart({ data, filterData, showDelta, timeStep }) {
   const svgEl = useRef();
 
   useEffect(() => {
@@ -14,18 +14,11 @@ export default function AreaChart({ data, filterData, showDelta }) {
   }, []);
 
   useEffect(() => {
-    update_areaChart(data, filterData, showDelta);
-  }, [data, filterData, showDelta]);
+    update_areaChart(data, filterData, showDelta, timeStep);
+  }, [data, filterData, showDelta, timeStep]);
 
   return (
-    <div
-      className={classNames(
-        styles.areaChart,
-        "d-flex",
-        "justify-content-center",
-        "align-items-center"
-      )}
-    >
+    <div className={classNames(styles.areaChart)}>
       <svg ref={svgEl}>
         <defs>
           <clipPath id="cut-off">

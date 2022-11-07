@@ -5,9 +5,9 @@ let svg,
   height,
   margin = {
     left: 35,
-    right: 15,
-    top: 5,
-    bottom: 20,
+    right: 1,
+    top: 0,
+    bottom: 17,
   },
   areaChart,
   clipMask,
@@ -35,7 +35,7 @@ const initialize = (element) => {
   }
 };
 
-const update = (data, filterData, showDelta) => {
+const update = (data, filterData, showDelta, timeStep) => {
   const bbox = svg.node().getBoundingClientRect();
   width = bbox.width;
   height = bbox.height;
@@ -88,13 +88,13 @@ const update = (data, filterData, showDelta) => {
   const timeExtent = d3.extent(dates);
   timeScale.domain(timeExtent).range([margin.left, width - margin.right]);
 
-  const timeAxis = d3.axisBottom(timeScale).tickValues(timeScale.ticks(7));
+  const timeAxis = d3
+    .axisBottom(timeScale)
+    .tickValues(timeScale.ticks(5))
+    .tickFormat(timeScale.tickFormat(5, timeStep.includes("day") ? "%d/%m" : "%m/%y"));
   timeAxisGroup
     .attr("transform", `translate(0, ${height - margin.bottom})`)
-    .call(timeAxis)
-    // .call((g) => {
-    //   const d_attr = g.select(".domain").remove();
-    // });
+    .call(timeAxis);
 
   const quantityExtent = d3.extent(amounts);
   const _domain = [
@@ -103,11 +103,10 @@ const update = (data, filterData, showDelta) => {
   ];
   quantityScale.domain(_domain).range([height - margin.bottom, margin.top]);
 
-  const qTicks = quantityScale.ticks(5);
-  const qTicksFormat = quantityScale.tickFormat(5, "~s");
   const quantityAxis = d3
-    .axisRight(quantityScale.copy())
-    .tickFormat(qTicksFormat);
+    .axisRight(quantityScale)
+    .tickValues(quantityScale.ticks(5))
+    .tickFormat(quantityScale.tickFormat(5, "~s"));
   const arr = [];
   quantityAxisGroup
     .attr("transform", `translate(${0},0)`)
