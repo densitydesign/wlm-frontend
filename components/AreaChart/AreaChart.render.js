@@ -88,7 +88,7 @@ const update = (data, filterData, showDelta) => {
   const timeExtent = d3.extent(dates);
   timeScale.domain(timeExtent).range([margin.left, width - margin.right]);
 
-  const timeAxis = d3.axisBottom(timeScale);
+  const timeAxis = d3.axisBottom(timeScale).tickValues(timeScale.ticks(7));
   timeAxisGroup
     .attr("transform", `translate(0, ${height - margin.bottom})`)
     .call(timeAxis)
