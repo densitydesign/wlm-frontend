@@ -225,7 +225,7 @@ export default function ToolbarUI({
 				<br />
 				Last database snapshot: {maxDate}
 			</p> */}
-      <div className="mb-3">
+      <div className="mb-3 TIME FRAME">
         <DropdownUI
           label="Time frame"
           items={timeFrameData.items}
@@ -254,51 +254,53 @@ export default function ToolbarUI({
             </p>
           </>
         )}
-      </div>
-      {selectedTimeFrame.label === "Custom interval" && (
-        <>
-          <div className={classNames("d-flex", "align-items-center")}>
-            <DropdownGroupUI
-              className={classNames(styles.small)}
-              label="From"
-              items={startDateItems}
-              disabled={selectedTimeFrame.label !== "Custom interval"}
-            />
-            <DropdownGroupUI
-              className={classNames(styles.small, "ms-1")}
-              label="to"
-              items={endDateItems}
-              disabled={selectedTimeFrame.label !== "Custom interval"}
-            />
-          </div>
-          <span className={classNames("d-flex", "align-items-center", "mb-2")}>
-            <BsExclamationTriangleFill
-              className={classNames("me-2", "mb-1")}
-              style={{ color: "var(--bs-interactive)" }}
-            />
-            <p className={classNames("text-small", "mb-0")}>
-              By selecting custom dates,
-              <br />
-              data retrieval may take several minutes
-            </p>
-          </span>
-          <p className={classNames("text-small", "mb-2")}>
-            A slice is{" "}
-            <Badge bg="light-gray" text="dark">
-              {timeStep}
-            </Badge>
-          </p>
-        </>
-      )}
 
-      <h6>Status</h6>
-      <StatusesFilterComponent
-        data={parentData}
-        filterData={filterData}
-        setFilterData={setFilterData}
-        showDelta={showDelta}
-        setShowDelta={setShowDelta}
-      />
+        {selectedTimeFrame.label === "Custom interval" && (
+          <>
+            <div className={classNames("d-flex", "align-items-center")}>
+              <DropdownGroupUI
+                className={classNames(styles.small)}
+                label="From"
+                items={startDateItems}
+                disabled={selectedTimeFrame.label !== "Custom interval"}
+              />
+              <DropdownGroupUI
+                className={classNames(styles.small, "ms-1")}
+                label="to"
+                items={endDateItems}
+                disabled={selectedTimeFrame.label !== "Custom interval"}
+              />
+            </div>
+            <span
+              className={classNames("d-flex", "align-items-center", "mb-2")}
+            >
+              <BsExclamationTriangleFill
+                className={classNames("me-2", "mb-1")}
+                style={{ color: "var(--bs-interactive)" }}
+              />
+              <p className={classNames("text-small", "mb-0")}>
+                By selecting custom dates,
+                <br />
+                data retrieval may take several minutes
+              </p>
+            </span>
+            <p className={classNames("text-small", "mb-2")}>
+              A slice is{" "}
+              <Badge bg="light-gray" text="dark">
+                {timeStep}
+              </Badge>
+            </p>
+          </>
+        )}
+        {parentData && filterData && (
+          <AreaChart
+            data={parentData}
+            filterData={filterData}
+            showDelta={showDelta}
+            timeStep={timeStep}
+          />
+        )}
+      </div>
       {/* {parentData && filterData && (
         <>
           <WhatsNew
@@ -314,13 +316,18 @@ export default function ToolbarUI({
             setChecked={setShowDelta}
             disabled={filterData.filter((d) => d.active).length !== 1}
           />
-          <AreaChart
-            data={parentData}
-            filterData={filterData}
-            showDelta={showDelta}
-          />
         </>
       )} */}
+
+      <h6>Status</h6>
+      <StatusesFilterComponent
+        data={parentData}
+        filterData={filterData}
+        setFilterData={setFilterData}
+        showDelta={showDelta}
+        setShowDelta={setShowDelta}
+      />
+
       {/* {true && (
         <>
           <ButtonUI

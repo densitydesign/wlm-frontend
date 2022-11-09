@@ -1,20 +1,21 @@
 import * as d3 from "d3";
 
-import { colors, drawVentaglio } from "../../utils/ventagli.utils";
+import { colors, drawVentaglio, labelsDict } from "../../utils/ventagli.utils";
 // import coastlinesData from "./coastlines.json";
+import ventaglioSvg from "./ventaglio.svg";
 
 const t_duration = 350;
 
 let svg,
   width,
   height,
+  legendWidth = 130,
   bgRect,
   projection,
   render,
   zoom,
   g,
-  g_coastlines,
-  coastlines,
+  g_legend,
   g_geographies,
   bg_unknown_region,
   bg_unknown_region_margin = 25,
@@ -58,7 +59,7 @@ const initialize = (element, viz_data) => {
 
   svg = d3.select(element);
   const bbox = svg.node().getBoundingClientRect();
-  width = bbox.width;
+  width = bbox.width - legendWidth;
   height = bbox.height;
 
   if (viz_data.viewbox) {
@@ -85,22 +86,21 @@ const initialize = (element, viz_data) => {
     g = svg.append("g").classed("main-g", true);
   }
 
-  g_geographies = g.select(".g_geographies");
+  g_legend = svg.select(".g_legend");
+  if (g_legend.empty()) {
+    g_legend = svg
+      .append("g")
+      .classed("g_legend", true)
+      .attr("id", "map")
+      .attr("transform", `translate(${width} 0)`);
+  }
 
+  g_geographies = g.select(".g_geographies");
   if (g_geographies.empty()) {
     g_geographies = g
       .append("g")
       .classed("g_geographies", true)
       .attr("id", "map");
-  }
-
-  g_coastlines = g_geographies.select(".coastlines");
-
-  if (g_coastlines.empty()) {
-    g_coastlines = g_geographies
-      .append("g")
-      .classed("coastlines", true)
-      .attr("id", "coastlines");
   }
 
   g_regions = g_geographies.select(".regions");
@@ -191,8 +191,8 @@ const update = (viz_data) => {
     setSelectedProvince,
     setSelectedMunicipality,
     showDelta,
+    timeStep,
   } = viz_data;
-  // console.log("update", data);
 
   if (viz_data.viewbox) {
     width = viz_data.viewbox.width;
@@ -207,6 +207,8 @@ const update = (viz_data) => {
     .exponent(1 / 2)
     .domain([0, d3.max(extent.map((d) => d.value[1]))])
     .range([0, 40]);
+
+  renderLegend(g_legend, viz_data);
 
   bg_unknown_region
     .attr("x", width - (scaleRadius.range()[1] + bg_unknown_region_margin) * 2)
@@ -334,7 +336,7 @@ const update = (viz_data) => {
     .join("g")
     .attr("class", "ventaglio")
     .attr("id", (d) => "v-" + d.label)
-    .attr("cursor", d=>(d.code === 0 || d.code === "0")?"":"pointer")
+    .attr("cursor", (d) => (d.code === 0 || d.code === "0" ? "" : "pointer"))
     .classed("overlapping", false)
     .on("click", (event, d) => {
       if (d.code === 0 || d.code === "0") {
@@ -501,6 +503,208 @@ function dist([x1, y1], [x2, y2]) {
   let dx = x2 - x1;
   let dy = y2 - y1;
   return Math.sqrt(dx * dx + dy * dy);
+}
+
+function renderLegend(selection, data) {
+  const { timeStep, dateFrom, dateTo } = data;
+  const legendBBox = selection.node().getBBox();
+
+  selection.selectAll("*").remove();
+  selection
+    .append("rect")
+    .attr("width", legendWidth)
+    .attr("height", height)
+    .attr("fill", "white");
+
+  const howToRead = selection
+    .append("g")
+    .attr("transform", "translate(10, 12)");
+
+  const howToReadText = howToRead.append("text").attr("font-size", 14);
+  howToReadText
+    .append("tspan")
+    .attr("font-size", 12)
+    .attr("font-weight", "600")
+    .text("How to read");
+  howToReadText.append("tspan").text("A slice is ").attr("x", 0).attr("dy", 18);
+  const timeStepText = howToReadText.append("tspan").text(timeStep);
+  const tstBBox = timeStepText.node().getBBox();
+  howToRead
+    .append("rect")
+    .attr("fill", "#F1F5F1")
+    .attr("rx", 4)
+    .attr("x", tstBBox.x - 2)
+    .attr("y", tstBBox.y)
+    .attr("width", tstBBox.width + 4)
+    .attr("height", tstBBox.height + 1)
+    .lower();
+
+  howToReadText.append("tspan").text("from").attr("x", 0).attr("dy", 36);
+  const dateFromText = howToReadText
+    .append("tspan")
+    .text(dateFrom)
+    .attr("x", 0)
+    .attr("dy", 18);
+  const dftBBox = dateFromText.node().getBBox();
+  howToRead
+    .append("rect")
+    .attr("fill", "#F1F5F1")
+    .attr("rx", 4)
+    .attr("x", dftBBox.x - 2)
+    .attr("y", dftBBox.y)
+    .attr("width", dftBBox.width + 4)
+    .attr("height", dftBBox.height + 1)
+    .lower();
+  // Ventaglio
+  howToRead
+    .append("path")
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr(
+      "d",
+      `M${dftBBox.x + 2},${dftBBox.y + 18 + 6} l0,32 a 9 9 0 0 0 9,9 l4,0`
+    );
+  const ventaglio = howToRead.append("g").attr("transform", "translate(0,85)").lower();
+  d3.svg(ventaglioSvg.src).then((document) => {
+    const graphics = d3.select(document).select("svg").html();
+    ventaglio.html(graphics);
+  });
+
+  howToReadText
+    .append("tspan")
+    .attr("text-anchor", "end")
+    .attr("x", legendWidth - 10)
+    .attr("dy", 90)
+    .text("to");
+  const dateToText = howToReadText
+    .append("tspan")
+    .attr("text-anchor", "end")
+    .text(dateTo)
+    .attr("x", legendWidth - 10)
+    .attr("dy", 18);
+  const dttBBox = dateToText.node().getBBox();
+  howToRead
+    .append("rect")
+    .attr("fill", "#F1F5F1")
+    .attr("rx", 4)
+    .attr("x", dttBBox.x - 2)
+    .attr("y", dttBBox.y)
+    .attr("width", dttBBox.width + 4)
+    .attr("height", dttBBox.height + 1)
+    .lower();
+  howToRead
+    .append("path")
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .attr(
+      "d",
+      `M${dttBBox.x + dttBBox.width - 3},${
+        dttBBox.y - 16
+      } l0,-23 a-5 -5 0 0 0 -5,-5 l-2,0`
+    );
+  howToReadText
+    .append("tspan")
+    .attr("font-size", 12)
+    .attr("font-weight", "600")
+    .attr("x", 0)
+    .attr("dy", 27)
+    .text("Area");
+  howToReadText
+    .append("tspan")
+    .text("Number")
+    .attr("x", 0)
+    .attr("dy", 18 * 5.7);
+  howToReadText
+    .append("tspan")
+    .text("of monuments")
+    .attr("x", 0)
+    .attr("dy", 18);
+
+  // Monuments status
+  const monumentsStatus = selection
+    .append("g")
+    .attr("transform", "translate(10, 440)");
+  const monumentsStatusText = monumentsStatus
+    .append("text")
+    .attr("font-size", 14);
+  monumentsStatusText
+    .append("tspan")
+    .attr("font-size", 12)
+    .text("Monument Status")
+    .attr("font-weight", "600");
+  const history = data.parentData?.data[0].history;
+  if (history) {
+    // For each available status
+    history[0].groups.forEach((group) => {
+      const min = history[0].groups.find((g) => g.label === group.label).value;
+      const max = history[history.length - 1].groups.find(
+        (g) => g.label === group.label
+      ).value;
+      const textElm = monumentsStatusText
+        .append("tspan")
+        .attr("x", 4)
+        .attr("dy", 27)
+        .text("+" + (max - min));
+      const statusTextBBox = textElm.node().getBBox();
+      monumentsStatus
+        .append("rect")
+        .attr("fill", colors[group.label])
+        .attr("rx", 4)
+        .attr("x", 0)
+        .attr("y", statusTextBBox.y - 2)
+        .attr("width", legendWidth - 15 + 4)
+        .attr("height", statusTextBBox.height + 4)
+        .lower();
+      const tempText = selection
+        .append("text")
+        .text(labelsDict[group.label].explained)
+        .call(wrap, legendWidth - 13);
+      tempText.selectAll("tspan").each(function (d, i) {
+        const tempTspan = d3.select(this);
+        monumentsStatusText
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", i === 0 ? 24 : 18)
+          .text(tempTspan.text());
+      });
+      tempText.remove();
+    });
+  }
+}
+
+function wrap(text, width) {
+  text.each(function () {
+    var text = d3.select(this),
+      words = text.text().split(/\s+/).reverse(),
+      word,
+      line = [],
+      lineNumber = 0,
+      lineHeight = 18, // px
+      y = text.attr("y"),
+      dy = parseFloat(text.attr("dy")) || 0,
+      tspan = text
+        .text(null)
+        .append("tspan")
+        .attr("x", 0)
+        .attr("y", y)
+        .attr("dy", dy);
+
+    while ((word = words.pop())) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text
+          .append("tspan")
+          .attr("x", 0)
+          .attr("y", y)
+          .attr("dy", ++lineNumber * lineHeight + dy)
+          .text(word);
+      }
+    }
+  });
 }
 
 export { initialize, update };

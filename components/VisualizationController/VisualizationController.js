@@ -409,7 +409,7 @@ export default function VisualizationController() {
   ]);
 
   useEffect(() => {
-    if (parentData) {
+    if (parentData && explorationMode) {
       const _filterData = parentData.extent.map((d) => {
         let active = true;
         if (filterData && filterData.find((f) => f.label === d.label)) {
@@ -423,13 +423,6 @@ export default function VisualizationController() {
       setFilterData(_filterData);
     }
   }, [parentData, explorationMode]);
-
-  // useEffect(() => {
-  //   console.log("update exploration mode")
-  //   console.log("filterData", JSON.stringify(filterData))
-  //   setFilterData(undefined);
-  //   console.log("filterData", JSON.stringify(filterData))
-  // }, []);
 
   useEffect(() => {
     const temp_obj = Object.fromEntries(
@@ -524,6 +517,8 @@ export default function VisualizationController() {
     dateTo: dateTo,
     isFetching: isFetching,
     showDelta: showDelta,
+    timeStep: timeStep,
+    parentData: parentData
   };
 
   return (

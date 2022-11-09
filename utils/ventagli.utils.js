@@ -44,7 +44,7 @@ const initLabelSize = 11;
 const initAxisLabelSize = 7;
 
 const drawVentaglio = (datum, ventaglio, showDelta) => {
-  // console.log("drawing ventagli", [datum], ventaglio);
+  console.log("drawing ventagli", [datum], ventaglio);
   const data = [datum];
 
   rotation = fanOpening / data[0].history.length;

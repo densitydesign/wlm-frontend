@@ -19,6 +19,8 @@ export default function MapVentagli({
 	dateFrom,
 	dateTo,
 	showDelta,
+	timeStep,
+	parentData,
 	viewbox,
 }) {
 	const svgEl = useRef();
@@ -64,14 +66,15 @@ export default function MapVentagli({
 			dateTo,
 			showDelta,
 			viewbox,
+			parentData,
+			timeStep
 		};
 		update(_cloneDeep(data_for_viz));
-	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality, viewbox]);
+	}, [ventagli, selectedRegion, selectedProvince, selectedMunicipality, viewbox, timeStep, parentData,]);
 
 	const svg_ns = {
 		"xmlns": "http://www.w3.org/2000/svg",
 		"version": "1.1"
-		// "xmlns:xlink": "http://www.w3.org/1999/xlink"
 	};
 
 	return (
