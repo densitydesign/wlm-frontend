@@ -224,9 +224,91 @@ const fetchData = (
   }
 };
 
+const controller = new AbortController();
+const { signal } = controller;
+
+const fetchGeoAndData = (fetchParams) => {
+  // Abort request
+  controller.abort();
+
+  console.log("fetchGeoAndData", fetchParams);
+
+  let dataUrl = apiBaseUrl;
+  let parentDataUrl = apiBaseUrl;
+
+  if (fetchParams.selectedMunicipality) {
+    dataUrl += `/api/municipality/${fetchParams.selectedMunicipality.code}/${fetchParams.explorationMode.value}/`;
+    parentDataUrl += `/api/municipality/${fetchParams.selectedMunicipality.code}/${fetchParams.explorationMode.value}/`;
+  } else if (fetchParams.selectedProvince) {
+    dataUrl += `/api/province/${fetchParams.selectedProvince.code}/${fetchParams.explorationMode.value}-areas/`;
+    parentDataUrl += `/api/province/${fetchParams.selectedProvince.code}/${fetchParams.explorationMode.value}/`;
+  } else if (fetchParams.selectedRegion) {
+    dataUrl += `/api/region/${fetchParams.selectedRegion.code}/${fetchParams.explorationMode.value}-areas/`;
+    parentDataUrl += `/api/region/${fetchParams.selectedRegion.code}/${fetchParams.explorationMode.value}/`;
+  } else {
+    // no area selected, do all italian regions
+    dataUrl += `/api/region/${fetchParams.explorationMode.value}-regions/`;
+    parentDataUrl += `/api/region/${fetchParams.explorationMode.value}-aggregate`;
+  }
+
+  const _df = DateTime.fromISO(fetchParams.dateFrom);
+  const _dt = DateTime.fromISO(fetchParams.dateTo);
+  const i = Interval.fromDateTimes(_df, _dt);
+  let max_steps = 15,
+    step_size,
+    step_unit;
+  if (Math.ceil(i.length("days") / 1) <= 31) {
+    step_unit = "days";
+    step_size = 1;
+  } else if (Math.ceil(i.length("months") / 1) <= max_steps) {
+    step_unit = "months";
+    step_size = 1;
+  } else {
+    step_unit = "years";
+    step_size = 1;
+  }
+  const timeStep = [
+    step_size,
+    " ",
+    step_size === 1 ? step_unit.replace("s", "") : step_unit,
+  ].join("");
+  fetchParams.setTimeStep(timeStep);
+
+  const parameters = { step_size, step_unit };
+  parameters.date_from = fetchParams.dateFrom;
+  parameters.date_to = fetchParams.dateTo;
+  if (fetchParams.typology) parameters.theme = fetchParams.typology.id;
+  parameters.format = "json";
+
+  const searchParams = new URLSearchParams(parameters).toString();
+  dataUrl += "?" + searchParams;
+  parentDataUrl += "?" + searchParams;
+
+  console.log("dataUrl", dataUrl);
+  console.log("parentDataUrl", parentDataUrl);
+
+  // pass {signal} to requests in order to get them cancelled
+
+  // Promise.all([
+  //   json(dataUrl, {
+  //     cache: dataCacheMode,
+  //   }),
+  //   json(parentDataUrl, {
+  //     cache: dataCacheMode,
+  //   }),
+  // ]).then(([data, parentData]) => {
+  //   // console.log(data, parentData)
+  //   setDataValue(data);
+  //   setParentDataValue(parentData);
+  //   setIsFetching(false);
+  //   console.timeEnd("fetchData");
+  // });
+};
+
 export {
   apiBaseUrl,
   fetchData,
+  fetchGeoAndData,
   dataCacheMode,
   timeFrameData,
   dateRanges,
