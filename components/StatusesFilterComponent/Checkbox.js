@@ -18,7 +18,11 @@ export default function Checkbox({ group, filterData, setFilterData }) {
   }, [checked]);
 
   useEffect(() => {
-    const newStatus = filterData.find((f) => group.label === f.label).active;
+    let newStatus = true;
+    const currentStatusObj = filterData.find((f) => group.label === f.label);
+    if (currentStatusObj) {
+      newStatus = currentStatusObj.active === true;
+    }
     setChecked(newStatus);
     let _disabled =
       filterData.filter((d) => d.active).length < 2 && checked === true;

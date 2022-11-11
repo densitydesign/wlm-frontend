@@ -19,7 +19,7 @@ export default function Fetching() {
 			<Spinner variant="blue-jeans" animation="border" role="status" size="sm">
 				<span className="visually-hidden">Loading...</span>
 			</Spinner>
-			<p className={classNames("position-relative")} style={{ color: "var(--bs-blue-jeans)" }}>Fetching Data</p>
+			<p className={classNames("position-relative", "mb-0")} style={{ color: "var(--bs-blue-jeans)" }}>Fetching Data</p>
 		</div>
 	);
 }

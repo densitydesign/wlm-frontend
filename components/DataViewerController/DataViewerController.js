@@ -16,6 +16,9 @@ import MapSidebar from "../MapSidebar/MapSidebar";
 import { DateTime } from "luxon";
 import NavMenu from "../NavMenu";
 import QuickLinks from "../QuickLinks/QuickLinks";
+import Map from "../Map/Map";
+import { Fetching } from "../Fetching";
+import { cloneDeep as _cloneDeep } from "lodash";
 export default function DataViewerController() {
   // routing
   const { asPath } = useRouter();
@@ -46,6 +49,7 @@ export default function DataViewerController() {
   const [endYear, setEndYear] = useState();
   // data for visualization
   const [data, setData] = useState(); // includes "ventagliData" and "parentData"
+  const [dataToUse, setDataToUse] = useState();
   const [lvl4, setLvl4] = useState([]); // Regions
   const [lvl6, setLvl6] = useState([]); // Provinces
   const [lvl8, setLvl8] = useState([]); // Municipalities
@@ -112,7 +116,7 @@ export default function DataViewerController() {
           (d) => d.label === selectedTimeFramePar
         );
       } else {
-        _selectedTimeFrame = timeFrameData.items[0];
+        _selectedTimeFrame = timeFrameData.items[2];
       }
       setSelectedTimeFrame(_selectedTimeFrame);
 
@@ -265,7 +269,65 @@ export default function DataViewerController() {
     }
   }, [selectedTimeFrame]);
 
-  // function for fetching data
+  // Handle delta and filters change
+  const dataFiltering = (dataGroup) => {
+    filterData // can be ventagliData or parentData
+      .filter((f) => !f.active)
+      .forEach((f) => {
+        // remove from data
+        dataGroup.data.forEach((area) => {
+          area.history.forEach((date) => {
+            const arr = date.groups;
+            const elm = arr.find((e) => e.label === f.label);
+            const index = arr.indexOf(elm);
+            if (index > -1) arr.splice(index, 1);
+          });
+        });
+        //remove from extent
+        const elm = dataGroup.extent.find((e) => e.label === f.label);
+        const index = dataGroup.extent.indexOf(elm);
+        if (index > -1) dataGroup.extent.splice(index, 1);
+      });
+    return dataGroup;
+  };
+  const dataMakeDelta = (dataGroup) => {
+    let data = dataGroup.data;
+    let extent = dataGroup.extent.map((g) => ({
+      ...g,
+      value: [0, 0],
+    }));
+
+    data.forEach((area) => {
+      const baseline = _cloneDeep(area.history[0].groups);
+      area.history.forEach((date) => {
+        date.groups.forEach((g, i) => {
+          g.oldValue = g.value;
+          g.baseline = baseline[i].value;
+          g.deltaValue = g.value - baseline[i].value;
+          // adjust value and extent
+          g.value = g.deltaValue;
+          if (extent[i].value[0] > g.value) extent[i].value[0] = g.value;
+          if (extent[i].value[1] < g.value) extent[i].value[1] = g.value;
+        });
+      });
+    });
+    return { data, extent };
+  };
+  const modifyData = (data) => {
+    const _data = _cloneDeep(data);
+    let ventagliData = dataFiltering(_data.ventagliData);
+    let parentData = dataFiltering(_data.parentData);
+    if (showDelta) {
+      ventagliData = dataMakeDelta(ventagliData);
+      parentData = dataMakeDelta(ventagliData);
+    }
+    setDataToUse({ ventagliData, parentData });
+  };
+  useEffect(() => {
+    if (initialized) modifyData(data);
+  }, [filterData, showDelta, data]);
+
+  // fetching data
   const handleParameterChange = () => {
     // will update url params
     // fetch data
@@ -289,10 +351,8 @@ export default function DataViewerController() {
     };
     fetchGeoAndData(fetchParams);
   };
-
   useEffect(() => {
     if (initialized) {
-      // console.log("Parameter change after initialization");
       handleParameterChange();
     }
   }, [
@@ -366,8 +426,8 @@ export default function DataViewerController() {
     endYear,
     setEndYear,
     // data for visualization
-    data,
-    setData,
+    data: dataToUse || data,
+    setData: setDataToUse,
     lvl4,
     setLvl4,
     lvl6,
@@ -379,14 +439,21 @@ export default function DataViewerController() {
   return (
     <Container className={classNames("vh-100")} fluid>
       <Row className={classNames("h-100")}>
-        <Col className={classNames("h-100", "pe-sm-3", "pe-md-0")} lg={3}>
-          <NavMenu/>
-          {/* <QuickLinks/> */}
+        <Col className={classNames("h-100", "p-2")} lg={3}>
+          <NavMenu />
+          <QuickLinks />
           <MapSidebar {...allStates} />
         </Col>
-        <Col className={classNames("h-100", "position-relative")}>
-          Visualization
-          <p>Is Fetching = {isFetching.toString()}</p>
+        <Col
+          className={classNames(
+            "h-100",
+            "position-relative",
+            "p-2",
+            "ps-0",
+          )}
+        >
+          {initialized && <Map {...allStates} />}
+          {!initialized && <Fetching />}
         </Col>
       </Row>
     </Container>

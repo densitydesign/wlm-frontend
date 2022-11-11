@@ -324,7 +324,7 @@ const fetchGeoAndData = (fetchParams) => {
   Promise.all(requests)
     .then(([ventagliData, parentData, geoJsonData]) => {
       // console.log(ventagliData, parentData, geoJsonData);
-      const _filterData = ventagliData.data[0].history[0].groups.map(
+      const _filterData = ventagliData.extent.map(
         (group) => {
           const { label } = group;
           let active = true;
@@ -336,8 +336,11 @@ const fetchGeoAndData = (fetchParams) => {
         }
       );
       fetchParams.setFilterData(_filterData);
-      if (fetchParams.selectedProvince) {
-        fetchParams.setLvl8(geoJsonData);
+      if (fetchParams.selectedMunicipality){
+        // Don't update geo data
+      }
+      else if (fetchParams.selectedProvince) {
+        fetchParams.setLvl8(geoJsonData.features);
         const _municipalitiesList = geoJsonData.features.map((d) => ({
           label: d.properties.name,
           code: d.properties.code,
@@ -346,7 +349,7 @@ const fetchGeoAndData = (fetchParams) => {
       } else if (fetchParams.selectedRegion) {
         fetchParams.setLvl8([]);
         fetchParams.setMunicipalitiesList([]);
-        fetchParams.setLvl6(geoJsonData);
+        fetchParams.setLvl6(geoJsonData.features);
         const _provincesList = geoJsonData.features.map((d) => ({
           label: d.properties.name,
           code: d.properties.code,

@@ -162,7 +162,9 @@ export default function MapSidebar({
         boldLabel
         classNameProp="mb-3"
       />
-      <h6>Areas</h6>
+      <span className="text-uppercase" style={{ fontWeight: 600 }}>
+        Monuments locations
+      </span>
       <DropdownUI
         label="Region"
         items={regions.items}
@@ -189,7 +191,7 @@ export default function MapSidebar({
         classNameProp="mb-3"
       />
       <DropdownUI
-        label="Typology"
+        label="Monuments type"
         items={typologiesList}
         value={typology}
         setValue={setTypology}
@@ -254,15 +256,19 @@ export default function MapSidebar({
           </>
         )}
 
-        <AreaChart
-          data={data?.parentData}
-          filterData={filterData}
-          showDelta={showDelta}
-          timeStep={timeStep}
-          isFetching={isFetching}
-        />
+        <div className="mb-2">
+          <AreaChart
+            data={data?.parentData}
+            filterData={filterData}
+            showDelta={showDelta}
+            timeStep={timeStep}
+            isFetching={isFetching}
+          />
+        </div>
 
-        <h6>Status</h6>
+        <span className="text-uppercase mb-3" style={{ fontWeight: 600 }}>
+          Monuments Status
+        </span>
         {data && filterData && (
           <StatusesFilterComponent
             data={data.parentData}

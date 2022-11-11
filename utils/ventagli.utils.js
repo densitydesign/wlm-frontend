@@ -44,7 +44,6 @@ const initLabelSize = 11;
 const initAxisLabelSize = 7;
 
 const drawVentaglio = (datum, ventaglio, showDelta) => {
-  console.log("drawing ventagli", [datum], ventaglio);
   const data = [datum];
 
   rotation = fanOpening / data[0].history.length;
@@ -233,9 +232,11 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
       (d) => d
     )
     .join("tspan")
-    .text((d) =>
-      showDelta ? "+" + d.deltaValue.toLocaleString() : d.value.toLocaleString()
-    );
+    .text((d) => {
+      return showDelta
+        ? "+" + d.deltaValue.toLocaleString()
+        : d.value.toLocaleString();
+    });
   tick
     .selectAll(".axisLabel")
     .clone(true)
