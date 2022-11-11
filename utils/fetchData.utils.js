@@ -224,31 +224,32 @@ const fetchData = (
   }
 };
 
-const controller = new AbortController();
-const { signal } = controller;
-
+const controllers = {};
+const requestCount = -1;
 const fetchGeoAndData = (fetchParams) => {
-  // Abort request
-  controller.abort();
-
-  console.log("fetchGeoAndData", fetchParams);
-
+  // console.log("fetchGeoAndData");
+  fetchParams.setIsFetching(true);
   let dataUrl = apiBaseUrl;
   let parentDataUrl = apiBaseUrl;
+  let geoJsonUrl = apiBaseUrl;
 
   if (fetchParams.selectedMunicipality) {
     dataUrl += `/api/municipality/${fetchParams.selectedMunicipality.code}/${fetchParams.explorationMode.value}/`;
     parentDataUrl += `/api/municipality/${fetchParams.selectedMunicipality.code}/${fetchParams.explorationMode.value}/`;
+    geoJsonUrl = undefined;
   } else if (fetchParams.selectedProvince) {
     dataUrl += `/api/province/${fetchParams.selectedProvince.code}/${fetchParams.explorationMode.value}-areas/`;
     parentDataUrl += `/api/province/${fetchParams.selectedProvince.code}/${fetchParams.explorationMode.value}/`;
+    geoJsonUrl += `/api/province/${fetchParams.selectedProvince.code}/areas/?format=json`;
   } else if (fetchParams.selectedRegion) {
     dataUrl += `/api/region/${fetchParams.selectedRegion.code}/${fetchParams.explorationMode.value}-areas/`;
     parentDataUrl += `/api/region/${fetchParams.selectedRegion.code}/${fetchParams.explorationMode.value}/`;
+    geoJsonUrl += `/api/region/${fetchParams.selectedRegion.code}/areas/?format=json`;
   } else {
     // no area selected, do all italian regions
     dataUrl += `/api/region/${fetchParams.explorationMode.value}-regions/`;
     parentDataUrl += `/api/region/${fetchParams.explorationMode.value}-aggregate`;
+    geoJsonUrl = undefined;
   }
 
   const _df = DateTime.fromISO(fetchParams.dateFrom);
@@ -284,25 +285,99 @@ const fetchGeoAndData = (fetchParams) => {
   dataUrl += "?" + searchParams;
   parentDataUrl += "?" + searchParams;
 
-  console.log("dataUrl", dataUrl);
-  console.log("parentDataUrl", parentDataUrl);
+  // console.log("dataUrl", dataUrl);
+  // console.log("parentDataUrl", parentDataUrl);
+  // console.log("geoJsonUrl", geoJsonUrl);
 
-  // pass {signal} to requests in order to get them cancelled
-
-  // Promise.all([
-  //   json(dataUrl, {
-  //     cache: dataCacheMode,
-  //   }),
-  //   json(parentDataUrl, {
-  //     cache: dataCacheMode,
-  //   }),
-  // ]).then(([data, parentData]) => {
-  //   // console.log(data, parentData)
-  //   setDataValue(data);
-  //   setParentDataValue(parentData);
-  //   setIsFetching(false);
-  //   console.timeEnd("fetchData");
-  // });
+  requestCount++;
+  const thisIndex = requestCount;
+  const currentController = new AbortController();
+  const { signal } = currentController;
+  controllers[requestCount] = currentController;
+  // console.log("Requests number", requestCount, controllers);
+  for (const index in controllers) {
+    if (index < thisIndex) {
+      // console.log("Aborting request", index, controllers[index]);
+      controllers[index].abort(
+        `Abort requests group n. ${index} due to newly initiated requests`
+      );
+    }
+  }
+  const requests = [
+    json(dataUrl, {
+      signal,
+      cache: dataCacheMode,
+    }),
+    json(parentDataUrl, {
+      signal,
+      cache: dataCacheMode,
+    }),
+  ];
+  if (geoJsonUrl) {
+    requests.push(
+      json(geoJsonUrl, {
+        signal,
+        cache: dataCacheMode,
+      })
+    );
+  }
+  Promise.all(requests)
+    .then(([ventagliData, parentData, geoJsonData]) => {
+      // console.log(ventagliData, parentData, geoJsonData);
+      const _filterData = ventagliData.data[0].history[0].groups.map(
+        (group) => {
+          const { label } = group;
+          let active = true;
+          if (fetchParams.filterData) {
+            const temp = fetchParams.filterData.find((d) => d.label === group.label);
+            active = temp?.active === true
+          }
+          return { label, active };
+        }
+      );
+      fetchParams.setFilterData(_filterData);
+      if (fetchParams.selectedProvince) {
+        fetchParams.setLvl8(geoJsonData);
+        const _municipalitiesList = geoJsonData.features.map((d) => ({
+          label: d.properties.name,
+          code: d.properties.code,
+        }));
+        fetchParams.setMunicipalitiesList(_municipalitiesList);
+      } else if (fetchParams.selectedRegion) {
+        fetchParams.setLvl8([]);
+        fetchParams.setMunicipalitiesList([]);
+        fetchParams.setLvl6(geoJsonData);
+        const _provincesList = geoJsonData.features.map((d) => ({
+          label: d.properties.name,
+          code: d.properties.code,
+        }));
+        fetchParams.setProvincesList(_provincesList);
+      } else {
+        fetchParams.setLvl8([]);
+        fetchParams.setMunicipalitiesList([]);
+        fetchParams.setLvl6([]);
+        fetchParams.setProvincesList([]);
+      }
+      fetchParams.setData({ ventagliData, parentData });
+      // intialization state. Effective only once, then same value written
+      fetchParams.setInitialized(true);
+      delete controllers[thisIndex];
+      console.log("Fetched");
+      fetchParams.setIsFetching(false);
+    })
+    .catch((e) => {
+      delete controllers[thisIndex];
+      fetchParams.setIsFetching(false);
+      if (e.name === "AbortError") {
+        if (signal.reason) {
+          console.warn(signal.reason);
+        } else {
+          console.warn(`Request aborted. Error: ${e}`);
+        }
+      } else {
+        console.error(e)
+      }
+    });
 };
 
 export {

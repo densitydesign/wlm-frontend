@@ -6,7 +6,7 @@ let svg,
   margin = {
     left: 35,
     right: 1,
-    top: 0,
+    top: 4,
     bottom: 17,
   },
   areaChart,
@@ -32,6 +32,14 @@ const initialize = (element) => {
   timeAxisGroup = svg.select(".timeAxisGroup");
   if (timeAxisGroup.empty()) {
     timeAxisGroup = svg.append("g").classed("timeAxisGroup", true);
+  }
+
+  if (svg.select(".void-bg").empty()) {
+    svg.append("rect").classed("void-bg", true);
+  }
+
+  if (svg.select(".void-message").empty()) {
+    svg.append("text").classed("void-message", true);
   }
 };
 
@@ -70,6 +78,29 @@ const update = (data, filterData, showDelta, timeStep) => {
       temp.push(o);
     });
   });
+  svg.select(".void-bg").attr("width", 0).attr("height", 0);
+  svg.select(".void-message").text(null);
+  if (showDelta) {
+    const increments = preservedGroups.map((g) => {
+      return temp[temp.length - 1][g] - temp[0][g];
+    });
+    if (!increments.filter((inc) => inc > 0).length) {
+      svg
+        .select(".void-bg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("fill", "#eee")
+        .attr("rx", 4)
+        .attr("opacity", 0.85);
+
+      svg
+        .select(".void-message")
+        .attr("x", width / 2)
+        .attr("y", height / 2 + 4)
+        .attr("text-anchor", "middle")
+        .text("No increment to show");
+    }
+  }
   const stack = d3
     .stack()
     .keys(Array.from(keys))
@@ -91,7 +122,9 @@ const update = (data, filterData, showDelta, timeStep) => {
   const timeAxis = d3
     .axisBottom(timeScale)
     .tickValues(timeScale.ticks(5))
-    .tickFormat(timeScale.tickFormat(5, timeStep.includes("day") ? "%d/%m" : "%m/%y"));
+    .tickFormat(
+      timeScale.tickFormat(5, timeStep.includes("day") ? "%d/%m" : "%m/%y")
+    );
   timeAxisGroup
     .attr("transform", `translate(0, ${height - margin.bottom})`)
     .call(timeAxis);

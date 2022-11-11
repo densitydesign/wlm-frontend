@@ -34,11 +34,11 @@
 }
 
 .fetching {
-	--margin: calc(var(--bs-gutter-x) * 0.5);
-	width: calc(100% - (var(--margin) * 2));
-	height: calc(100% - (var(--margin) * 2));
-	height: calc((100% - 1rem) - (var(--margin) * 3));
-	margin: var(--margin);
+	// --margin: calc(var(--bs-gutter-x) * 0.5);
+	// width: calc(100% - (var(--margin) * 2));
+	// height: calc(100% - (var(--margin) * 2));
+	// height: calc((100% - 1rem) - (var(--margin) * 3));
+	// margin: var(--margin);
 	top: 0;
 	left:0;
 	overflow: hidden;

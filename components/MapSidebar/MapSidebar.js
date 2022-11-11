@@ -5,6 +5,8 @@ import styles from "./MapSidebar.module.scss";
 import { useMemo } from "react";
 import { DateTime } from "luxon";
 import { BsExclamationTriangleFill } from "react-icons/bs";
+import AreaChart from "../AreaChart";
+import StatusesFilterComponent from "../StatusesFilterComponent";
 export default function MapSidebar({
   explorationMode,
   explorationModes,
@@ -28,6 +30,8 @@ export default function MapSidebar({
   selectedMunicipality,
   setSelectedMunicipality,
   // data for UI
+  isFetching,
+  setIsFetching,
   regionsList,
   setRegionsList,
   regions,
@@ -207,11 +211,7 @@ export default function MapSidebar({
         {selectedTimeFrame?.label !== "Custom interval" && (
           <>
             <p className={classNames("text-small", "mb-2")}>
-              A slice is{" "}
-              <Badge bg="light-gray" text="dark">
-                {timeStep || "..."}
-              </Badge>{" "}
-              from{" "}
+              From{" "}
               <Badge bg="light-gray" text="dark">
                 {dateFrom || "..."}
               </Badge>{" "}
@@ -222,7 +222,6 @@ export default function MapSidebar({
             </p>
           </>
         )}
-
         {selectedTimeFrame?.label === "Custom interval" && (
           <>
             <div className={classNames("d-flex", "align-items-center")}>
@@ -252,14 +251,28 @@ export default function MapSidebar({
                 data retrieval may take several minutes
               </p>
             </span>
-            <p className={classNames("text-small", "mb-2")}>
-              A slice is{" "}
-              <Badge bg="light-gray" text="dark">
-                {timeStep || "..."}
-              </Badge>
-            </p>
           </>
         )}
+
+        <AreaChart
+          data={data?.parentData}
+          filterData={filterData}
+          showDelta={showDelta}
+          timeStep={timeStep}
+          isFetching={isFetching}
+        />
+
+        <h6>Status</h6>
+        {data && filterData && (
+          <StatusesFilterComponent
+            data={data.parentData}
+            filterData={filterData}
+            setFilterData={setFilterData}
+            showDelta={showDelta}
+            setShowDelta={setShowDelta}
+          />
+        )}
+        {!data || (!filterData && <p>Loading...</p>)}
       </div>
     </div>
   );

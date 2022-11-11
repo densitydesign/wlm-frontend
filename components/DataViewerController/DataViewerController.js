@@ -14,6 +14,8 @@ import { Col, Container, Row } from "react-bootstrap";
 import classNames from "classnames";
 import MapSidebar from "../MapSidebar/MapSidebar";
 import { DateTime } from "luxon";
+import NavMenu from "../NavMenu";
+import QuickLinks from "../QuickLinks/QuickLinks";
 export default function DataViewerController() {
   // routing
   const { asPath } = useRouter();
@@ -30,6 +32,7 @@ export default function DataViewerController() {
   const [selectedProvince, setSelectedProvince] = useState();
   const [selectedMunicipality, setSelectedMunicipality] = useState();
   // data for UI
+  const [isFetching, setIsFetching] = useState(false);
   const [regionsList, setRegionsList] = useState([]);
   const [provincesList, setProvincesList] = useState([]);
   const [municipalitiesList, setMunicipalitiesList] = useState([]);
@@ -117,7 +120,7 @@ export default function DataViewerController() {
       if (dateFrom) {
         _dateFrom = dateFrom;
       } else {
-        const dateRange = selectedTimeFrame.getDateRange(domain.last_snapshot);
+        const dateRange = _selectedTimeFrame.getDateRange(domain.last_snapshot);
         _dateFrom = dateRange[0];
       }
       setDateFrom(_dateFrom);
@@ -135,9 +138,18 @@ export default function DataViewerController() {
         typology: _typology,
         dateFrom: _dateFrom,
         dateTo: _dateTo,
+        filterData,
+        setInitialized,
+        setIsFetching,
         setTimeStep,
+        setData,
+        setLvl6,
+        setProvincesList,
+        setLvl8,
+        setMunicipalitiesList,
+        setFilterData,
       };
-      // Check selected areas and set loading to false to trigger data fetching
+
       if (selectedRegion) {
         _selectedRegion = _regionsList.find((d) => d.label === selectedRegion);
         setSelectedRegion(_selectedRegion);
@@ -175,25 +187,20 @@ export default function DataViewerController() {
                 );
                 setSelectedMunicipality(_selectedMunicipality);
                 initFetchOptions.selectedMunicipality = _selectedMunicipality;
-                // fetch data with available parameters
                 fetchGeoAndData(initFetchOptions);
-                setInitialized(true);
               } else {
-                // fetch data with available parameters
+                // no selectedMunicipality
                 fetchGeoAndData(initFetchOptions);
-                setInitialized(true);
               }
             });
           } else {
-            // fetch data with available parameters
+            // no selectedProvince
             fetchGeoAndData(initFetchOptions);
-            setInitialized(true);
           }
         });
       } else {
-        // fetch data with available parameters
+        // no selectedRegion
         fetchGeoAndData(initFetchOptions);
-        setInitialized(true);
       }
     });
   }, []);
@@ -270,14 +277,22 @@ export default function DataViewerController() {
       selectedRegion,
       selectedProvince,
       selectedMunicipality,
+      setInitialized,
+      setIsFetching,
       setTimeStep,
+      setData,
+      setLvl6,
+      setProvincesList,
+      setLvl8,
+      setMunicipalitiesList,
+      setFilterData,
     };
     fetchGeoAndData(fetchParams);
   };
 
   useEffect(() => {
     if (initialized) {
-      console.log("Parameter change after initialization");
+      // console.log("Parameter change after initialization");
       handleParameterChange();
     }
   }, [
@@ -291,6 +306,8 @@ export default function DataViewerController() {
   ]);
 
   const allStates = {
+    initialized,
+    setInitialized,
     explorationMode,
     explorationModes,
     setExplorationMode,
@@ -313,6 +330,8 @@ export default function DataViewerController() {
     selectedMunicipality,
     setSelectedMunicipality,
     // data for UI
+    isFetching,
+    setIsFetching,
     regionsList,
     setRegionsList,
     regions: { items: regionsList, disabled: !regionsList.length },
@@ -361,10 +380,13 @@ export default function DataViewerController() {
     <Container className={classNames("vh-100")} fluid>
       <Row className={classNames("h-100")}>
         <Col className={classNames("h-100", "pe-sm-3", "pe-md-0")} lg={3}>
+          <NavMenu/>
+          {/* <QuickLinks/> */}
           <MapSidebar {...allStates} />
         </Col>
         <Col className={classNames("h-100", "position-relative")}>
           Visualization
+          <p>Is Fetching = {isFetching.toString()}</p>
         </Col>
       </Row>
     </Container>

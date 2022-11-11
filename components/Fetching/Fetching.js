@@ -8,13 +8,12 @@ export default function Fetching() {
 			className={classNames(
 				styles.fetching,
 				"position-absolute",
-				// "top-50",
-				// "start-50",
-				// "translate-middle",
 				"d-flex",
 				"flex-column",
 				"justify-content-center",
-				"align-items-center"
+				"align-items-center",
+				"w-100",
+				"h-100"
 			)}
 		>
 			<Spinner variant="blue-jeans" animation="border" role="status" size="sm">
