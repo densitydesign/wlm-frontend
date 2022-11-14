@@ -9,6 +9,7 @@ let svg,
   width,
   height,
   legendWidth = 130,
+  legendMargin,
   bgRect,
   projection,
   render,
@@ -60,6 +61,7 @@ const initialize = (element, viz_data) => {
   const bbox = svg.node().getBoundingClientRect();
   width = bbox.width - legendWidth;
   height = bbox.height;
+  legendMargin = convertRemToPixels(0.5);
 
   if (viz_data.viewbox) {
     width = viz_data.viewbox.width;
@@ -507,18 +509,182 @@ function dist([x1, y1], [x2, y2]) {
 
 function renderLegend(selection, data) {
   const { timeStep, dateFrom, dateTo } = data;
+  console.log(data);
   const legendBBox = selection.node().getBBox();
 
   selection.selectAll("*").remove();
+
   selection
     .append("rect")
     .attr("width", legendWidth)
     .attr("height", height)
-    .attr("fill", "white");
+    .attr("fill", "#fff");
 
   const howToRead = selection
+    .append("text")
+    .attr("font-size", 11)
+    .attr("transform", `translate(${legendMargin}, ${legendMargin + 10})`);
+
+  howToRead.append("tspan").attr("font-weight", "600").text("How to read:");
+  howToRead
+    .append("tspan")
+    .attr("x", 0)
+    .attr("dy", 14)
+    .text("Each fan is a timeline");
+
+  howToRead.append("tspan").attr("x", 0).attr("dy", 28).text("from");
+  howToRead
+    .append("tspan")
+    .attr("font-size", 10)
+    .attr("x", 0)
+    .attr("dy", 14)
+    .attr("fill", "#0978AB")
+    .attr("font-weight", "600")
+    .text(dateFrom);
+
+  howToRead
+    .append("tspan")
+    .attr("x", legendWidth - legendMargin)
+    .attr("dy", -14)
+    .attr("text-anchor", "end")
+    .text("to");
+  howToRead
+    .append("tspan")
+    .attr("font-size", 10)
+    .attr("x", legendWidth - legendMargin)
+    .attr("dy", 14)
+    .attr("text-anchor", "end")
+    .attr("fill", "#0978AB")
+    .attr("font-weight", "600")
+    .text(dateTo);
+
+  const ventaglio = selection
     .append("g")
-    .attr("transform", "translate(10, 12)");
+    .attr(
+      "transform",
+      `translate(${(legendWidth - 110) / 2 + legendMargin},80)`
+    );
+  d3.svg(ventaglioSvg.src).then((document) => {
+    const graphics = d3.select(document).select("svg").html();
+    ventaglio.html(graphics);
+  });
+
+  howToRead
+    .append("tspan")
+    .attr("x", (legendWidth - legendMargin) / 2)
+    .attr("dy", 82)
+    .attr("text-anchor", "middle")
+    .text("Each slice is ");
+
+  howToRead
+    .append("tspan")
+    .attr("fill", "#0978AB")
+    .attr("font-weight", "600")
+    .text(timeStep?.toUpperCase());
+
+  howToRead
+    .append("tspan")
+    .attr("x", 0)
+    .attr("dy", 48)
+    .text("Size is the number");
+  howToRead.append("tspan").attr("x", 0).attr("dy", 14).text("of monuments");
+
+  let areaType, areaName;
+  if (data.selectedMunicipality) {
+    areaType = "municipality";
+    areaName = data.selectedMunicipality.label;
+  } else if (data.selectedProvince) {
+    areaType = "province";
+    areaName = data.selectedProvince.label;
+  } else if (data.selectedRegion) {
+    areaType = "region";
+    areaName = data.selectedRegion.label;
+  } else {
+    areaName = "Italy";
+  }
+
+  howToRead
+    .append("tspan")
+    .attr("x", 0)
+    .attr("dy", 28)
+    .attr("font-weight", "600")
+    .text("Monuments status");
+  howToRead
+    .append("tspan")
+    .attr("x", 0)
+    .attr("dy", 14)
+    .attr("font-weight", "600")
+    .text("and count in");
+  if (areaType) {
+    howToRead
+      .append("tspan")
+      .attr("x", 0)
+      .attr("dy", 14)
+      .attr("fill", "#0978AB")
+      .attr("font-weight", "600")
+      .text("the " + areaType);
+  }
+  howToRead
+    .append("tspan")
+    .attr("x", 0)
+    .attr("dy", 14)
+    .attr("fill", "#0978AB")
+    .attr("font-weight", "600")
+    .text("of " + areaName);
+
+  const history = data.data.parentData?.data[0].history;
+  if (history) {
+    history[0].groups.forEach((group) => {
+      const min = history[0].groups.find((g) => g.label === group.label).value;
+      const max = history[history.length - 1].groups.find(
+        (g) => g.label === group.label
+      ).value;
+
+      const superSpan = howToRead.append("tspan").attr("x", 21).attr("dy", 14);
+      superSpan.append("tspan").attr("x", 21).attr("dy", 28).text(max);
+      superSpan
+        .append("tspan")
+        .attr("font-weight", "600")
+        .text(labelsDict[group.label].explained)
+        .call(wrap, legendWidth - legendMargin - 21, 21, 14, 0);
+      superSpan
+        .append("tspan")
+        .attr("x", 21)
+        .attr("dy", 14)
+        .text(`(+${max - min} new)`);
+
+      const bbox = superSpan.node().getBBox();
+      console.log(bbox);
+
+      selection
+        .append("rect")
+        .attr("fill", colors[group.label])
+        .attr("x", legendMargin)
+        .attr("y", bbox.y + 21)
+        .attr("width", 16)
+        .attr("height", 16)
+        .attr("rx", 3);
+    });
+
+    const minimized = howToRead
+      .append("tspan")
+      .text(
+        "Minimized fans to reduce clutter. Color is the most recurrent status."
+      )
+      .call(wrap, legendWidth - legendMargin - 21, 21, 14, 14);
+    const minimizedbbox = minimized.node().getBBox();
+    history[0].groups.forEach((group, i) => {
+      selection
+        .append("circle")
+        .attr("r", 4)
+        .attr("cx", legendMargin + 7)
+        .attr("cy", minimizedbbox.y + 28 + i * 14)
+        .attr("fill", colors[group.label])
+        .attr("stroke", d3.color(colors[group.label]).darker(1));
+    });
+  }
+
+  return;
 
   const howToReadText = howToRead.append("text").attr("font-size", 14);
   howToReadText
@@ -564,14 +730,14 @@ function renderLegend(selection, data) {
       "d",
       `M${dftBBox.x + 2},${dftBBox.y + 18 + 6} l0,32 a 9 9 0 0 0 9,9 l4,0`
     );
-  const ventaglio = howToRead
-    .append("g")
-    .attr("transform", "translate(0,85)")
-    .lower();
-  d3.svg(ventaglioSvg.src).then((document) => {
-    const graphics = d3.select(document).select("svg").html();
-    ventaglio.html(graphics);
-  });
+  // const ventaglio = howToRead
+  //   .append("g")
+  //   .attr("transform", "translate(0,85)")
+  //   .lower();
+  // d3.svg(ventaglioSvg.src).then((document) => {
+  //   const graphics = d3.select(document).select("svg").html();
+  //   ventaglio.html(graphics);
+  // });
 
   howToReadText
     .append("tspan")
@@ -635,8 +801,8 @@ function renderLegend(selection, data) {
     .attr("font-size", 12)
     .text("Monument Status")
     .attr("font-weight", "600");
-  const history = data.data.parentData?.data[0].history;
-  if (history) {
+  const XXhistory = data.data.parentData?.data[0].history;
+  if (XXhistory) {
     // For each available status
     history[0].groups.forEach((group) => {
       const min = history[0].groups.find((g) => g.label === group.label).value;
@@ -691,39 +857,43 @@ function renderLegend(selection, data) {
   }
 }
 
-function wrap(text, width, lineHeight = 18) {
+function wrap(text, width, x = 0, dy, firstdy) {
   text.each(function () {
     var text = d3.select(this),
       words = text.text().split(/\s+/).reverse(),
       word,
       line = [],
       lineNumber = 0,
-      // lineHeight = 18, // px
       y = text.attr("y"),
-      dy = parseFloat(text.attr("dy")) || 0,
+      // dy = 0 || parseFloat(text.attr("dy")) || 0,
       tspan = text
         .text(null)
         .append("tspan")
-        .attr("x", 0)
+        .attr("x", x)
         .attr("y", y)
-        .attr("dy", dy);
+        .attr("dy", dy + firstdy);
 
     while ((word = words.pop())) {
       line.push(word);
       tspan.text(line.join(" "));
       if (tspan.node().getComputedTextLength() > width) {
+        lineNumber++;
         line.pop();
         tspan.text(line.join(" "));
         line = [word];
         tspan = text
           .append("tspan")
-          .attr("x", 0)
+          .attr("x", x)
           .attr("y", y)
-          .attr("dy", ++lineNumber * lineHeight + dy)
+          .attr("dy", dy)
           .text(word);
       }
     }
   });
+}
+
+function convertRemToPixels(rem) {
+  return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 }
 
 export { initialize, update };
