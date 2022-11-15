@@ -509,7 +509,6 @@ function dist([x1, y1], [x2, y2]) {
 
 function renderLegend(selection, data) {
   const { timeStep, dateFrom, dateTo } = data;
-  console.log(data);
   const legendBBox = selection.node().getBBox();
 
   selection.selectAll("*").remove();
@@ -608,13 +607,13 @@ function renderLegend(selection, data) {
     .attr("x", 0)
     .attr("dy", 28)
     .attr("font-weight", "600")
-    .text("Monuments status");
+    .text("Status and count");
   howToRead
     .append("tspan")
     .attr("x", 0)
     .attr("dy", 14)
     .attr("font-weight", "600")
-    .text("and count in");
+    .text("of monuments");
   if (areaType) {
     howToRead
       .append("tspan")
@@ -622,7 +621,7 @@ function renderLegend(selection, data) {
       .attr("dy", 14)
       .attr("fill", "#0978AB")
       .attr("font-weight", "600")
-      .text("the " + areaType);
+      .text("in the " + areaType);
   }
   howToRead
     .append("tspan")
