@@ -653,7 +653,6 @@ function renderLegend(selection, data) {
         .text(`(+${max - min} new)`);
 
       const bbox = superSpan.node().getBBox();
-      console.log(bbox);
 
       selection
         .append("rect")
