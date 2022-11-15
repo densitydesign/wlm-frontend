@@ -323,14 +323,15 @@ const fetchGeoAndData = (fetchParams) => {
   }
   Promise.all(requests)
     .then(([ventagliData, parentData, geoJsonData]) => {
-      // console.log(ventagliData, parentData, geoJsonData);
       const _filterData = ventagliData.extent.map(
         (group) => {
           const { label } = group;
           let active = true;
           if (fetchParams.filterData) {
             const temp = fetchParams.filterData.find((d) => d.label === group.label);
-            active = temp?.active === true
+            if (temp) {
+              active = temp?.active === true
+            }
           }
           return { label, active };
         }
