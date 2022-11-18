@@ -445,8 +445,6 @@ function compileVentagliData(data, arr) {
       date.groups.forEach((group, i) => {
         group.innerRadius = i === 0 ? 0 : date.groups[i - 1].outerRadius;
         group.outerRadius = scaleRadius(group.value);
-        group.valueDelta =
-          i == 0 ? group.value : group.value - groups[i - 1].value;
       });
     });
   });

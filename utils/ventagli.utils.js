@@ -100,7 +100,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("fill", (d) => {
       const groups = d.history.slice(-1)[0].groups;
       const predominant = groups.reduce((prev, current) =>
-        prev.valueDelta > current.valueDelta ? prev : current
+        prev.diffValue > current.diffValue ? prev : current
       );
       return colors[predominant.label];
     })
@@ -257,7 +257,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .join("tspan")
     .text((d) => {
       return showDelta
-        ? "+" + d.deltaValue?.toLocaleString()
+        ? "+" + d.value?.toLocaleString()
         : d.value?.toLocaleString();
     });
   tick

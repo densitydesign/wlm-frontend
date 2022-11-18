@@ -323,24 +323,23 @@ const fetchGeoAndData = (fetchParams) => {
   }
   Promise.all(requests)
     .then(([ventagliData, parentData, geoJsonData]) => {
-      const _filterData = ventagliData.extent.map(
-        (group) => {
-          const { label } = group;
-          let active = true;
-          if (fetchParams.filterData) {
-            const temp = fetchParams.filterData.find((d) => d.label === group.label);
-            if (temp) {
-              active = temp?.active === true
-            }
+      const _filterData = ventagliData.extent.map((group) => {
+        const { label } = group;
+        let active = true;
+        if (fetchParams.filterData) {
+          const temp = fetchParams.filterData.find(
+            (d) => d.label === group.label
+          );
+          if (temp) {
+            active = temp?.active === true;
           }
-          return { label, active };
         }
-      );
+        return { label, active };
+      });
       fetchParams.setFilterData(_filterData);
-      if (fetchParams.selectedMunicipality){
+      if (fetchParams.selectedMunicipality) {
         // Don't update geo data
-      }
-      else if (fetchParams.selectedProvince) {
+      } else if (fetchParams.selectedProvince) {
         fetchParams.setLvl8(geoJsonData.features);
         const _municipalitiesList = geoJsonData.features.map((d) => ({
           label: d.properties.name,
@@ -379,7 +378,7 @@ const fetchGeoAndData = (fetchParams) => {
           console.warn(`Request aborted. Error: ${e}`);
         }
       } else {
-        console.error(e)
+        console.error(e);
       }
     });
 };

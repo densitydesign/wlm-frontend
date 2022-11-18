@@ -19,6 +19,7 @@ import QuickLinks from "../QuickLinks/QuickLinks";
 import Map from "../Map/Map";
 import { Fetching } from "../Fetching";
 import { cloneDeep as _cloneDeep } from "lodash";
+import { groups } from "d3";
 export default function DataViewerController() {
   // routing
   const { asPath } = useRouter();
@@ -277,10 +278,14 @@ export default function DataViewerController() {
         // remove from data
         dataGroup.data.forEach((area) => {
           area.history.forEach((date) => {
-            const arr = date.groups;
-            const elm = arr.find((e) => e.label === f.label);
-            const index = arr.indexOf(elm);
-            if (index > -1) arr.splice(index, 1);
+            const groups = date.groups;
+            groups.forEach((group, i) => {
+              group.diffValue =
+                i == 0 ? group.value : group.value - groups[i - 1].value;
+            });
+            const elm = groups.find((e) => e.label === f.label);
+            const index = groups.indexOf(elm);
+            if (index > -1) groups.splice(index, 1);
           });
         });
         //remove from extent
@@ -291,6 +296,7 @@ export default function DataViewerController() {
     return dataGroup;
   };
   const dataMakeDelta = (dataGroup) => {
+    // console.log(dataGroup);
     let data = dataGroup.data;
     let extent = dataGroup.extent.map((g) => ({
       ...g,
@@ -298,22 +304,46 @@ export default function DataViewerController() {
     }));
 
     data.forEach((area) => {
-      const baseline = _cloneDeep(area.history[0].groups);
-      area.history.forEach((date) => {
-        date.groups.forEach((g, i) => {
-          g.oldValue = g.value;
-          g.baseline = baseline[i].value;
-          g.deltaValue = g.value - baseline[i].value;
-          // adjust value and extent
-          g.value = g.deltaValue;
-          if (extent[i].value[0] > g.value) extent[i].value[0] = g.value;
-          if (extent[i].value[1] < g.value) extent[i].value[1] = g.value;
+      const prevGroups = area.previous.groups;
+      area.history.forEach((date, i) => {
+        date.groups.forEach((g, ii) => {
+          if (g.absoluteValue) {
+            // delta already calculated
+            return;
+          }
+          g.absoluteValue = 0 + g.value; // avoid references
+          const baseline = prevGroups.find((pg) => pg.label === g.label);
+          if (baseline.value > g.value) {
+            console.warn("There is a problem in the calculation of delta values.");
+            console.log("date", date);
+            console.log("previous", area.previous);
+          }
+          const newValue = g.value - baseline.value;
+          g.value = newValue;
+          if (extent[ii].value[0] > g.value) extent[ii].value[0] = g.value;
+          if (extent[ii].value[1] < g.value) extent[ii].value[1] = g.value;
         });
       });
     });
+
+    // data.forEach((area) => {
+    //   const baseline = _cloneDeep(area.history[0].groups);
+    //   area.history.forEach((date) => {
+    //     date.groups.forEach((g, i) => {
+    //       g.oldValue = g.value;
+    //       g.baseline = baseline[i].value;
+    //       g.deltaValue = g.value - baseline[i].value;
+    //       // adjust value and extent
+    //       g.value = g.deltaValue;
+    //       if (extent[i].value[0] > g.value) extent[i].value[0] = g.value;
+    //       if (extent[i].value[1] < g.value) extent[i].value[1] = g.value;
+    //     });
+    //   });
+    // });
     return { data, extent };
   };
   const modifyData = (data) => {
+    console.log(data);
     const _data = _cloneDeep(data);
     let ventagliData = dataFiltering(_data.ventagliData);
     let parentData = dataFiltering(_data.parentData);
