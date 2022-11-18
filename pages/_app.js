@@ -68,7 +68,7 @@ function MyApp({ Component, pageProps }) {
           setMatomoCookie(getCookieConsentValue("enableVisitorCount"));
         }}
         enableDeclineButton
-        declineButtonText="Don't count me"
+        declineButtonText="Reject"
         declineButtonStyle={{
           backgroundColor: "var(--bs-white)",
           color: "var(--bs-black)",

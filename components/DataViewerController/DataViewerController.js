@@ -7,7 +7,7 @@ import {
   fetchGeoAndData,
   dateRanges,
 } from "../../utils/fetchData.utils";
-import { readParams } from "../../utils/urlParameters.utils";
+import { readParams, writeParams } from "../../utils/urlParameters.utils";
 import * as d3 from "d3";
 import { useRouter } from "next/router";
 import { Col, Container, Row } from "react-bootstrap";
@@ -76,18 +76,18 @@ export default function DataViewerController() {
         explorationModePar,
         filterDataParams,
         showDeltaPar,
-        typology,
-        selectedTimeFramePar,
+        typologyId,
+        selectedTimeFrameLabel,
         dateFrom,
         dateTo,
-        selectedRegion,
-        selectedProvince,
-        selectedMunicipality,
+        selectedRegionLabel,
+        selectedProvinceLabel,
+        selectedMunicipalityLabel,
       } = readParams(asPath);
       let _explorationMode;
       if (explorationModePar) {
         _explorationMode = explorationModes.find(
-          (d) => d.value == explModeValue
+          (d) => d.value == explorationModePar
         );
       } else {
         _explorationMode = explorationModes[0];
@@ -98,7 +98,7 @@ export default function DataViewerController() {
       if (filterDataParams) {
         _filterData = filterDataParams
           .split(";")
-          .map((d) => d.split("="))
+          .map((d) => d.split(":"))
           .map((d) => ({ label: d[0], active: d[1] === "true" }));
         setFilterData(_filterData);
       }
@@ -106,15 +106,15 @@ export default function DataViewerController() {
       setShowDelta(_showDelta);
 
       let _typology;
-      if (typology) {
-        _typology = domain.themes.find((d) => d.id == typology);
+      if (typologyId) {
+        _typology = domain.themes.find((d) => d.id == typologyId);
         setTypology(_typology);
       }
 
       let _selectedTimeFrame;
-      if (selectedTimeFramePar) {
+      if (selectedTimeFrameLabel) {
         _selectedTimeFrame = timeFrameData.items.find(
-          (d) => d.label === selectedTimeFramePar
+          (d) => d.label === selectedTimeFrameLabel
         );
       } else {
         _selectedTimeFrame = timeFrameData.items[2];
@@ -155,8 +155,10 @@ export default function DataViewerController() {
         setFilterData,
       };
 
-      if (selectedRegion) {
-        _selectedRegion = _regionsList.find((d) => d.label === selectedRegion);
+      if (selectedRegionLabel) {
+        _selectedRegion = _regionsList.find(
+          (d) => d.label === selectedRegionLabel
+        );
         setSelectedRegion(_selectedRegion);
         initFetchOptions.selectedRegion = _selectedRegion;
         d3.json(
@@ -168,9 +170,9 @@ export default function DataViewerController() {
             code: d.properties.code,
           }));
           setProvincesList(_provincesList);
-          if (selectedProvince) {
+          if (selectedProvinceLabel) {
             _selectedProvince = _provincesList.find(
-              (d) => d.label === selectedProvince
+              (d) => d.label === selectedProvinceLabel
             );
             setSelectedProvince(_selectedProvince);
             initFetchOptions.selectedProvince = _selectedProvince;
@@ -186,9 +188,9 @@ export default function DataViewerController() {
                 })
               );
               setMunicipalitiesList(_municipalitiesList);
-              if (selectedMunicipality) {
+              if (selectedMunicipalityLabel) {
                 _selectedMunicipality = _municipalitiesList.find(
-                  (d) => d.label === selectedMunicipality
+                  (d) => d.label === selectedMunicipalityLabel
                 );
                 setSelectedMunicipality(_selectedMunicipality);
                 initFetchOptions.selectedMunicipality = _selectedMunicipality;
@@ -314,7 +316,9 @@ export default function DataViewerController() {
           g.absoluteValue = 0 + g.value; // avoid references
           const baseline = prevGroups.find((pg) => pg.label === g.label);
           if (baseline.value > g.value) {
-            console.warn("There is a problem in the calculation of delta values.");
+            console.warn(
+              "There is a problem in the calculation of delta values."
+            );
             console.log("date", date);
             console.log("previous", area.previous);
           }
@@ -328,7 +332,6 @@ export default function DataViewerController() {
     return { data, extent };
   };
   const modifyData = (data) => {
-    console.log(data);
     const _data = _cloneDeep(data);
     let ventagliData = dataFiltering(_data.ventagliData);
     let parentData = dataFiltering(_data.parentData);
@@ -339,12 +342,38 @@ export default function DataViewerController() {
     setDataToUse({ ventagliData, parentData });
   };
   useEffect(() => {
-    if (initialized) modifyData(data);
+    if (initialized) {
+      modifyData(data);
+      writeParams({
+        explorationMode,
+        filterData,
+        showDelta,
+        typology,
+        selectedTimeFrame,
+        dateFrom,
+        dateTo,
+        selectedRegion,
+        selectedProvince,
+        selectedMunicipality,
+      });
+    }
   }, [filterData, showDelta, data]);
 
   // fetching data
   const handleParameterChange = () => {
     // will update url params
+    writeParams({
+      explorationMode,
+      filterData,
+      showDelta,
+      typology,
+      selectedTimeFrame,
+      dateFrom,
+      dateTo,
+      selectedRegion,
+      selectedProvince,
+      selectedMunicipality,
+    });
     // fetch data
     const fetchParams = {
       explorationMode,

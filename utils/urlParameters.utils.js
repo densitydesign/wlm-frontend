@@ -21,6 +21,74 @@ export function readParams(asPath) {
         .map((d) => d.split("=").map((dd) => decodeURIComponent(dd)))
     );
   }
-  // console.log(parameters)
   return parameters;
 }
+
+export function writeParams(props) {
+  const parameters = {};
+  if (props.explorationMode) {
+    parameters.explorationModePar = encodeURIComponent(
+      props.explorationMode.value
+    );
+  }
+  if (props.showDelta !== undefined) {
+    parameters.showDeltaPar = encodeURIComponent(props.showDelta);
+  }
+  if (props.filterData) {
+    parameters.filterDataParams = encodeURIComponent(
+      props.filterData.map((d) => d.label + ":" + d.active.toString()).join(";")
+    );
+  }
+  if (props.typology) {
+    parameters.typologyId = encodeURIComponent(props.typology.id);
+  }
+  if (props.selectedTimeFrame) {
+    parameters.selectedTimeFrameLabel = encodeURIComponent(
+      props.selectedTimeFrame.label
+    );
+  }
+  // not useful
+  // if (props.dateFrom) {
+  //   parameters.dateFrom = encodeURIComponent(props.dateFrom);
+  // }
+  // if (props.dateTo) {
+  //   parameters.dateTo = encodeURIComponent(props.dateTo);
+  // }
+
+  if (props.selectedRegion) {
+    parameters.selectedRegionLabel = encodeURIComponent(
+      props.selectedRegion.label
+    );
+  }
+  if (props.selectedProvince) {
+    parameters.selectedProvinceLabel = encodeURIComponent(
+      props.selectedProvince.label
+    );
+  }
+  if (props.selectedMunicipality) {
+    parameters.selectedMunicipalityLabel = encodeURIComponent(
+      props.selectedMunicipality.label
+    );
+  }
+
+  //
+  const temp = [];
+  for (const key in parameters) {
+    temp.push(key + "=" + parameters[key]);
+  }
+  const hashUrl = "#" + temp.join("&");
+  location.replace(hashUrl);
+}
+
+// {
+//   explorationModePar,
+//   filterDataParams,
+//   showDeltaPar,
+//   typology,
+//   selectedTimeFramePar,
+//   dateFrom,
+//   dateTo,
+//   selectedRegion,
+//   selectedProvince,
+//   selectedMunicipality,
+// }
