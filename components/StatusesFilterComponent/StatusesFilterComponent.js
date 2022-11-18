@@ -70,7 +70,7 @@ export default function StatusesFilterComponent({
       />
       <Form>
         {ddValue.value === "1" && (
-          <Form.Group className="mb-3" controlId="absoluteValues">
+          <Form.Group className="mb-0" controlId="absoluteValues">
             {categories.map((d) => (
               <Checkbox
                 key={d.label}

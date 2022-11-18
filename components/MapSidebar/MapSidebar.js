@@ -1,12 +1,15 @@
 import classNames from "classnames";
-import { DropdownUI, DropdownGroupUI } from "../UI-Components";
-import { Badge } from "react-bootstrap";
+import { DropdownUI, DropdownGroupUI, ButtonUI } from "../UI-Components";
+import { Badge, Modal } from "react-bootstrap";
 import styles from "./MapSidebar.module.scss";
 import { useMemo } from "react";
 import { DateTime } from "luxon";
 import { BsExclamationTriangleFill } from "react-icons/bs";
 import AreaChart from "../AreaChart";
 import StatusesFilterComponent from "../StatusesFilterComponent";
+import ExportTools from "../ExportTools/ExportTools";
+import { BsDownload } from "react-icons/bs";
+import { useState } from "react";
 export default function MapSidebar({
   explorationMode,
   explorationModes,
@@ -69,6 +72,7 @@ export default function MapSidebar({
   lvl8,
   setLvl8,
 }) {
+  const [show, setShow] = useState(false);
   const startDateItems = useMemo(() => {
     if (!startMonth || !startYear || !endMonth || !endYear) {
       return;
@@ -151,6 +155,69 @@ export default function MapSidebar({
     ];
   }, [startMonth, startYear, endMonth, endYear]);
 
+  const allStates = {
+    explorationMode,
+    explorationModes,
+    setExplorationMode,
+    filterData,
+    setFilterData,
+    showDelta,
+    setShowDelta,
+    typology,
+    setTypology,
+    selectedTimeFrame,
+    setSelectedTimeFrame,
+    dateFrom,
+    setDateFrom,
+    dateTo,
+    setDateTo,
+    selectedRegion,
+    setSelectedRegion,
+    selectedProvince,
+    setSelectedProvince,
+    selectedMunicipality,
+    setSelectedMunicipality,
+    // data for UI
+    isFetching,
+    setIsFetching,
+    regionsList,
+    setRegionsList,
+    regions,
+    provincesList,
+    setProvincesList,
+    provinces,
+    municipalitiesList,
+    setMunicipalitiesList,
+    municipalities,
+    typologiesList,
+    setTypologiesList,
+    timeFrameData,
+    dateRanges,
+    minDate,
+    setMinDate,
+    maxDate,
+    setMaxDate,
+    timeStep,
+    setTimeStep,
+    startMonth,
+    setStartMonth,
+    startYear,
+    setStartYear,
+    endMonth,
+    setEndMonth,
+    endYear,
+    setEndYear,
+    // data for visualization
+    data,
+    setData,
+    lvl4,
+    setLvl4,
+    lvl6,
+    setLvl6,
+    lvl8,
+    setLvl8,
+  };
+
   return (
     <div className={classNames("d-flex", "flex-column")}>
       <DropdownUI
@@ -160,7 +227,7 @@ export default function MapSidebar({
         setValue={setExplorationMode}
         hideReset={true}
         boldLabel
-        classNameProp="mb-3"
+        classNameProp="mb-2"
       />
       <span className="text-uppercase" style={{ fontWeight: 600 }}>
         Monuments locations
@@ -188,7 +255,7 @@ export default function MapSidebar({
         setValue={setSelectedMunicipality}
         defaultLabel="Select a municipality"
         disabled={municipalities.disabled}
-        classNameProp="mb-3"
+        classNameProp="mb-2"
       />
       <DropdownUI
         label="Monuments type"
@@ -197,7 +264,7 @@ export default function MapSidebar({
         setValue={setTypology}
         disabled={!typologiesList}
         boldLabel
-        classNameProp="mb-3"
+        classNameProp="mb-2"
       />
       <div className="mb-3 TIME FRAME">
         <DropdownUI
@@ -256,7 +323,7 @@ export default function MapSidebar({
           </>
         )}
 
-        <div className="mb-2">
+        <div className="mb-3">
           <AreaChart
             data={data?.parentData}
             filterData={filterData}
@@ -266,7 +333,7 @@ export default function MapSidebar({
           />
         </div>
 
-        <span className="text-uppercase mb-3" style={{ fontWeight: 600 }}>
+        <span className="text-uppercase mb-2" style={{ fontWeight: 600 }}>
           Monuments Status
         </span>
         {data && filterData && (
@@ -280,6 +347,20 @@ export default function MapSidebar({
         )}
         {!data || (!filterData && <p>Loading...</p>)}
       </div>
+      <>
+        <ButtonUI
+          content={
+            <>
+              Export visualization <BsDownload />
+            </>
+          }
+          onClickAction={() => setShow(true)}
+          disabled={true}
+        />
+        <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
+          <ExportTools closeFunct={() => setShow(false)} mapData={allStates} />
+        </Modal>
+      </>
     </div>
   );
 }

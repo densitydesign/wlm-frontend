@@ -60,7 +60,7 @@ export default function NavMenu(props) {
   const pageStatus = props.page;
 
   return (
-    <Dropdown className={classNames("mb-2")} autoClose={true}>
+    <Dropdown className={classNames("mb-3")} autoClose={true}>
       <Dropdown.Toggle as={HairyMenu} id="dropdown-autoclose-false">
         Wiki
         <GoHeart />

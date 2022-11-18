@@ -325,21 +325,6 @@ export default function DataViewerController() {
         });
       });
     });
-
-    // data.forEach((area) => {
-    //   const baseline = _cloneDeep(area.history[0].groups);
-    //   area.history.forEach((date) => {
-    //     date.groups.forEach((g, i) => {
-    //       g.oldValue = g.value;
-    //       g.baseline = baseline[i].value;
-    //       g.deltaValue = g.value - baseline[i].value;
-    //       // adjust value and extent
-    //       g.value = g.deltaValue;
-    //       if (extent[i].value[0] > g.value) extent[i].value[0] = g.value;
-    //       if (extent[i].value[1] < g.value) extent[i].value[1] = g.value;
-    //     });
-    //   });
-    // });
     return { data, extent };
   };
   const modifyData = (data) => {
