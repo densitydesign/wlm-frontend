@@ -37,6 +37,29 @@ const labelsDict = {
   onWikidataOnly: { explained: "Monuments on Wikidata" },
 };
 
+const availableStatuses = [
+  {
+    mode: "wlm",
+    label: "Wiki Loves Monuments",
+    statuses: [
+      { code: "onWiki", explained: "Monuments on Wikidata" },
+      { code: "inContest", explained: "Monuments in contest" },
+      {
+        code: "photographed",
+        explained: "Photographed during the contest",
+      },
+    ],
+  },
+  {
+    mode: "commons",
+    label: "Wikidata Relevant Picture",
+    statuses: [
+      { code: "onWikidataOnly", explained: "Monuments on Wikidata" },
+      { code: "withPicture", explained: "Monuments with at least one photo" },
+    ],
+  },
+];
+
 const collisionRadius = 70;
 const fanOpening = 150;
 let rotation;
@@ -234,8 +257,8 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .join("tspan")
     .text((d) => {
       return showDelta
-        ? "+" + d.deltaValue.toLocaleString()
-        : d.value.toLocaleString();
+        ? "+" + d.deltaValue?.toLocaleString()
+        : d.value?.toLocaleString();
     });
   tick
     .selectAll(".axisLabel")
@@ -380,4 +403,4 @@ function dataTick(d) {
   return data.reverse();
 }
 
-export { colors, collisionRadius, drawVentaglio, labelsDict };
+export { colors, collisionRadius, drawVentaglio, labelsDict, availableStatuses };

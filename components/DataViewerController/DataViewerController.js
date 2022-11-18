@@ -446,12 +446,7 @@ export default function DataViewerController() {
           <MapSidebar {...allStates} />
         </Col>
         <Col
-          className={classNames(
-            "h-100",
-            "position-relative",
-            "p-2",
-            "ps-0",
-          )}
+          className={classNames("h-100", "position-relative", "p-2", "ps-0")}
         >
           {initialized && <Map {...allStates} />}
           {!initialized && <Fetching />}

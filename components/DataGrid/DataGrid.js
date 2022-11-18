@@ -167,9 +167,9 @@ export default function DataGrid({
       selector: (row) => row["region_label"],
     },
     {
-      id: "wikidata_creation_date",
+      id: "first_revision",
       name: "Creation Date\non Wikidata",
-      sortable: false,
+      sortable: true,
       width: "120px",
       selector: (row) =>
         row["wikidata_creation_date"]

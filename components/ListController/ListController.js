@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { json as d3Json } from "d3";
 import { apiBaseUrl } from "../../utils/fetchData.utils";
+import { availableStatuses } from "../../utils/ventagli.utils";
 
 import ToolsPanel from "./ToolsPanel";
 import DataGrid from "../DataGrid";
@@ -19,7 +20,9 @@ export default function ListController() {
   const [municipality, setMunicipality] = useState();
   const [themesList, setThemesList] = useState([]);
   const [theme, setTheme] = useState();
-  const [toReview, setToReview] = useState();
+  const [toReview, setToReview] = useState(false);
+  const [statusFilter, setStatusFilter] = useState([]);
+  const [lastSnapshot, setLastSnapshot] = useState();
   //
   const [loading, setLoading] = useState(true);
   const [pageSize, setPageSize] = useState(paginationRowsPerPageOptions[0]);
@@ -47,6 +50,8 @@ export default function ListController() {
     setTheme,
     toReview,
     setToReview,
+    statusFilter,
+    setStatusFilter,
     loading,
     setLoading,
     paginationRowsPerPageOptions,
@@ -58,6 +63,7 @@ export default function ListController() {
     setOrdering,
     data,
     setData,
+    lastSnapshot
   };
 
   useEffect(() => {
@@ -72,8 +78,17 @@ export default function ListController() {
         name: "Unknown region",
         centroid: null,
       };
+      const _statusFilter = availableStatuses.map((mode) => {
+        const statuses = mode.statuses.map((status) => ({
+          ...status,
+          active: true,
+        }));
+        return { ...mode, statuses };
+      });
+      setStatusFilter(_statusFilter);
       setRegionsList([unknownRegion, ...regions]);
       setThemesList(domain.themes);
+      setLastSnapshot(domain.last_snapshot);
     });
   }, []);
 
@@ -115,10 +130,27 @@ export default function ListController() {
     if (municipality)
       queryParams.municipality = encodeURIComponent(municipality.code);
     if (theme) queryParams.theme = encodeURIComponent(theme.id);
-    if (toReview) queryParams.to_review = encodeURIComponent(toReview.toString());
+    if (toReview)
+      queryParams.to_review = encodeURIComponent(toReview.toString());
     if (pageSize) queryParams.page_size = encodeURIComponent(pageSize);
     if (pageNumber) queryParams.page = encodeURIComponent(pageNumber);
     if (ordering) queryParams.ordering = encodeURIComponent(ordering);
+    if (statusFilter.length > 0) {
+      //current_wlm_state
+      const activeWlm = statusFilter
+        .find((d) => d.mode === "wlm")
+        .statuses.filter((d) => d.active)
+        .map((d) => d.code)
+        .join(",");
+      queryParams.current_wlm_state = activeWlm;
+      //current_commons_state
+      const activeCommons = statusFilter
+        .find((d) => d.mode === "commons")
+        .statuses.filter((d) => d.active)
+        .map((d) => d.code)
+        .join(",");
+      queryParams.current_commons_state = activeCommons;
+    }
     //
     const temp = [];
     for (const key in queryParams) {
@@ -130,7 +162,17 @@ export default function ListController() {
       setData(data);
       setLoading(false);
     });
-  }, [region, province, municipality, theme, toReview, pageSize, pageNumber, ordering]);
+  }, [
+    region,
+    province,
+    municipality,
+    theme,
+    toReview,
+    statusFilter,
+    pageSize,
+    pageNumber,
+    ordering,
+  ]);
 
   return (
     <Container fluid className={classNames(styles.listPage)}>

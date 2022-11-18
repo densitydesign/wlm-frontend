@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import classNames from "classnames";
 import styles from "./UI-Components.module.scss";
 
-export default function ButtonUI({ label, onClickAction, content, disabled }) {
+export default function ButtonUI({ label, onClickAction, content, disabled, className }) {
   return (
     <div
       className={classNames(
@@ -14,7 +14,7 @@ export default function ButtonUI({ label, onClickAction, content, disabled }) {
     >
       {label && <span>{label}</span>}
       <Button
-        className={classNames(styles.btnWlm, { "ms-1": label })}
+        className={classNames(styles.btnWlm, { "ms-1": label }, className)}
         size="sm"
         variant="lightBlue"
         onClick={(event) => onClickAction(event)}

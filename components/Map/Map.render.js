@@ -630,6 +630,12 @@ function renderLegend(selection, data) {
     .attr("fill", "#0978AB")
     .attr("font-weight", "600")
     .text("of " + areaName);
+  howToRead
+    .append("tspan")
+    .attr("x", 0)
+    .attr("dy", 7)
+    .attr("font-size", 1)
+    .text(" ");
 
   const history = data.data.parentData?.data[0].history;
   if (history) {
@@ -640,7 +646,9 @@ function renderLegend(selection, data) {
       ).value;
 
       const superSpan = howToRead.append("tspan").attr("x", 21).attr("dy", 14);
-      superSpan.append("tspan").attr("x", 21).attr("dy", 28).text(max);
+
+      if (!data.showDelta)
+        superSpan.append("tspan").attr("x", 21).attr("dy", 14).text(d3.format("~s")(max));
       superSpan
         .append("tspan")
         .attr("font-weight", "600")
@@ -650,7 +658,13 @@ function renderLegend(selection, data) {
         .append("tspan")
         .attr("x", 21)
         .attr("dy", 14)
-        .text(`(+${max - min} new)`);
+        .text(`(+${d3.format("~s")(max - min)} new)`);
+      superSpan
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", 7)
+        .attr("font-size", 1)
+        .text(" ");
 
       const bbox = superSpan.node().getBBox();
 
@@ -685,28 +699,31 @@ function renderLegend(selection, data) {
   const credits = selection.append("g");
   credits
     .append("image")
-    .attr("width", 20)
-    .attr("height", 20)
+    .attr("width", 15)
+    .attr("height", 15)
     .attr("href", "https://mirrors.creativecommons.org/presskit/icons/cc.svg");
   credits
     .append("image")
-    .attr("x", 23)
-    .attr("width", 20)
-    .attr("height", 20)
+    .attr("x", 20)
+    .attr("width", 15)
+    .attr("height", 15)
     .attr("href", "https://mirrors.creativecommons.org/presskit/icons/by.svg");
 
   credits
     .append("text")
-    .attr("transform", "translate(0, 5)")
+    .attr("transform", "translate(0, 0)")
     .attr("x", 50)
-    .attr("font-size", 11)
+    .attr("font-size", 10)
     .text(
       "Work by DensityDesign (Politecnico di Milano) & Wikimedia Italia. License: Creative Commons Attribution 4.0 International."
     )
     .call(wrap, legendWidth - legendMargin);
 
   const creditsbbox = credits.node().getBBox();
-  credits.attr("transform", `translate(${legendMargin}, ${height - creditsbbox.height - legendMargin})`)
+  credits.attr(
+    "transform",
+    `translate(${legendMargin}, ${height - creditsbbox.height - legendMargin})`
+  );
 }
 
 function wrap(text, width, x = 0, dy = 14, firstdy = 14, firstdx = 0) {
