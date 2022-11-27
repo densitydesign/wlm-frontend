@@ -43,29 +43,19 @@ export default function ToolsPanel({
     setStatusFilter(_newFilter);
   };
   const downloadFile = (file) => {
-    console.log(file);
-    fetch(file.href)
-      .then((resp) => {
-        if (resp.status === 200) {
-          return resp.blob();
-        }
-      })
-      .then((blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = url;
-        // the filename you want
-        a.download = file.name;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        alert("your file has downloaded!"); // or you know, something with better UX...
-      })
-      .catch((err) => {
-        console.error("Can't download your file:", err);
-        setDownloadError(true);
-      });
+    try {
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = file.href;
+      // the filename you want
+      a.download = file.name; // It's not from the same-origin, therefore it won't work.
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      setDownloadError(true);
+      console.error(err);
+    }
   };
   return (
     <div className={classNames("d-flex", "flex-column")}>
@@ -204,7 +194,9 @@ export default function ToolsPanel({
                   className={classNames("me-2", "mb-1")}
                   style={{ fontSize: "1.5rem", color: "var(--bs-interactive)" }}
                 />
-                <p className="mb-0">An error occurred while downloading your file.</p>
+                <p className="mb-0">
+                  An error occurred while downloading your file.
+                </p>
               </div>
             )}
             <div className="d-flex align-items-center">
