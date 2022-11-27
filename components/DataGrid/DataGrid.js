@@ -1,5 +1,4 @@
 import DataTable, { defaultThemes } from "react-data-table-component";
-import { apiBaseUrl } from "../../utils/fetchData.utils";
 import StatusSymbol from "./StatusSymbol";
 import { DateTime } from "luxon";
 import styles from "./DataGrid.module.scss";
@@ -62,7 +61,7 @@ export default function DataGrid({
 
     {
       id: "label",
-      name: "Name\n(coordinates link)",
+      name: "Name\n(OSM link)",
       sortable: true,
       cell: (row) => {
         if (row["position"]?.coordinates) {
@@ -104,7 +103,7 @@ export default function DataGrid({
     },
     {
       id: "pictures_wlm_count",
-      name: "WLM\nPictures",
+      name: "WLM\nImages",
       sortable: true,
       cell: (row) => {
         if (row["pictures_wlm_count"].toString() !== "0") {
@@ -126,7 +125,7 @@ export default function DataGrid({
     },
     {
       id: "pictures_commons_count",
-      name: "Relevant\nPictures",
+      name: "Relevant\nImages",
       sortable: true,
       cell: (row) => {
         if (row["pictures_commons_count"].toString() !== "0") {
@@ -188,7 +187,7 @@ export default function DataGrid({
     },
     {
       id: "first_wlm_image_date",
-      name: "First\nWLM Picture",
+      name: "First\nWLM Image",
       sortable: true,
       width: "150px",
       selector: (row) =>
@@ -198,7 +197,7 @@ export default function DataGrid({
     },
     {
       id: "first_commons_image_date",
-      name: "First\nCommons Picture",
+      name: "First\nCommons Image",
       sortable: true,
       width: "150px",
       selector: (row) =>

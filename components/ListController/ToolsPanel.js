@@ -147,15 +147,15 @@ export default function ToolsPanel({
               </p>
               <p className="mb-1">
                 <span className="fw-bold">Commons Coverage</span>: coverage of
-                monuments in relation to all traceable pictures from Commons
+                monuments in relation to all traceable images from Commons
               </p>
               <p className="mb-1">
-                <span className="fw-bold">WLM Pictures</span>: photographs of
+                <span className="fw-bold">WLM Images</span>: photographs of
                 the corresponding monument taken during the contest (all
                 editions)
               </p>
               <p className="mb-1">
-                <span className="fw-bold">Relevant Pictures</span>: photographs
+                <span className="fw-bold">Relevant Images</span>: photographs
                 of the corresponding monument present on the Wikidata page
               </p>
               <p className="mb-1">
@@ -164,19 +164,15 @@ export default function ToolsPanel({
               </p>
               <p className="mb-1">
                 <span className="fw-bold">WLM authorization date</span>: date of
-                authorization to share pictures under a CC-SA-BY license of the
+                authorization to share images under a CC-SA-BY license of the
                 corresponding monument. Corresponds to entry in contest
               </p>
               <p className="mb-1">
-                <span className="fw-bold">First WLM picture</span>: date of the
+                <span className="fw-bold">First WLM image</span>: date of the
                 upload of the first image taken in the contest
               </p>
               <p className="mb-1">
-                <span className="fw-bold">First WLM picture</span>: date of the
-                upload of the first image taken in the contest
-              </p>
-              <p className="mb-1">
-                <span className="fw-bold">First Commons picture</span>: date of
+                <span className="fw-bold">First Commons image</span>: date of
                 the upload of the first image, among all the traceable ones
               </p>
             </div>
