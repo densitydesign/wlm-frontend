@@ -19,7 +19,7 @@ export default function RadioButtons({ filterData, setFilterData }) {
     setFilterData(newFilterData);
   };
   return (
-    <Form.Group className="mb-3" controlId="absoluteValues">
+    <Form.Group controlId="absoluteValues">
       {filterData.map((d, i) => (
         <div
           key={i}

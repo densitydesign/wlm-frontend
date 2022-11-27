@@ -16,26 +16,12 @@ export default function StatusesFilterComponent({
   showDelta,
   setShowDelta,
 }) {
-  const [radioValue, setRadioValue] = useState(showDelta ? "2" : "1");
   const [ddValue, setDdValue] = useState(showDelta ? ddItems[1] : ddItems[0]);
   const [categories, setCategories] = useState(filterData || []); // initially filterData is undefined
 
   useEffect(() => {
     setCategories(filterData || []);
   }, [filterData]);
-
-  // useEffect(() => {
-  //   if (radioValue === "2") {
-  //     setShowDelta(true);
-  //     let newFilterData = filterData;
-  //     if (filterData.filter((d) => d.active).length > 1) {
-  //       newFilterData = filterData.map((d, i) => ({ ...d, active: i === 0 }));
-  //     }
-  //     setFilterData(newFilterData);
-  //   } else {
-  //     setShowDelta(false);
-  //   }
-  // }, [radioValue, categories]);
 
   useEffect(() => {
     if (ddValue.value === "2") {
@@ -52,15 +38,6 @@ export default function StatusesFilterComponent({
 
   return (
     <>
-      {/* <ToggleButtonGroupUI
-        label="View as"
-        radios={[
-          { label: "Absolute", value: "1" },
-          { label: "Increment", value: "2" },
-        ]}
-        radioValue={radioValue}
-        setRadioValue={setRadioValue}
-      /> */}
       <DropdownUI
         label="View as"
         items={ddItems}

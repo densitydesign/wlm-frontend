@@ -117,7 +117,7 @@ export default function DataViewerController() {
           (d) => d.label === selectedTimeFrameLabel
         );
       } else {
-        _selectedTimeFrame = timeFrameData.items[2];
+        _selectedTimeFrame = timeFrameData.items[3];
       }
       setSelectedTimeFrame(_selectedTimeFrame);
 
@@ -337,7 +337,7 @@ export default function DataViewerController() {
     let parentData = dataFiltering(_data.parentData);
     if (showDelta) {
       ventagliData = dataMakeDelta(ventagliData);
-      parentData = dataMakeDelta(ventagliData);
+      parentData = dataMakeDelta(parentData);
     }
     setDataToUse({ ventagliData, parentData });
   };

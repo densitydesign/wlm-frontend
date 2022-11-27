@@ -240,7 +240,6 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("x", (d) => {
       const r = d.outerRadius;
       let a = fanOpening / 2;
-      // a = d.index % 2 === 0 ? a : -a;
       return polarToCartesian(0, 0, r, a).x;
     })
     .attr("y", (d) => {
@@ -270,6 +269,31 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("stroke-linecap", null)
     .attr("stroke-linejoin", null)
     .attr("fill", (d) => d3.color(colors[d.label]).brighter(3));
+
+  ventaglio
+    .selectAll(".placeHolder")
+    .data([1])
+    .join("path")
+    .attr("class", "placeHolder")
+    .attr("d", (d) => {
+      const r = 10;
+      const start = -fanOpening / 3;
+      const end = fanOpening / 3;
+      return describeArc(0, 0, r, start, end).replace("M", "M0,0 ") + " Z";
+    })
+    .attr("stroke", "#adb5bd")
+    .attr("fill", "url(#tick-background)")
+    .style("display", "none")
+    .classed("tickBg", true);
+
+  const initialValue = datum.history[0].groups.slice(-1)[0].value;
+  const finalValue = datum.history.slice(-1)[0].groups.slice(-1)[0].value;
+
+  if (initialValue === finalValue) {
+    console.log("No increment for", datum);
+    ventaglio.selectAll(".placeHolder").style("display", "block");
+    ventaglio.selectAll(".snapshot").style("display", "none");
+  }
 };
 
 function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
@@ -403,4 +427,10 @@ function dataTick(d) {
   return data.reverse();
 }
 
-export { colors, collisionRadius, drawVentaglio, labelsDict, availableStatuses };
+export {
+  colors,
+  collisionRadius,
+  drawVentaglio,
+  labelsDict,
+  availableStatuses,
+};
