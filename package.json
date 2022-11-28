@@ -6,8 +6,6 @@
     "dev": "open http://localhost:3000 & next dev",
     "build": "next build",
     "export": "next build && next export && touch out/.nojekyll",
-    "pre-deploy": "rm -rf node_modules/.cache && npm run export && touch out/.nojekyll && rm -rf docs && mv out docs",
-    "deploy": "npm run pre-deploy && git add docs/ && git commit -m \"Deploy website\" && git push",
     "start": "next start",
     "lint": "next lint"
   },
