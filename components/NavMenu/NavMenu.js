@@ -69,7 +69,7 @@ export default function NavMenu(props) {
           className="small"
           style={{ textTransform: "uppercase", opacity: 0.7, fontWeight: 500 }}
         >
-          alpha 0.2
+          alpha 0.4
         </span>
       </Dropdown.Toggle>
 
