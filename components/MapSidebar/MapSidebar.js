@@ -219,7 +219,7 @@ export default function MapSidebar({
   };
 
   return (
-    <div className={classNames("d-flex", "flex-column")}>
+    <div className={classNames(styles.mapSideBar ,"d-flex", "flex-column")}>
       <DropdownUI
         label="Explore"
         items={explorationModes}

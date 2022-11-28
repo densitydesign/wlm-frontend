@@ -1,3 +1,8 @@
+.mapSideBar {
+  height: calc(100vh - (3rem + 62px));
+  overflow-y: scroll;
+}
+
 .small {
   font-size: 0.82rem;
   line-height: normal;
