@@ -227,7 +227,6 @@ const fetchData = (
 const controllers = {};
 const requestCount = -1;
 const fetchGeoAndData = (fetchParams) => {
-  // console.log("fetchGeoAndData");
   fetchParams.setIsFetching(true);
   let dataUrl = apiBaseUrl;
   let parentDataUrl = apiBaseUrl;
@@ -365,12 +364,10 @@ const fetchGeoAndData = (fetchParams) => {
       // intialization state. Effective only once, then same value written
       fetchParams.setInitialized(true);
       delete controllers[thisIndex];
-      console.log("Fetched");
       fetchParams.setIsFetching(false);
     })
     .catch((e) => {
       delete controllers[thisIndex];
-      fetchParams.setIsFetching(false);
       if (e.name === "AbortError") {
         if (signal.reason) {
           console.warn(signal.reason);
@@ -379,6 +376,9 @@ const fetchGeoAndData = (fetchParams) => {
         }
       } else {
         console.error(e);
+        if (Object.keys(controllers).length === 0) {
+          fetchParams.setIsFetching(false);
+        }
       }
     });
 };
