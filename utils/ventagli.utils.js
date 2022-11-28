@@ -116,6 +116,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     )
     .join("g")
     .attr("class", "snapshot")
+    .style("display", "block")
     .attr("transform", (d, i) => `rotate(${-fanOpening / 2 + rotation * i})`)
     .attr("title", (d) => d.date);
 
@@ -285,14 +286,23 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("fill", "url(#tick-background)")
     .style("display", "none")
     .classed("tickBg", true);
-
-  const initialValue = datum.history[0].groups.slice(-1)[0].value;
-  const finalValue = datum.history.slice(-1)[0].groups.slice(-1)[0].value;
-
-  if (initialValue === finalValue) {
-    console.log("No increment for", datum);
-    ventaglio.selectAll(".placeHolder").style("display", "block");
-    ventaglio.selectAll(".snapshot").style("display", "none");
+  
+  console.log("Reset appearence")
+  // reset appearence
+  // set appearence according to data
+  if (showDelta) {
+    const finalValue = datum.history
+      .slice(-1)[0]
+      .groups.slice(-1)[0].absoluteValue;
+    const finalLabel = datum.history.slice(-1)[0].groups.slice(-1)[0].label;
+    let initialValue = datum.previous.groups.find(
+      (d) => d.label === finalLabel
+    ).value;
+    if (initialValue === finalValue) {
+      ventaglio.selectAll(".placeHolder").style("display", "block");
+      ventaglio.selectAll(".snapshot").style("display", "none");
+      ventaglio.selectAll(".bubble").style("display", "none");
+    }
   }
 };
 

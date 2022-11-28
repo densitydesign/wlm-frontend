@@ -457,6 +457,7 @@ function getRadius(d, k) {
 }
 
 function handleOverlappings(selection) {
+  console.log("handle overlapping");
   if (!mode || mode === "region") return;
   selection.classed("overlapping", false);
   selection.selectAll(".bubble").attr("display", "none");

@@ -81,10 +81,16 @@ const update = (data, filterData, showDelta, timeStep) => {
   svg.select(".void-bg").attr("width", 0).attr("height", 0);
   svg.select(".void-message").text(null);
   if (showDelta) {
-    const increments = preservedGroups.map((g) => {
-      return temp[temp.length - 1][g] - temp[0][g];
-    });
-    if (!increments.filter((inc) => inc > 0).length) {
+    const finalValue = data.data[0].history
+      .slice(-1)[0]
+      .groups.slice(-1)[0].absoluteValue;
+    const finalLabel = data.data[0].history
+      .slice(-1)[0]
+      .groups.slice(-1)[0].label;
+    let initialValue = data.data[0].previous.groups.find(
+      (d) => d.label === finalLabel
+    ).value;
+    if (initialValue === finalValue) {
       svg
         .select(".void-bg")
         .attr("width", width)
@@ -128,12 +134,12 @@ const update = (data, filterData, showDelta, timeStep) => {
   timeAxisGroup
     .attr("transform", `translate(0, ${height - margin.bottom})`)
     .call(timeAxis);
+  let _domain = d3.extent(amounts);
 
-  const quantityExtent = d3.extent(amounts);
-  const _domain = [
-    showDelta ? data.data[0].history[0].groups[0].value : 0,
-    quantityExtent[1],
-  ];
+  if (showDelta) {
+    _domain[0] = 0;
+  }
+
   quantityScale.domain(_domain).range([height - margin.bottom, margin.top]);
 
   const quantityAxis = d3
@@ -156,7 +162,7 @@ const update = (data, filterData, showDelta, timeStep) => {
       g.selectAll(".tick > line")
         .attr("stroke-dasharray", "1, 4")
         .attr("x1", Math.ceil(d3.max(arr)) + 4)
-        .attr("x2", width - margin.left - margin.right);
+        .attr("x2", width - margin.right);
 
       g.selectAll(".tick")
         .filter((d) => d === 0)
