@@ -47,13 +47,12 @@ export function writeParams(props) {
       props.selectedTimeFrame.label
     );
   }
-  // not useful
-  // if (props.dateFrom) {
-  //   parameters.dateFrom = encodeURIComponent(props.dateFrom);
-  // }
-  // if (props.dateTo) {
-  //   parameters.dateTo = encodeURIComponent(props.dateTo);
-  // }
+  if (props.dateFrom) {
+    parameters.dateFrom = encodeURIComponent(props.dateFrom);
+  }
+  if (props.dateTo) {
+    parameters.dateTo = encodeURIComponent(props.dateTo);
+  }
 
   if (props.selectedRegion) {
     parameters.selectedRegionLabel = encodeURIComponent(
