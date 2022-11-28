@@ -9,17 +9,17 @@ import { GiSpottedBug } from "react-icons/gi";
 import classNames from "classnames";
 
 const contestsPaths = {
-  2022: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2022-09-01&dateTo=2022-09-30&selectedTimeFramePar=Custom%20interval",
-  2021: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2021-09-01&dateTo=2021-09-30&selectedTimeFramePar=Custom%20interval",
-  2020: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2020-09-01&dateTo=2020-09-30&selectedTimeFramePar=Custom%20interval",
-  2019: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2019-09-01&dateTo=2019-09-30&selectedTimeFramePar=Custom%20interval",
-  2018: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2018-09-01&dateTo=2018-09-30&selectedTimeFramePar=Custom%20interval",
-  2017: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2017-09-01&dateTo=2017-09-30&selectedTimeFramePar=Custom%20interval",
-  2016: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2016-09-01&dateTo=2016-09-30&selectedTimeFramePar=Custom%20interval",
-  2015: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2015-09-01&dateTo=2015-09-30&selectedTimeFramePar=Custom%20interval",
-  2014: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2014-09-01&dateTo=2014-09-30&selectedTimeFramePar=Custom%20interval",
-  2013: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2013-09-01&dateTo=2013-09-30&selectedTimeFramePar=Custom%20interval",
-  2012: "/#explModeValue=wlm&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&showDeltaPar=true&dateFrom=2012-09-01&dateTo=2012-09-30&selectedTimeFramePar=Custom%20interval",
+  2022: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2022-08-31&dateTo=2022-09-30",
+  2021: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2021-08-31&dateTo=2021-09-30",
+  2020: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2020-08-31&dateTo=2020-09-30",
+  2019: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2019-08-31&dateTo=2019-09-30",
+  2018: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2018-08-31&dateTo=2018-09-30",
+  2017: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2017-08-31&dateTo=2017-09-30",
+  2016: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2016-08-31&dateTo=2016-09-30",
+  2015: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2015-08-31&dateTo=2015-09-30",
+  2014: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2014-08-31&dateTo=2014-09-30",
+  2013: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2013-08-31&dateTo=2013-09-30",
+  2012: "/#explorationModePar=wlm&showDeltaPar=true&filterDataParams=photographed%3Atrue%3BinContest%3Afalse%3BonWiki%3Afalse&selectedTimeFrameLabel=Custom%20interval&dateFrom=2012-08-31&dateTo=2012-09-30",
 };
 
 const HairyMenu = forwardRef(({ children, onClick }, ref) => (

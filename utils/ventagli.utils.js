@@ -287,7 +287,6 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .style("display", "none")
     .classed("tickBg", true);
   
-  console.log("Reset appearence")
   // reset appearence
   // set appearence according to data
   if (showDelta) {
