@@ -1,6 +1,11 @@
 import * as d3 from "d3";
 
-import { colors, drawVentaglio, labelsDict } from "../../utils/ventagli.utils";
+import {
+  colors,
+  drawVentaglio,
+  labelsDict,
+  describeArc,
+} from "../../utils/ventagli.utils";
 import ventaglioSvg from "./ventaglio.svg";
 
 const t_duration = 350;
@@ -646,7 +651,11 @@ function renderLegend(selection, data) {
       const superSpan = howToRead.append("tspan").attr("x", 21).attr("dy", 14);
 
       if (!data.showDelta)
-        superSpan.append("tspan").attr("x", 21).attr("dy", 14).text(d3.format("~s")(max));
+        superSpan
+          .append("tspan")
+          .attr("x", 21)
+          .attr("dy", 14)
+          .text(d3.format("~s")(max));
       superSpan
         .append("tspan")
         .attr("font-weight", "600")
@@ -692,6 +701,29 @@ function renderLegend(selection, data) {
         .attr("fill", colors[group.label])
         .attr("stroke", d3.color(colors[group.label]).darker(1));
     });
+  }
+
+  if (data.showDelta) {
+    howToRead
+      .append("tspan")
+      .attr("x", 0)
+      .attr("dy", 7)
+      .attr("font-size", 1)
+      .text(" ");
+    const noData = howToRead
+      .append("tspan")
+      .attr("x", 21)
+      .attr("dy", 14)
+      .text("No data to display");
+
+    const noDataBBox = noData.node().getBBox();
+
+    selection
+      .append("path")
+      .attr("d", describeArc(0, 0, 10, -50, 50).replace("M", "M0,0 ") + " Z")
+      .attr("transform", `translate(${legendMargin + 6}, ${noDataBBox.y + 31})`)
+      .attr("stroke", "#adb5bd")
+      .attr("fill", "url(#tick-background)");
   }
 
   const credits = selection.append("g");

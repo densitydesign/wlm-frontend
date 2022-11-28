@@ -440,6 +440,7 @@ export {
   colors,
   collisionRadius,
   drawVentaglio,
+  describeArc,
   labelsDict,
   availableStatuses,
 };
