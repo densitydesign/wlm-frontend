@@ -14,7 +14,7 @@ const colors = {
   inContest: "#F8FF0E",
   photographed: "#22B8B4",
   interactive: "#FF004D",
-  withPicture: "#FF4F00",
+  withPicture: "#8e92e3",
   onWikidataOnly: "#C3C5C3",
 };
 
