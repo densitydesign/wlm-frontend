@@ -10,7 +10,6 @@ import ventaglioSvg from "./ventaglio.svg";
 
 export default class MapClass {
   constructor(element, params) {
-
     this.legendWidth = 130;
     this.initStrokeWidth = 1;
     this._x = 0;
@@ -21,12 +20,13 @@ export default class MapClass {
     this.lvl4 = params.lvl4;
     this.scaleRadius = d3.scalePow();
     this.bg_unknown_region_margin = 25;
+    this.legendMargin = convertRemToPixels(0.5);
 
     this.svg = d3.select(element);
     const bbox = this.svg.node().getBoundingClientRect();
     this.width = bbox.width - this.legendWidth;
     this.height = bbox.height;
-    this.legendMargin = convertRemToPixels(0.5);
+    
 
     this.bgRect = this.svg.select(".bgRect");
     if (this.bgRect.empty()) {
@@ -147,7 +147,7 @@ export default class MapClass {
         `translate(${d.x}, ${d.y}) scale(${
           1 / (k >= this.kLimit ? this.kLimit : k)
         })`
-    )
+    );
 
     this.region.attr("stroke-width", this.initStrokeWidth / k);
     this.province.attr("stroke-width", this.initStrokeWidth / k);
@@ -155,6 +155,12 @@ export default class MapClass {
   }
 
   update(params) {
+    console.log("Update Class");
+
+    const bbox = this.svg.node().getBoundingClientRect();
+    this.width = bbox.width - this.legendWidth;
+    this.height = bbox.height;
+
     const {
       lvl4,
       lvl6,
@@ -174,10 +180,15 @@ export default class MapClass {
     if (params.viewbox) {
       this.width = params.viewbox.width;
       this.height = params.viewbox.height;
-      this.svg.attr(
-        "viewBox",
-        `0 0 ${params.viewbox.width} ${params.viewbox.height}`
-      );
+      this.svg
+        .attr("width", params.viewbox.width)
+        .attr("height", params.viewbox.height)
+        .attr(
+          "viewBox",
+          `0 0 ${params.viewbox.width} ${params.viewbox.height}`
+        );
+    } else {
+      this.svg.attr("width", null).attr("height", null).attr("viewBox", null);
     }
 
     this.scaleRadius
@@ -361,6 +372,7 @@ export default class MapClass {
   }
 
   renderLegend(selection, params) {
+    console.log("render legend");
     const { timeStep, dateFrom, dateTo } = params;
     const legendBBox = selection.node().getBBox();
 

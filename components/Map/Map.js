@@ -71,7 +71,7 @@ export default function Map({
       timeStep,
     };
     mapInstance.current.update(params);
-  }, [data, lvl4, lvl6, lvl8]);
+  }, [data, lvl4, lvl6, lvl8, viewbox]);
 
   const svg_ns = {
     xmlns: "http://www.w3.org/2000/svg",

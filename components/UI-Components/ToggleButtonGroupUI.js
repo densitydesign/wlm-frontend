@@ -7,10 +7,22 @@ export default function ToggleButtonGroup({
   radios,
   radioValue,
   setRadioValue,
+  boldLabel
 }) {
   return (
-    <div className={classNames("d-flex","justify-content-start","align-items-center","mb-2")}>
-      {label && <span>{label}</span>}
+    <div
+      className={classNames(
+        "d-flex",
+        "justify-content-start",
+        "align-items-center",
+        "mb-2"
+      )}
+    >
+      {label && (
+        <span className={classNames({ [styles.boldLabel]: boldLabel })}>
+          {label}
+        </span>
+      )}
       <ButtonGroup className={classNames({ "ms-1": label })}>
         {radios.map((radio, idx) => (
           <ToggleButton
