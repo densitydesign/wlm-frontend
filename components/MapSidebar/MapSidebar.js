@@ -355,7 +355,6 @@ export default function MapSidebar({
             </>
           }
           onClickAction={() => setShow(true)}
-          disabled={true}
         />
         <Modal size="xl" centered show={show} onHide={() => setShow(false)}>
           <ExportTools closeFunct={() => setShow(false)} mapData={allStates} />

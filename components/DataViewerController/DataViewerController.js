@@ -16,7 +16,7 @@ import MapSidebar from "../MapSidebar/MapSidebar";
 import { DateTime } from "luxon";
 import NavMenu from "../NavMenu";
 import QuickLinks from "../QuickLinks/QuickLinks";
-import Map from "../Map/Map";
+import Map from "../Map";
 import { Fetching } from "../Fetching";
 import { cloneDeep as _cloneDeep } from "lodash";
 import { groups } from "d3";
@@ -487,15 +487,29 @@ export default function DataViewerController() {
         <Col className={classNames("h-100", "p-2")} lg={3}>
           <NavMenu />
           <QuickLinks />
-          <MapSidebar {...allStates} />
+          <MapSidebar {...allStates} data={_cloneDeep(allStates.data)}  />
         </Col>
         <Col
           className={classNames("h-100", "position-relative", "p-2", "ps-0")}
         >
-          {initialized && <Map {...allStates} />}
+          {initialized && <Map {...allStates} data={_cloneDeep(allStates.data)} />}
           {!initialized && <Fetching />}
         </Col>
       </Row>
+      {/* <Row>
+        <Col lg={4}
+          className={classNames("h-100", "position-relative", "p-2", "ps-0")}
+        >
+          {initialized && <Map {...allStates} data={_cloneDeep(allStates.data)} />}
+          {!initialized && <Fetching />}
+        </Col>
+        <Col lg={8}
+          className={classNames("h-100", "position-relative", "p-2", "ps-0")}
+        >
+          {initialized && <Map {...allStates} data={_cloneDeep(allStates.data)} />}
+          {!initialized && <Fetching />}
+        </Col>
+      </Row> */}
     </Container>
   );
 }

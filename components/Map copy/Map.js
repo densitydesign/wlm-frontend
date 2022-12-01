@@ -2,7 +2,6 @@ import styles from "./Map.module.scss";
 import classNames from "classnames";
 import { useRef, useEffect, useLayoutEffect } from "react";
 import { Fetching } from "../Fetching";
-import MapClass from "./Map.render";
 
 export default function Map({
   data,
@@ -22,13 +21,12 @@ export default function Map({
   timeStep,
   viewbox,
   isFetching,
-  filterData,
+	filterData
 }) {
   const svgEl = useRef();
-  const mapInstance = useRef();
 
-  useEffect(() => {
-    const params = {
+  useLayoutEffect(() => {
+    const data_for_viz = {
       data,
       lvl4,
       lvl6,
@@ -43,16 +41,16 @@ export default function Map({
       dateFrom,
       dateTo,
       viewbox,
-      filterData,
+			filterData
     };
     if (selectedProvince && lvl6.length === 0) {
       console.log("No render");
     }
-    mapInstance.current = new MapClass(svgEl.current, params);
+    // initialize(svgEl.current, data_for_viz);
   }, []);
 
-  useEffect(() => {
-    const params = {
+  useLayoutEffect(() => {
+    const data_for_viz = {
       data,
       lvl4,
       lvl6,
@@ -70,19 +68,17 @@ export default function Map({
       viewbox,
       timeStep,
     };
-    mapInstance.current.update(params);
+    // update(data_for_viz);
   }, [data, lvl4, lvl6, lvl8]);
 
   const svg_ns = {
     xmlns: "http://www.w3.org/2000/svg",
-    xmlnsXlink: "http://www.w3.org/1999/xlink",
+    "xmlnsXlink":"http://www.w3.org/1999/xlink",
     version: "1.1",
   };
 
   return (
-    <div
-      className={classNames(styles.map, "position-relative", "w-100", "h-100")}
-    >
+    <div className={classNames(styles.map, "position-relative", "w-100", "h-100")}>
       <svg {...svg_ns} ref={svgEl}>
         <linearGradient
           id="tick-background"

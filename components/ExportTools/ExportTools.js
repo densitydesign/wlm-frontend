@@ -2,7 +2,7 @@ import styles from "./ExportTools.module.scss";
 import { ButtonUI } from "../UI-Components";
 import { BsDownload, BsFillPlayFill, BsArrowRepeat, BsXLg as CloseIcon, BsDisplay, BsPhone } from "react-icons/bs";
 import classNames from "classnames";
-import { MapVentagli } from "../MapVentagli";
+import Map from "../Map";
 import { useEffect, useState } from "react";
 import Head from "next/head";
 export default function ExportTools({ closeFunct, mapData }) {
@@ -41,7 +41,7 @@ export default function ExportTools({ closeFunct, mapData }) {
 		<>
 			<div className={classNames(styles.exportTools, "d-flex", "flex-column", "align-items-center", "justify-content-between", "p-3")}>
 				<div className={classNames(styles.preview, { [styles.computer]: target === "computer" }, { [styles.mobile]: target === "mobile" }, "mb-3")}>
-					<MapVentagli key="export-map" {...mapData} viewbox={viewbox} />
+					<Map {...mapData} viewbox={viewbox} />
 				</div>
 
 				<div className={classNames("w-100", "d-flex", "flex-row", "justify-content-between")}>

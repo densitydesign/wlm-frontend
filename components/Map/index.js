@@ -1,4 +1,2 @@
-import MapVentagli from "./MapVentagli";
-import PlaceholderMapVentagli from "./PlaceholderMapVentagli";
-export default MapVentagli;
-export { MapVentagli, PlaceholderMapVentagli };
+import Map from "./Map";
+export default Map;
