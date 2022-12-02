@@ -21,6 +21,7 @@ export default function Map({
   showDelta,
   timeStep,
   viewbox,
+  overlay,
   isFetching,
   filterData,
 }) {
@@ -43,6 +44,7 @@ export default function Map({
       dateFrom,
       dateTo,
       viewbox,
+      overlay,
       filterData,
     };
     if (selectedProvince && lvl6.length === 0) {
@@ -68,6 +70,7 @@ export default function Map({
       dateTo,
       showDelta,
       viewbox,
+      overlay,
       timeStep,
     };
     mapInstance.current.update(params);

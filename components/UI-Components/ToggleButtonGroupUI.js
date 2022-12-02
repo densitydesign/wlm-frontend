@@ -7,11 +7,12 @@ export default function ToggleButtonGroup({
   radios,
   radioValue,
   setRadioValue,
-  boldLabel
+  boldLabel,
 }) {
   return (
     <div
       className={classNames(
+        styles.toggleButtonGroup,
         "d-flex",
         "justify-content-start",
         "align-items-center",
@@ -35,7 +36,9 @@ export default function ToggleButtonGroup({
             value={radio.value}
             checked={radioValue === radio.value}
             onChange={(e) => setRadioValue(e.currentTarget.value)}
-            className={classNames(styles.toggleButton)}
+            className={classNames(styles.toggleButton, {
+              [styles.checked]: radioValue === radio.value,
+            })}
             disabled={radio.disabled}
           >
             {radio.label}

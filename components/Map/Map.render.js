@@ -10,7 +10,8 @@ import ventaglioSvg from "./ventaglio.svg";
 
 export default class MapClass {
   constructor(element, params) {
-    this.legendWidth = 130;
+    this.legendWidth = 0;
+    this.legendHeight = 0;
     this.initStrokeWidth = 1;
     this._x = 0;
     this._y = 0;
@@ -23,10 +24,6 @@ export default class MapClass {
     this.legendMargin = convertRemToPixels(0.5);
 
     this.svg = d3.select(element);
-    const bbox = this.svg.node().getBoundingClientRect();
-    this.width = bbox.width - this.legendWidth;
-    this.height = bbox.height;
-    
 
     this.bgRect = this.svg.select(".bgRect");
     if (this.bgRect.empty()) {
@@ -48,8 +45,7 @@ export default class MapClass {
       this.g_legend = this.svg
         .append("g")
         .classed("g_legend", true)
-        .attr("id", "map")
-        .attr("transform", `translate(${this.width} 0)`);
+        .attr("id", "map");
     }
 
     this.g_geographies = this.g.select(".g_geographies");
@@ -99,7 +95,95 @@ export default class MapClass {
         .classed("g_ventagli", true)
         .attr("id", "ventagli");
     }
+
     this.ventaglio = this.g_ventagli.selectAll(".ventaglio");
+
+    this.update(params);
+  }
+
+  zoomed(transform) {
+    this.g.attr("transform", transform);
+    const { x, y, k } = transform;
+    this._x = x;
+    this._y = y;
+    this._k = k;
+
+    this.ventaglio.attr(
+      "transform",
+      (d) =>
+        `translate(${d.x}, ${d.y}) scale(${
+          1 / (k >= this.kLimit ? this.kLimit : k)
+        })`
+    );
+
+    this.region.attr("stroke-width", this.initStrokeWidth / k);
+    this.province.attr("stroke-width", this.initStrokeWidth / k);
+    this.municipality.attr("stroke-width", this.initStrokeWidth / k);
+  }
+
+  update(params) {
+    const {
+      lvl4,
+      lvl6,
+      lvl8,
+      selectedRegion,
+      selectedProvince,
+      selectedMunicipality,
+      setSelectedRegion,
+      setSelectedProvince,
+      setSelectedMunicipality,
+      showDelta,
+      timeStep,
+    } = params;
+    let data = params.data.ventagliData.data;
+    const extent = params.data.ventagliData.extent;
+
+    this.legendWidth = 0;
+    this.legendHeight = 0;
+
+    if (params.viewbox && params.overlay) {
+      if (params.overlay.label === "clean") {
+        this.legendWidth = 0;
+        this.legendHeight = 0;
+      } else {
+        if (params.viewbox?.value === "desktop") {
+          this.legendWidth = 130 + this.legendMargin;
+          this.legendHeight = 0;
+        } else if (params.viewbox?.value === "mobile") {
+          this.legendWidth = 0;
+          if (params.overlay.label === "compact") {
+            this.legendHeight = 60;
+          } else if (params.overlay.label === "complete") {
+            this.legendHeight = 120;
+          }
+        }
+      }
+    } else {
+      this.legendWidth = 130 + this.legendMargin;
+    }
+
+    if (params.viewbox && params.overlay) {
+      this.width = params.viewbox.width - this.legendWidth;
+      this.height = params.viewbox.height - this.legendHeight;
+      this.svg.attr(
+        "viewBox",
+        `0 0 ${params.viewbox.width} ${params.viewbox.height}`
+      );
+    } else {
+      const bbox = this.svg.node().getBoundingClientRect();
+      this.width = bbox.width - this.legendWidth;
+      this.height = bbox.height - this.legendHeight;
+      this.svg.attr("width", null).attr("height", null).attr("viewBox", null);
+    }
+
+    if (params.viewbox?.value === "mobile") {
+      this.g_legend.attr(
+        "transform",
+        `translate(${0} ${this.height})`
+      );
+    } else {
+      this.g_legend.attr("transform", `translate(${this.width} 0)`);
+    }
 
     this.projection = d3.geoMercator().fitSize([this.width, this.height], {
       type: "FeatureCollection",
@@ -130,66 +214,6 @@ export default class MapClass {
       .on("touchmove.zoom", null)
       .on("touchend.zoom", null)
       .on("touchcancel.zoom", null);
-
-    this.update(params);
-  }
-
-  zoomed(transform) {
-    this.g.attr("transform", transform);
-    const { x, y, k } = transform;
-    this._x = x;
-    this._y = y;
-    this._k = k;
-
-    this.ventaglio.attr(
-      "transform",
-      (d) =>
-        `translate(${d.x}, ${d.y}) scale(${
-          1 / (k >= this.kLimit ? this.kLimit : k)
-        })`
-    );
-
-    this.region.attr("stroke-width", this.initStrokeWidth / k);
-    this.province.attr("stroke-width", this.initStrokeWidth / k);
-    this.municipality.attr("stroke-width", this.initStrokeWidth / k);
-  }
-
-  update(params) {
-    console.log("Update Class");
-
-    const bbox = this.svg.node().getBoundingClientRect();
-    this.width = bbox.width - this.legendWidth;
-    this.height = bbox.height;
-
-    const {
-      lvl4,
-      lvl6,
-      lvl8,
-      selectedRegion,
-      selectedProvince,
-      selectedMunicipality,
-      setSelectedRegion,
-      setSelectedProvince,
-      setSelectedMunicipality,
-      showDelta,
-      timeStep,
-    } = params;
-    let data = params.data.ventagliData.data;
-    const extent = params.data.ventagliData.extent;
-
-    if (params.viewbox) {
-      this.width = params.viewbox.width;
-      this.height = params.viewbox.height;
-      this.svg
-        .attr("width", params.viewbox.width)
-        .attr("height", params.viewbox.height)
-        .attr(
-          "viewBox",
-          `0 0 ${params.viewbox.width} ${params.viewbox.height}`
-        );
-    } else {
-      this.svg.attr("width", null).attr("height", null).attr("viewBox", null);
-    }
 
     this.scaleRadius
       .exponent(1 / 2)
@@ -372,269 +396,348 @@ export default class MapClass {
   }
 
   renderLegend(selection, params) {
-    console.log("render legend");
-    const { timeStep, dateFrom, dateTo } = params;
+    console.log(this.legendWidth, this.legendHeight);
+    const { timeStep, dateFrom, dateTo, viewbox, overlay } = params;
     const legendBBox = selection.node().getBBox();
 
     selection.selectAll("*").remove();
 
-    selection
-      .append("rect")
-      .attr("width", this.legendWidth)
-      .attr("height", this.height)
-      .attr("fill", "#fff");
+    if (overlay?.label === "clean") {
+      const simple_credits = selection
+        .append("g")
+        .attr(
+          "transform",
+          `translate(${-this.width + this.legendMargin}, ${
+            this.height - 3 * this.legendMargin
+          })`
+        );
+      simple_credits
+        .append("image")
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr(
+          "href",
+          "https://mirrors.creativecommons.org/presskit/icons/cc.svg"
+        );
+      simple_credits
+        .append("image")
+        .attr("x", 20)
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr(
+          "href",
+          "https://mirrors.creativecommons.org/presskit/icons/by.svg"
+        );
 
-    const howToRead = selection
-      .append("text")
-      .attr("font-size", 11)
-      .attr(
-        "transform",
-        `translate(${this.legendMargin}, ${this.legendMargin + 10})`
-      );
+      const sc_text = simple_credits
+        .append("text")
+        .attr("transform", () => {
+          if (viewbox?.value === "desktop") {
+            return "translate(44, 4)";
+          } else {
+            return "translate(42, 4)";
+          }
+        })
+        .attr("font-size", 10);
 
-    howToRead.append("tspan").attr("font-weight", "600").text("How to read:");
-    howToRead
-      .append("tspan")
-      .attr("x", 0)
-      .attr("dy", 14)
-      .text("Each fan is a timeline");
+      sc_text
+        .append("tspan")
+        .text(
+          "Work by DensityDesign (Politecnico di Milano) & Wikimedia Italia."
+        );
 
-    howToRead.append("tspan").attr("x", 0).attr("dy", 28).text("from");
-    howToRead
-      .append("tspan")
-      .attr("font-size", 10)
-      .attr("x", 0)
-      .attr("dy", 14)
-      .attr("fill", "#0978AB")
-      .attr("font-weight", "600")
-      .text(dateFrom);
-
-    howToRead
-      .append("tspan")
-      .attr("x", this.legendWidth - this.legendMargin)
-      .attr("dy", -14)
-      .attr("text-anchor", "end")
-      .text("to");
-    howToRead
-      .append("tspan")
-      .attr("font-size", 10)
-      .attr("x", this.legendWidth - this.legendMargin)
-      .attr("dy", 14)
-      .attr("text-anchor", "end")
-      .attr("fill", "#0978AB")
-      .attr("font-weight", "600")
-      .text(dateTo);
-
-    const ventaglio = selection
-      .append("g")
-      .attr(
-        "transform",
-        `translate(${(this.legendWidth - 110) / 2 + this.legendMargin},80)`
-      );
-    d3.svg(ventaglioSvg.src).then((document) => {
-      const graphics = d3.select(document).select("svg").html();
-      ventaglio.html(graphics);
-    });
-
-    howToRead
-      .append("tspan")
-      .attr("x", (this.legendWidth - this.legendMargin) / 2)
-      .attr("dy", 82)
-      .attr("text-anchor", "middle")
-      .text("Each slice is ");
-
-    howToRead
-      .append("tspan")
-      .attr("fill", "#0978AB")
-      .attr("font-weight", "600")
-      .text(timeStep?.toUpperCase());
-
-    howToRead
-      .append("tspan")
-      .attr("x", 0)
-      .attr("dy", 48)
-      .text("Size is the number");
-    howToRead.append("tspan").attr("x", 0).attr("dy", 14).text("of monuments");
-
-    let areaType, areaName;
-    if (params.selectedMunicipality) {
-      areaType = "municipality";
-      areaName = params.selectedMunicipality.label;
-    } else if (params.selectedProvince) {
-      areaType = "province";
-      areaName = params.selectedProvince.label;
-    } else if (params.selectedRegion) {
-      areaType = "region";
-      areaName = params.selectedRegion.label;
-    } else {
-      areaName = "Italy";
+      sc_text
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", 12)
+        .text("License: Creative Commons Attribution 4.0 International.");
     }
 
-    howToRead
-      .append("tspan")
-      .attr("x", 0)
-      .attr("dy", 28)
-      .attr("font-weight", "600")
-      .text("Status and count");
-    howToRead
-      .append("tspan")
-      .attr("x", 0)
-      .attr("dy", 14)
-      .attr("font-weight", "600")
-      .text("of monuments");
-    if (areaType) {
+    if (
+      (!viewbox && !overlay) ||
+      (viewbox?.value === "desktop" && overlay.label !== "clean")
+    ) {
+      selection
+        .append("rect")
+        .attr("width", this.legendWidth)
+        .attr("height", this.height)
+        .attr("fill", "#fff");
+
+      const howToRead = selection
+        .append("text")
+        .attr("font-size", 11)
+        .attr(
+          "transform",
+          `translate(${this.legendMargin}, ${this.legendMargin + 10})`
+        );
+
+      howToRead.append("tspan").attr("font-weight", "600").text("How to read:");
+      howToRead
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", 14)
+        .text("Each fan is a timeline");
+
+      howToRead.append("tspan").attr("x", 0).attr("dy", 28).text("from");
+      howToRead
+        .append("tspan")
+        .attr("font-size", 10)
+        .attr("x", 0)
+        .attr("dy", 14)
+        .attr("fill", "#0978AB")
+        .attr("font-weight", "600")
+        .text(dateFrom);
+
+      howToRead
+        .append("tspan")
+        .attr("x", this.legendWidth - 2 * this.legendMargin)
+        .attr("dy", -14)
+        .attr("text-anchor", "end")
+        .text("to");
+      howToRead
+        .append("tspan")
+        .attr("font-size", 10)
+        .attr("x", this.legendWidth - 2 * this.legendMargin)
+        .attr("dy", 14)
+        .attr("text-anchor", "end")
+        .attr("fill", "#0978AB")
+        .attr("font-weight", "600")
+        .text(dateTo);
+
+      if ((!viewbox && !overlay) || overlay?.label === "complete") {
+        const ventaglio = selection
+          .append("g")
+          .attr(
+            "transform",
+            `translate(${(this.legendWidth - 110) / 2 + this.legendMargin},80)`
+          );
+        d3.svg(ventaglioSvg.src).then((document) => {
+          const graphics = d3.select(document).select("svg").html();
+          ventaglio.html(graphics);
+        });
+
+        howToRead
+          .append("tspan")
+          .attr("x", (this.legendWidth - this.legendMargin) / 2)
+          .attr("dy", 82)
+          .attr("text-anchor", "middle")
+          .text("Each slice is ");
+
+        howToRead
+          .append("tspan")
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text(timeStep?.toUpperCase());
+
+        howToRead
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", 48)
+          .text("Size is the number");
+        howToRead
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", 14)
+          .text("of monuments");
+      }
+
+      let areaType, areaName;
+      if (params.selectedMunicipality) {
+        areaType = "municipality";
+        areaName = params.selectedMunicipality.label;
+      } else if (params.selectedProvince) {
+        areaType = "province";
+        areaName = params.selectedProvince.label;
+      } else if (params.selectedRegion) {
+        areaType = "region";
+        areaName = params.selectedRegion.label;
+      } else {
+        areaName = "Italy";
+      }
+
+      howToRead
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", 28)
+        .attr("font-weight", "600")
+        .text("Status and count");
+      howToRead
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", 14)
+        .attr("font-weight", "600")
+        .text("of monuments");
+      if (areaType) {
+        howToRead
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", 14)
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text("in the " + areaType);
+      }
       howToRead
         .append("tspan")
         .attr("x", 0)
         .attr("dy", 14)
         .attr("fill", "#0978AB")
         .attr("font-weight", "600")
-        .text("in the " + areaType);
-    }
-    howToRead
-      .append("tspan")
-      .attr("x", 0)
-      .attr("dy", 14)
-      .attr("fill", "#0978AB")
-      .attr("font-weight", "600")
-      .text("of " + areaName);
-    howToRead
-      .append("tspan")
-      .attr("x", 0)
-      .attr("dy", 7)
-      .attr("font-size", 1)
-      .text(" ");
-
-    const history = params.data.parentData?.data[0].history;
-    if (history) {
-      history[0].groups.forEach((group) => {
-        const min = history[0].groups.find(
-          (g) => g.label === group.label
-        ).value;
-        const max = history[history.length - 1].groups.find(
-          (g) => g.label === group.label
-        ).value;
-
-        const superSpan = howToRead
-          .append("tspan")
-          .attr("x", 21)
-          .attr("dy", 14);
-
-        if (!params.showDelta)
-          superSpan
-            .append("tspan")
-            .attr("x", 21)
-            .attr("dy", 14)
-            .text(d3.format("~s")(max));
-        superSpan
-          .append("tspan")
-          .attr("font-weight", "600")
-          .text(labelsDict[group.label].explained)
-          .call(wrap, this.legendWidth - this.legendMargin - 21, 21, 14, 0);
-        superSpan
-          .append("tspan")
-          .attr("x", 21)
-          .attr("dy", 14)
-          .text(`(+${d3.format("~s")(max - min)} new)`);
-        superSpan
-          .append("tspan")
-          .attr("x", 0)
-          .attr("dy", 7)
-          .attr("font-size", 1)
-          .text(" ");
-
-        const bbox = superSpan.node().getBBox();
-
-        selection
-          .append("rect")
-          .attr("fill", colors[group.label])
-          .attr("x", this.legendMargin)
-          .attr("y", bbox.y + 21)
-          .attr("width", 16)
-          .attr("height", 16)
-          .attr("rx", 3);
-      });
-
-      const minimized = howToRead
-        .append("tspan")
-        .text(
-          "Minimized fans to reduce clutter. Color is the most recurrent status."
-        )
-        .call(wrap, this.legendWidth - this.legendMargin - 21, 21, 14, 14);
-      const minimizedbbox = minimized.node().getBBox();
-      history[0].groups.forEach((group, i) => {
-        selection
-          .append("circle")
-          .attr("r", 4)
-          .attr("cx", this.legendMargin + 7)
-          .attr("cy", minimizedbbox.y + 28 + i * 14)
-          .attr("fill", colors[group.label])
-          .attr("stroke", d3.color(colors[group.label]).darker(1));
-      });
-    }
-
-    if (params.showDelta) {
+        .text("of " + areaName);
       howToRead
         .append("tspan")
         .attr("x", 0)
         .attr("dy", 7)
         .attr("font-size", 1)
         .text(" ");
-      const noData = howToRead
-        .append("tspan")
-        .attr("x", 21)
-        .attr("dy", 14)
-        .text("No data to display");
 
-      const noDataBBox = noData.node().getBBox();
+      if ((!viewbox && !overlay) || overlay?.label === "complete") {
+        const history = params.data.parentData?.data[0].history;
+        if (history) {
+          history[0].groups.forEach((group) => {
+            const min = history[0].groups.find(
+              (g) => g.label === group.label
+            ).value;
+            const max = history[history.length - 1].groups.find(
+              (g) => g.label === group.label
+            ).value;
 
-      selection
-        .append("path")
-        .attr("d", describeArc(0, 0, 10, -50, 50).replace("M", "M0,0 ") + " Z")
+            const superSpan = howToRead
+              .append("tspan")
+              .attr("x", 21)
+              .attr("dy", 14);
+
+            if (!params.showDelta)
+              superSpan
+                .append("tspan")
+                .attr("x", 21)
+                .attr("dy", 14)
+                .text(d3.format("~s")(max));
+            superSpan
+              .append("tspan")
+              .attr("font-weight", "600")
+              .text(labelsDict[group.label].explained)
+              .call(wrap, this.legendWidth - this.legendMargin - 21, 21, 14, 0);
+            superSpan
+              .append("tspan")
+              .attr("x", 21)
+              .attr("dy", 14)
+              .text(`(+${d3.format("~s")(max - min)} new)`);
+            superSpan
+              .append("tspan")
+              .attr("x", 0)
+              .attr("dy", 7)
+              .attr("font-size", 1)
+              .text(" ");
+
+            const bbox = superSpan.node().getBBox();
+
+            selection
+              .append("rect")
+              .attr("fill", colors[group.label])
+              .attr("x", this.legendMargin)
+              .attr("y", bbox.y + 21)
+              .attr("width", 16)
+              .attr("height", 16)
+              .attr("rx", 3);
+          });
+
+          const minimized = howToRead
+            .append("tspan")
+            .text(
+              "Minimized fans to reduce clutter. Color is the most recurrent status."
+            )
+            .call(
+              wrap,
+              this.legendWidth - 2 * this.legendMargin - 21,
+              21,
+              14,
+              14
+            );
+          const minimizedbbox = minimized.node().getBBox();
+          history[0].groups.forEach((group, i) => {
+            selection
+              .append("circle")
+              .attr("r", 4)
+              .attr("cx", this.legendMargin + 7)
+              .attr("cy", minimizedbbox.y + 28 + i * 14)
+              .attr("fill", colors[group.label])
+              .attr("stroke", d3.color(colors[group.label]).darker(1));
+          });
+        }
+      }
+
+      if (params.showDelta) {
+        howToRead
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", 7)
+          .attr("font-size", 1)
+          .text(" ");
+        const noData = howToRead
+          .append("tspan")
+          .attr("x", 21)
+          .attr("dy", 14)
+          .text("No data to display");
+
+        const noDataBBox = noData.node().getBBox();
+
+        selection
+          .append("path")
+          .attr(
+            "d",
+            describeArc(0, 0, 10, -50, 50).replace("M", "M0,0 ") + " Z"
+          )
+          .attr(
+            "transform",
+            `translate(${legendMargin + 6}, ${noDataBBox.y + 31})`
+          )
+          .attr("stroke", "#adb5bd")
+          .attr("fill", "url(#tick-background)");
+      }
+
+      const credits = selection.append("g");
+      credits
+        .append("image")
+        .attr("width", 15)
+        .attr("height", 15)
         .attr(
-          "transform",
-          `translate(${legendMargin + 6}, ${noDataBBox.y + 31})`
+          "href",
+          "https://mirrors.creativecommons.org/presskit/icons/cc.svg"
+        );
+      credits
+        .append("image")
+        .attr("x", 20)
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr(
+          "href",
+          "https://mirrors.creativecommons.org/presskit/icons/by.svg"
+        );
+
+      credits
+        .append("text")
+        .attr("transform", "translate(0, 0)")
+        .attr("x", 50)
+        .attr("font-size", 10)
+        .text(
+          "Work by DensityDesign (Politecnico di Milano) & Wikimedia Italia. License: Creative Commons Attribution 4.0 International."
         )
-        .attr("stroke", "#adb5bd")
-        .attr("fill", "url(#tick-background)");
+        .call(wrap, this.legendWidth - this.legendMargin);
+
+      const creditsbbox = credits.node().getBBox();
+      credits.attr(
+        "transform",
+        `translate(${this.legendMargin}, ${
+          this.height - creditsbbox.height - this.legendMargin
+        })`
+      );
+    } else if (viewbox?.value === "mobile" && overlay.label !== "clean") {
+      selection
+        .append("rect")
+        .attr("width", this.width)
+        .attr("height", this.legendHeight)
+        .attr("fill", "#fff");
     }
-
-    const credits = selection.append("g");
-    credits
-      .append("image")
-      .attr("width", 15)
-      .attr("height", 15)
-      .attr(
-        "href",
-        "https://mirrors.creativecommons.org/presskit/icons/cc.svg"
-      );
-    credits
-      .append("image")
-      .attr("x", 20)
-      .attr("width", 15)
-      .attr("height", 15)
-      .attr(
-        "href",
-        "https://mirrors.creativecommons.org/presskit/icons/by.svg"
-      );
-
-    credits
-      .append("text")
-      .attr("transform", "translate(0, 0)")
-      .attr("x", 50)
-      .attr("font-size", 10)
-      .text(
-        "Work by DensityDesign (Politecnico di Milano) & Wikimedia Italia. License: Creative Commons Attribution 4.0 International."
-      )
-      .call(wrap, this.legendWidth - this.legendMargin);
-
-    const creditsbbox = credits.node().getBBox();
-    credits.attr(
-      "transform",
-      `translate(${this.legendMargin}, ${
-        this.height - creditsbbox.height - this.legendMargin
-      })`
-    );
   }
 
   zoomToArea(d) {

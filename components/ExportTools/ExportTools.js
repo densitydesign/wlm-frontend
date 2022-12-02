@@ -13,19 +13,34 @@ import Map from "../Map";
 import { useEffect, useState } from "react";
 import Head from "next/head";
 export default function ExportTools({ closeFunct, mapData }) {
-  const dimensions = {
-    mobile: {
+  const viewboxes = [
+    {
+      label: <BsPhone />,
+      value: "mobile",
       width: 400,
       height: 500,
     },
-    computer: {
+    {
+      label: <BsDisplay />,
+      value: "desktop",
       width: 1280,
       height: 720,
     },
-  };
+  ];
+  const overlays = [
+    {
+      label: "complete",
+    },
+    {
+      label: "compact",
+    },
+    {
+      label: "clean",
+    },
+  ];
 
-  const [target, setTarget] = useState("mobile");
-  const [viewbox, setViewBox] = useState(dimensions["mobile"]);
+  const [viewbox, setViewbox] = useState(viewboxes[0].value);
+  const [overlay, setOverlay] = useState(overlays[0]);
 
   const downloadSvg = () => {
     console.log("download svg");
@@ -59,17 +74,6 @@ export default function ExportTools({ closeFunct, mapData }) {
           "p-3"
         )}
       >
-        {/* <div
-          className={classNames(
-            styles.preview,
-            { [styles.computer]: target === "computer" },
-            { [styles.mobile]: target === "mobile" },
-            "mb-3"
-          )}
-        >
-          <Map {...mapData} viewbox={viewbox} />
-        </div> */}
-
         <div
           className={classNames(
             "w-100",
@@ -78,36 +82,29 @@ export default function ExportTools({ closeFunct, mapData }) {
             "justify-content-between"
           )}
         >
-          <span
-            className={classNames(
-              "d-flex",
-              "flex-row",
-            )}
-          >
+          <span className={classNames("d-flex", "flex-row")}>
             <ButtonUI content={<CloseIcon />} onClickAction={closeFunct} />
           </span>
-          <span
-            className={classNames(
-              "d-flex",
-              "flex-row",
-            )}
-          >
-            <ToggleButtonGroupUI label="Format" boldLabel={true} />
+          <span className={classNames("d-flex", "flex-row")}>
+            <ToggleButtonGroupUI
+              label="Format"
+              boldLabel={true}
+              radios={viewboxes}
+              radioValue={viewbox}
+              setRadioValue={(value) => setViewbox(value)}
+            />
           </span>
-          <span
-            className={classNames(
-              "d-flex",
-              "flex-row",
-            )}
-          >
-            <DropdownUI label="Overlay" boldLabel={true} />
+          <span className={classNames("d-flex", "flex-row")}>
+            <DropdownUI
+              label="Overlay"
+              boldLabel={true}
+              items={overlays}
+              value={overlay}
+              setValue={setOverlay}
+              hideReset
+            />
           </span>
-          <span
-            className={classNames(
-              "d-flex",
-              "flex-row",
-            )}
-          >
+          <span className={classNames("d-flex", "flex-row")}>
             <ButtonUI
               label="Save SVG"
               boldLabel={true}
@@ -115,6 +112,20 @@ export default function ExportTools({ closeFunct, mapData }) {
               onClickAction={downloadSvg}
             />
           </span>
+        </div>
+        <div
+          className={classNames(
+            styles.preview,
+            // { [styles.computer]: viewbox === "computer" },
+            // { [styles.mobile]: viewbox === "mobile" },
+            "mb-3"
+          )}
+        >
+          <Map
+            {...mapData}
+            viewbox={viewboxes.find((v) => v.value === viewbox)}
+            overlay={overlay}
+          />
         </div>
       </div>
     </>

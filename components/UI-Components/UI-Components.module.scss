@@ -45,9 +45,15 @@
     opacity: 0.5;
   }
 }
-
-.toggleButton {
-  flex-grow: 0 !important;
+.toggleButtonGroup {
+  .toggleButton {
+    flex-grow: 0 !important;
+    background-color: #dcdcdc;
+    border-color: #dcdcdc;
+    // .checked {
+    //   background-color: red;
+    // }
+  }
 }
 
 .boldLabel {

@@ -96,7 +96,7 @@ export default function DropdownUI({
 DropdownUI.defaultProps = {
   setValue: (value) =>
     console.warn(
-      "No function specified for rtansferring the selection to parent. Value:",
+      "No function specified for transferring the selection to parent. Value:",
       value
     ),
   defaultLabel: "Select an item",

@@ -490,7 +490,7 @@ export default function DataViewerController() {
           <MapSidebar {...allStates} data={_cloneDeep(allStates.data)}  />
         </Col>
         <Col
-          className={classNames("h-100", "position-relative", "p-2", "ps-0")}
+          className={classNames("h-100", "position-relative", "p-2", "px-0")}
         >
           {initialized && <Map {...allStates} data={_cloneDeep(allStates.data)} />}
           {!initialized && <Fetching />}
