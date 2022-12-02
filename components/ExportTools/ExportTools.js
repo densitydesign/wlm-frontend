@@ -38,19 +38,29 @@ export default function ExportTools({ closeFunct, mapData }) {
       label: "clean",
     },
   ];
+  const formats = [
+    {
+      label: ".svg",
+    },
+    {
+      label: ".png",
+    },
+  ];
 
   const [viewbox, setViewbox] = useState(viewboxes[0].value);
   const [overlay, setOverlay] = useState(overlays[0]);
+  const [format, setFormat] = useState(formats[1]);
 
   const downloadSvg = () => {
     console.log("download svg");
     const filename = "WLM.svg";
-    const text = document.querySelector(`.${styles.exportTools} svg`).outerHTML;
+    const svg = document.querySelector(`.${styles.exportTools} .ventagli-map`);
+    const svgtext = svg.outerHTML;
 
     var element = document.createElement("a");
     element.setAttribute(
       "href",
-      "data:text/svg;charset=utf-8," + encodeURIComponent(text)
+      "data:text/svg;charset=utf-8," + encodeURIComponent(svgtext)
     );
     element.setAttribute("download", filename);
 
@@ -60,6 +70,18 @@ export default function ExportTools({ closeFunct, mapData }) {
     element.click();
 
     document.body.removeChild(element);
+  };
+
+  const downloadPng = () => {
+    console.log("PNGGGGGG");
+  };
+
+  const download = () => {
+    if (format.label === ".svg") {
+      downloadSvg();
+    } else {
+      downloadPng();
+    }
   };
 
   return (
@@ -105,11 +127,21 @@ export default function ExportTools({ closeFunct, mapData }) {
             />
           </span>
           <span className={classNames("d-flex", "flex-row")}>
+            <DropdownUI
+              label="Format"
+              boldLabel={true}
+              items={formats}
+              value={format}
+              setValue={setFormat}
+              hideReset
+            />
+          </span>
+          <span className={classNames("d-flex", "flex-row")}>
             <ButtonUI
-              label="Save SVG"
+              label="Save"
               boldLabel={true}
               content={<BsDownload />}
-              onClickAction={downloadSvg}
+              onClickAction={download}
             />
           </span>
         </div>

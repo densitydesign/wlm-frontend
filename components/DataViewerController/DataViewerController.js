@@ -496,20 +496,6 @@ export default function DataViewerController() {
           {!initialized && <Fetching />}
         </Col>
       </Row>
-      {/* <Row>
-        <Col lg={4}
-          className={classNames("h-100", "position-relative", "p-2", "ps-0")}
-        >
-          {initialized && <Map {...allStates} data={_cloneDeep(allStates.data)} />}
-          {!initialized && <Fetching />}
-        </Col>
-        <Col lg={8}
-          className={classNames("h-100", "position-relative", "p-2", "ps-0")}
-        >
-          {initialized && <Map {...allStates} data={_cloneDeep(allStates.data)} />}
-          {!initialized && <Fetching />}
-        </Col>
-      </Row> */}
     </Container>
   );
 }

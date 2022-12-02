@@ -86,7 +86,7 @@ export default function Map({
     <div
       className={classNames(styles.map, "position-relative", "w-100", "h-100")}
     >
-      <svg {...svg_ns} ref={svgEl}>
+      <svg className="ventagli-map" {...svg_ns} ref={svgEl}>
         <linearGradient
           id="tick-background"
           x1="50%"

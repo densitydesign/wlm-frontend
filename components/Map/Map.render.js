@@ -147,7 +147,7 @@ export default class MapClass {
         this.legendHeight = 0;
       } else {
         if (params.viewbox?.value === "desktop") {
-          this.legendWidth = 130 + this.legendMargin;
+          this.legendWidth = 130 + 2 * this.legendMargin;
           this.legendHeight = 0;
         } else if (params.viewbox?.value === "mobile") {
           this.legendWidth = 0;
@@ -159,7 +159,7 @@ export default class MapClass {
         }
       }
     } else {
-      this.legendWidth = 130 + this.legendMargin;
+      this.legendWidth = 130 + 2 * this.legendMargin;
     }
 
     if (params.viewbox && params.overlay) {
@@ -177,10 +177,7 @@ export default class MapClass {
     }
 
     if (params.viewbox?.value === "mobile") {
-      this.g_legend.attr(
-        "transform",
-        `translate(${0} ${this.height})`
-      );
+      this.g_legend.attr("transform", `translate(${0} ${this.height})`);
     } else {
       this.g_legend.attr("transform", `translate(${this.width} 0)`);
     }
@@ -396,7 +393,6 @@ export default class MapClass {
   }
 
   renderLegend(selection, params) {
-    console.log(this.legendWidth, this.legendHeight);
     const { timeStep, dateFrom, dateTo, viewbox, overlay } = params;
     const legendBBox = selection.node().getBBox();
 
