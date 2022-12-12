@@ -7,6 +7,7 @@ import {
   describeArc,
 } from "../../utils/ventagli.utils";
 import ventaglioSvg from "./ventaglio.svg";
+import ventaglioSmallSvg from "./ventaglioSmall.svg";
 
 export default class MapClass {
   constructor(element, params) {
@@ -396,57 +397,22 @@ export default class MapClass {
     const { timeStep, dateFrom, dateTo, viewbox, overlay } = params;
     const legendBBox = selection.node().getBBox();
 
+    console.log(this.legendWidth);
+
     selection.selectAll("*").remove();
+    let howToRead, howToRead2, ventaglio, areaType, areaName;
 
-    if (overlay?.label === "clean") {
-      const simple_credits = selection
-        .append("g")
-        .attr(
-          "transform",
-          `translate(${-this.width + this.legendMargin}, ${
-            this.height - 3 * this.legendMargin
-          })`
-        );
-      simple_credits
-        .append("image")
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr(
-          "href",
-          "https://mirrors.creativecommons.org/presskit/icons/cc.svg"
-        );
-      simple_credits
-        .append("image")
-        .attr("x", 20)
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr(
-          "href",
-          "https://mirrors.creativecommons.org/presskit/icons/by.svg"
-        );
-
-      const sc_text = simple_credits
-        .append("text")
-        .attr("transform", () => {
-          if (viewbox?.value === "desktop") {
-            return "translate(44, 4)";
-          } else {
-            return "translate(42, 4)";
-          }
-        })
-        .attr("font-size", 10);
-
-      sc_text
-        .append("tspan")
-        .text(
-          "Work by DensityDesign (Politecnico di Milano) & Wikimedia Italia."
-        );
-
-      sc_text
-        .append("tspan")
-        .attr("x", 0)
-        .attr("dy", 12)
-        .text("License: Creative Commons Attribution 4.0 International.");
+    if (params.selectedMunicipality) {
+      areaType = "municipality";
+      areaName = params.selectedMunicipality.label;
+    } else if (params.selectedProvince) {
+      areaType = "province";
+      areaName = params.selectedProvince.label;
+    } else if (params.selectedRegion) {
+      areaType = "region";
+      areaName = params.selectedRegion.label;
+    } else {
+      areaName = "Italy";
     }
 
     if (
@@ -459,7 +425,7 @@ export default class MapClass {
         .attr("height", this.height)
         .attr("fill", "#fff");
 
-      const howToRead = selection
+      howToRead = selection
         .append("text")
         .attr("font-size", 11)
         .attr(
@@ -501,7 +467,7 @@ export default class MapClass {
         .text(dateTo);
 
       if ((!viewbox && !overlay) || overlay?.label === "complete") {
-        const ventaglio = selection
+        ventaglio = selection
           .append("g")
           .attr(
             "transform",
@@ -535,20 +501,6 @@ export default class MapClass {
           .attr("x", 0)
           .attr("dy", 14)
           .text("of monuments");
-      }
-
-      let areaType, areaName;
-      if (params.selectedMunicipality) {
-        areaType = "municipality";
-        areaName = params.selectedMunicipality.label;
-      } else if (params.selectedProvince) {
-        areaType = "province";
-        areaName = params.selectedProvince.label;
-      } else if (params.selectedRegion) {
-        areaType = "region";
-        areaName = params.selectedRegion.label;
-      } else {
-        areaName = "Italy";
       }
 
       howToRead
@@ -685,7 +637,7 @@ export default class MapClass {
           )
           .attr(
             "transform",
-            `translate(${legendMargin + 6}, ${noDataBBox.y + 31})`
+            `translate(${this.legendMargin + 6}, ${noDataBBox.y + 31})`
           )
           .attr("stroke", "#adb5bd")
           .attr("fill", "url(#tick-background)");
@@ -733,6 +685,231 @@ export default class MapClass {
         .attr("width", this.width)
         .attr("height", this.legendHeight)
         .attr("fill", "#fff");
+
+      howToRead = selection
+        .append("text")
+        .attr("font-size", 11)
+        .attr(
+          "transform",
+          `translate(${this.legendMargin}, ${this.legendMargin + 10})`
+        );
+      howToRead2 = selection
+        .append("text")
+        .attr("font-size", 9)
+        .attr(
+          "transform",
+          `translate(${this.width / 2}, ${this.legendMargin + 26})`
+        );
+      howToRead
+        .append("tspan")
+        .attr("font-weight", "600")
+        .text("Status and count of monuments ");
+
+      if (areaType) {
+        howToRead
+          .append("tspan")
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text("in the " + areaType);
+      }
+      howToRead
+        .append("tspan")
+        .attr("fill", "#0978AB")
+        .attr("font-weight", "600")
+        .text(" of " + areaName);
+      howToRead
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", 4)
+        .attr("font-size", 1)
+        .text(" ");
+
+      if (overlay.label === "complete") {
+        const history = params.data.parentData?.data[0].history;
+        if (history) {
+          history[0].groups.forEach((group) => {
+            const min = history[0].groups.find(
+              (g) => g.label === group.label
+            ).value;
+            const max = history[history.length - 1].groups.find(
+              (g) => g.label === group.label
+            ).value;
+
+            const superSpan = howToRead
+              .append("tspan")
+              .attr("font-size", "9")
+              .attr("x", 21)
+              .attr("dy", 12);
+
+            superSpan
+              .append("tspan")
+              .attr("font-weight", "600")
+              .text(labelsDict[group.label].explained);
+            if (!params.showDelta) {
+              superSpan
+                .append("tspan")
+                .attr("x", 21)
+                .attr("dy", 10)
+                .text(d3.format("~s")(max));
+            }
+            superSpan
+              .append("tspan")
+              .text(` (+${d3.format("~s")(max - min)} new)`);
+            superSpan
+              .append("tspan")
+              .attr("x", 0)
+              .attr("dy", 4)
+              .attr("font-size", 1)
+              .text(" ");
+
+            const bbox = superSpan.node().getBBox();
+
+            selection
+              .append("rect")
+              .attr("fill", colors[group.label])
+              .attr("x", this.legendMargin)
+              .attr("y", bbox.y + 21)
+              .attr("width", 16)
+              .attr("height", 16)
+              .attr("rx", 3);
+          });
+        }
+
+        const textTimeline = howToRead2.append("tspan");
+        textTimeline
+          .append("tspan")
+          .text("Each fan is a timeline, each slice is ");
+        textTimeline
+          .append("tspan")
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text(timeStep?.toUpperCase());
+        textTimeline.append("tspan").text(".");
+
+        ventaglio = selection
+          .append("g")
+          .attr("transform", `translate(${this.width / 2 + 58},45) scale(0.8)`);
+        d3.svg(ventaglioSmallSvg.src).then((document) => {
+          const graphics = d3.select(document).select("svg").html();
+          ventaglio.html(graphics);
+        });
+
+        howToRead2.append("tspan").attr("x", 0).attr("dy", 28).text("from");
+        howToRead2
+          .append("tspan")
+          .attr("font-size", 10)
+          .attr("x", 0)
+          .attr("dy", 14)
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text(dateFrom);
+
+        howToRead2
+          .append("tspan")
+          .attr("x", this.width / 2 - this.legendMargin)
+          .attr("dy", -14)
+          .attr("text-anchor", "end")
+          .text("to");
+        howToRead2
+          .append("tspan")
+          .attr("font-size", 10)
+          .attr("x", this.width / 2 - this.legendMargin)
+          .attr("dy", 14)
+          .attr("text-anchor", "end")
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text(dateTo);
+      } else if (overlay.label === "compact") {
+        howToRead
+          .append("tspan")
+          .attr("x", 0)
+          .attr("dy", 12)
+          .text("Each fan is a timeline, each slice is ");
+        howToRead
+          .append("tspan")
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text(timeStep?.toUpperCase());
+        howToRead.append("tspan").text(" from");
+        howToRead
+          .append("tspan")
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text(" " + dateFrom);
+        howToRead.append("tspan").text(" to");
+        howToRead
+          .append("tspan")
+          .attr("fill", "#0978AB")
+          .attr("font-weight", "600")
+          .text(" " + dateTo);
+      }
+
+      selection
+        .append("text")
+        .attr("font-size", 9)
+        .attr(
+          "transform",
+          `translate(${this.width / 2}, ${this.legendHeight - 5})`
+        )
+        .attr("text-anchor", "middle")
+        .attr("fill", "#808080")
+        .text(
+          "DensityDesign (Politecnico di Milano) & Wikimedia Italia. License: CC-BY 4.0"
+        );
+    }
+
+    if (overlay?.label === "clean") {
+      console.log("simple credits");
+      const simple_credits = selection
+        .append("g")
+        .attr("class", "simple-credits")
+        .attr("transform", () => {
+          return viewbox?.value === "desktop"
+            ? `translate(${-this.width + this.legendMargin}, ${
+                this.height - 3 * this.legendMargin
+              })`
+            : `translate(${this.legendMargin} -23)`;
+        });
+      simple_credits
+        .append("image")
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr(
+          "href",
+          "https://mirrors.creativecommons.org/presskit/icons/cc.svg"
+        );
+      simple_credits
+        .append("image")
+        .attr("x", 20)
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr(
+          "href",
+          "https://mirrors.creativecommons.org/presskit/icons/by.svg"
+        );
+
+      const sc_text = simple_credits
+        .append("text")
+        .attr("transform", () => {
+          if (viewbox?.value === "desktop") {
+            return "translate(44, 4)";
+          } else {
+            return "translate(42, 4)";
+          }
+        })
+        .attr("font-size", 10);
+
+      sc_text
+        .append("tspan")
+        .text(
+          "Work by DensityDesign (Politecnico di Milano) & Wikimedia Italia."
+        );
+
+      sc_text
+        .append("tspan")
+        .attr("x", 0)
+        .attr("dy", 12)
+        .text("License: Creative Commons Attribution 4.0 International.");
     }
   }
 
