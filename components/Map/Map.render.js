@@ -397,8 +397,6 @@ export default class MapClass {
     const { timeStep, dateFrom, dateTo, viewbox, overlay } = params;
     const legendBBox = selection.node().getBBox();
 
-    console.log(this.legendWidth);
-
     selection.selectAll("*").remove();
     let howToRead, howToRead2, ventaglio, areaType, areaName;
 

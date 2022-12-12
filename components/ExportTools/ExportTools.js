@@ -10,8 +10,8 @@ import {
 } from "react-icons/bs";
 import classNames from "classnames";
 import Map from "../Map";
-import { useEffect, useState } from "react";
-import Head from "next/head";
+import { useState, useRef } from "react";
+import html2canvas from "html2canvas";
 export default function ExportTools({ closeFunct, mapData }) {
   const viewboxes = [
     {
@@ -51,6 +51,8 @@ export default function ExportTools({ closeFunct, mapData }) {
   const [overlay, setOverlay] = useState(overlays[0]);
   const [format, setFormat] = useState(formats[1]);
 
+  const exportRef = useRef();
+
   const downloadSvg = () => {
     console.log("download svg");
     const filename = "WLM.svg";
@@ -72,8 +74,12 @@ export default function ExportTools({ closeFunct, mapData }) {
     document.body.removeChild(element);
   };
 
-  const downloadPng = () => {
+  const downloadPng = async () => {
     console.log("PNGGGGGG");
+    const canvas = await html2canvas(exportRef.current);
+    const image = canvas.toDataURL("image/png", 1.0);
+    const filename = "WLM.png";
+    downloadImage(image, filename);
   };
 
   const download = () => {
@@ -84,11 +90,27 @@ export default function ExportTools({ closeFunct, mapData }) {
     }
   };
 
+  const downloadImage = (blob, fileName) => {
+    const fakeLink = window.document.createElement("a");
+    fakeLink.style = "display:none;";
+    fakeLink.download = fileName;
+
+    fakeLink.href = blob;
+
+    document.body.appendChild(fakeLink);
+    fakeLink.click();
+    document.body.removeChild(fakeLink);
+
+    fakeLink.remove();
+  };
+
   return (
     <>
       <div
+        ref={exportRef}
         className={classNames(
           styles.exportTools,
+          "export-tools",
           "d-flex",
           "flex-column",
           "align-items-center",
