@@ -157,8 +157,6 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     )
     .join("text")
     .attr("text-anchor", "middle")
-    .attr("font-family", "Noto Sans")
-    .style("font-family", "Noto Sans")
     .attr("font-size", initLabelSize)
     .attr("class", "label")
     .attr("paint-order", "stroke")

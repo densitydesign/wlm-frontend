@@ -107,7 +107,6 @@ export default function ExportTools({ closeFunct, mapData }) {
   return (
     <>
       <div
-        ref={exportRef}
         className={classNames(
           styles.exportTools,
           "export-tools",
@@ -167,19 +166,26 @@ export default function ExportTools({ closeFunct, mapData }) {
             />
           </span>
         </div>
-        <div
-          className={classNames(
-            styles.preview,
-            // { [styles.computer]: viewbox === "computer" },
-            // { [styles.mobile]: viewbox === "mobile" },
-            "mb-3"
-          )}
-        >
+        <div ref={exportRef} className={classNames(styles.preview, "mb-3")}>
           <Map
             {...mapData}
             viewbox={viewboxes.find((v) => v.value === viewbox)}
             overlay={overlay}
           />
+        </div>
+        <div>
+          <p className="small">
+            To further edit your visualization in a vector graphics editor,
+            download the{" "}
+            <a
+              href="https://fonts.google.com/noto/specimen/Noto+Sans"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Noto Sans font family
+            </a>
+            .
+          </p>
         </div>
       </div>
     </>

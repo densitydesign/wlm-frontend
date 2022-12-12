@@ -317,7 +317,7 @@ export default class MapClass {
       // console.log("a province");
       geoFeaturesArr = lvl8;
       this.mode = "province";
-      this.kLimit = 35;
+      this.kLimit = 60;
       this.region.attr("opacity", 0.5);
       this.province
         .attr("opacity", 0.5)
@@ -426,6 +426,7 @@ export default class MapClass {
       howToRead = selection
         .append("text")
         .attr("font-size", 11)
+        .attr("font-family", "Noto Sans")
         .attr(
           "transform",
           `translate(${this.legendMargin}, ${this.legendMargin + 10})`

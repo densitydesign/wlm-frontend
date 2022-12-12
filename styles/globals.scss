@@ -2,70 +2,78 @@
 @import "./variables.scss";
 
 :root {
-	--bs-font-sans-serif: "Noto Sans", sans-serif;
-	--margin: calc(var(--bs-gutter-x) * 0.5);
+  --bs-font-sans-serif: "Noto Sans", sans-serif;
+  --margin: calc(var(--bs-gutter-x) * 0.5);
 }
 
 html {
-	--stroke-width: 1;
-	--initial-stroke-width: 1;
-	--label-size: 8;
-	--initial-label-size: 8;
-	--small-label-size: 7;
-	--initial-small-label-size: 7;
+  --stroke-width: 1;
+  --initial-stroke-width: 1;
+  --label-size: 8;
+  --initial-label-size: 8;
+  --small-label-size: 7;
+  --initial-small-label-size: 7;
 }
 
 .badge {
-	font-weight: 500;
-	text-transform: uppercase;
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
 .text-small {
-	font-size: 0.82rem;
-	line-height: 0.93rem;
+  font-size: 0.82rem;
+  line-height: 0.93rem;
 }
 
 h6 {
-	// text-transform: uppercase;
-	font-weight: 600;
+  // text-transform: uppercase;
+  font-weight: 600;
 }
 
 .aboutContainer {
-	background: rgb(221,247,255);
-	background: linear-gradient(180deg, rgba(221,247,255,1) 0%, rgba(255,255,255,1) 26%);
+  background: rgb(221, 247, 255);
+  background: linear-gradient(
+    180deg,
+    rgba(221, 247, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 26%
+  );
 }
 
 .aboutContent {
-	margin-top: calc(var(--bs-gutter-x)*0.5);
+  margin-top: calc(var(--bs-gutter-x) * 0.5);
 }
 
 .aboutContent blockquote {
-	color: var(--bs-blue-jeans);
-	font-size: 1.5rem;
-	font-weight: 350;
+  color: var(--bs-blue-jeans);
+  font-size: 1.5rem;
+  font-weight: 350;
 }
 
 .credits {
-	margin-top: var(--margin-top);
-	display: flex;
-	font-size: .8rem;
-  }
+  margin-top: var(--margin-top);
+  display: flex;
+  font-size: 0.8rem;
+}
 
-  .credits em {
-	font-weight: bold;
-	font-style: normal;
-  }
+.credits em {
+  font-weight: bold;
+  font-style: normal;
+}
 
-  .credits * {
-	margin-right: calc(var(--bs-gutter-x)*0.5);
-  }
-  
-  .credits ul {
-	list-style: none;
-	padding-left: 0;
-  }
-  
-  .credits ul li {
-	margin-bottom: calc(var(--bs-gutter-x)*0.1);
-  }
+.credits * {
+  margin-right: calc(var(--bs-gutter-x) * 0.5);
+}
 
+.credits ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.credits ul li {
+  margin-bottom: calc(var(--bs-gutter-x) * 0.1);
+}
+
+.small {
+  font-size: 0.82rem;
+  line-height: normal;
+}
