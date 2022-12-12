@@ -3,6 +3,7 @@ import StatusSymbol from "./StatusSymbol";
 import { DateTime } from "luxon";
 import styles from "./DataGrid.module.scss";
 import classNames from "classnames";
+import { Fetching } from "../Fetching";
 
 export default function DataGrid({
   regionsList,
@@ -111,7 +112,7 @@ export default function DataGrid({
             <a
               className="text-truncate"
               // href={"https://www.wikidata.org/wiki/" + row["q_number"] + "#P18"}
-              href={`https://commons.wikimedia.org/w/index.php?search=%22${row["wlm_id"]}%22&title=Special:MediaSearch&go=Go&type=image`}
+              href={`https://commons.wikimedia.org/w/index.php?search=%22${row["wlm_id"]}%22+"Wiki+Loves+Monuments+Italia"&title=Special:MediaSearch&go=Go&type=image`}
               target="_blank"
               rel="noreferrer"
             >
@@ -186,6 +187,28 @@ export default function DataGrid({
           : null,
     },
     {
+      id: "approved_by",
+      name: "Approved by",
+      sortable: true,
+      width: "150px",
+      selector: (row) => {
+        const approvedByArr = JSON.parse(
+          row["approved_by"].replaceAll("'", '"')
+        );
+        return approvedByArr.map((d) => (
+          <a
+            key={d}
+            className="text-truncate"
+            href={"https://www.wikidata.org/wiki/" + d}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {d}
+          </a>
+        ));
+      },
+    },
+    {
       id: "first_wlm_image_date",
       name: "First\nWLM Image",
       sortable: true,
@@ -196,6 +219,16 @@ export default function DataGrid({
           : null,
     },
     {
+      id: "most_recent_wlm_image_date",
+      name: "Most Recent\nWLM Image",
+      sortable: true,
+      width: "150px",
+      selector: (row) =>
+        row["most_recent_wlm_image_date"]
+          ? DateTime.fromISO(row["most_recent_wlm_image_date"]).toLocaleString()
+          : null,
+    },
+    {
       id: "first_commons_image_date",
       name: "First\nCommons Image",
       sortable: true,
@@ -203,6 +236,18 @@ export default function DataGrid({
       selector: (row) =>
         row["first_commons_image_date"]
           ? DateTime.fromISO(row["first_commons_image_date"]).toLocaleString()
+          : null,
+    },
+    {
+      id: "most_recent_commons_image_date",
+      name: "Most Recent\nCommons Image",
+      sortable: true,
+      width: "150px",
+      selector: (row) =>
+        row["most_recent_commons_image_date"]
+          ? DateTime.fromISO(
+              row["most_recent_commons_image_date"]
+            ).toLocaleString()
           : null,
     },
   ];
@@ -220,6 +265,11 @@ export default function DataGrid({
       style: {
         // color: theme.text.primary,
         backgroundColor: "transparent",
+      },
+    },
+    noData: {
+      style: {
+        height: "100%",
       },
     },
     rows: {

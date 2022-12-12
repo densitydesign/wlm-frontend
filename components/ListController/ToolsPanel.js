@@ -124,7 +124,7 @@ export default function ToolsPanel({
             <h6>Curation</h6>
             <SwitchUI
               className={classNames("text-small", "mb-2")}
-              label="Waiting for relevant picture"
+              label="Waiting for Wikidata image"
               checked={toReview}
               setChecked={setToReview}
               disabled={false}
@@ -150,17 +150,16 @@ export default function ToolsPanel({
                 monuments in relation to all traceable images from Commons
               </p>
               <p className="mb-1">
-                <span className="fw-bold">WLM Images</span>: photographs of
-                the corresponding monument taken during the contest (all
-                editions)
+                <span className="fw-bold">WLM Images</span>: monument
+                photographs taken during the WLM contest (all editions)
               </p>
               <p className="mb-1">
-                <span className="fw-bold">Relevant Images</span>: photographs
-                of the corresponding monument present on the Wikidata page
+                <span className="fw-bold">Relevant Images</span>: monument
+                photographs present on the Wikidata page
               </p>
               <p className="mb-1">
                 <span className="fw-bold">Creation date on Wikidata</span>:
-                Wikidata page creation date of the corresponding monument
+                creation date of the monument Wikidata page
               </p>
               <p className="mb-1">
                 <span className="fw-bold">WLM authorization date</span>: date of
@@ -172,8 +171,16 @@ export default function ToolsPanel({
                 upload of the first image taken in the contest
               </p>
               <p className="mb-1">
+                <span className="fw-bold">Most Recent WLM image</span>: date of the
+                most recent image taken in the contest
+              </p>
+              <p className="mb-1">
                 <span className="fw-bold">First Commons image</span>: date of
                 the upload of the first image, among all the traceable ones
+              </p>
+              <p className="mb-1">
+                <span className="fw-bold">Most Recent Commons image</span>: date of
+                the most recent image, among all the ones traceable on Commons
               </p>
             </div>
           </Accordion.Body>
