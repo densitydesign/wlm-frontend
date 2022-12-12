@@ -126,7 +126,7 @@ export default function DataGrid({
     },
     {
       id: "pictures_commons_count",
-      name: "Relevant\nImages",
+      name: "Wikidata\nImages",
       sortable: true,
       cell: (row) => {
         if (row["pictures_commons_count"].toString() !== "0") {
@@ -178,7 +178,7 @@ export default function DataGrid({
     },
     {
       id: "wlm_auth_start_date",
-      name: "WLM\nAuthorization Date",
+      name: "In WLM Contest\nSince",
       sortable: true,
       width: "150px",
       selector: (row) =>
