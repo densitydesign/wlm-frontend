@@ -32,7 +32,7 @@ const labelsDict = {
     explained: "Photographed during the contest",
   },
   withPicture: {
-    explained: "With at least one photo",
+    explained: "With at least one image",
   },
   onWikidataOnly: { explained: "Monuments on Wikidata" },
 };
@@ -55,7 +55,7 @@ const availableStatuses = [
     label: "Wikidata Relevant Picture",
     statuses: [
       { code: "onWikidataOnly", explained: "Monuments on Wikidata" },
-      { code: "withPicture", explained: "Monuments with at least one photo" },
+      { code: "withPicture", explained: "Monuments with at least an image" },
     ],
   },
 ];
