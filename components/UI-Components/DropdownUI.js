@@ -86,7 +86,7 @@ export default function DropdownUI({
           }}
           disabled={disabled}
         >
-          <CloseIcon />
+          <CloseIcon style={{position: "relative", top: -2}} />
         </Button>
       )}
     </div>

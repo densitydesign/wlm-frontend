@@ -15,13 +15,13 @@ import html2canvas from "html2canvas";
 export default function ExportTools({ closeFunct, mapData }) {
   const viewboxes = [
     {
-      label: <BsPhone />,
+      label: <BsPhone  style={{ position: "relative", top: -1.5 }} />,
       value: "mobile",
       width: 400,
       height: 500,
     },
     {
-      label: <BsDisplay />,
+      label: <BsDisplay style={{ position: "relative", top: -1.5 }} />,
       value: "desktop",
       width: 1280,
       height: 720,
@@ -126,7 +126,10 @@ export default function ExportTools({ closeFunct, mapData }) {
           )}
         >
           <span className={classNames("d-flex", "flex-row")}>
-            <ButtonUI content={<CloseIcon />} onClickAction={closeFunct} />
+            <ButtonUI
+              content={<CloseIcon style={{ position: "relative", top: -1.5 }} />}
+              onClickAction={closeFunct}
+            />
           </span>
           <span className={classNames("d-flex", "flex-row")}>
             <ToggleButtonGroupUI
@@ -161,7 +164,7 @@ export default function ExportTools({ closeFunct, mapData }) {
             <ButtonUI
               label="Save"
               boldLabel={true}
-              content={<BsDownload />}
+              content={<BsDownload style={{ position: "relative", top: -2 }} />}
               onClickAction={download}
             />
           </span>
