@@ -50,9 +50,10 @@
     flex-grow: 0 !important;
     background-color: #dcdcdc;
     border-color: #dcdcdc;
-    // .checked {
-    //   background-color: red;
-    // }
+    opacity: 0.5;
+  }
+  .checked {
+    opacity: 1;
   }
 }
 

@@ -1,4 +1,6 @@
 import * as d3 from "d3";
+import imageCC from "./cc.svg";
+import imageBY from "./by.svg";
 
 import {
   colors,
@@ -643,23 +645,24 @@ export default class MapClass {
       }
 
       const credits = selection.append("g");
-      credits
-        .append("image")
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr(
-          "href",
-          "https://mirrors.creativecommons.org/presskit/icons/cc.svg"
-        );
-      credits
-        .append("image")
-        .attr("x", 20)
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr(
-          "href",
-          "https://mirrors.creativecommons.org/presskit/icons/by.svg"
-        );
+
+      d3.svg(imageCC.src).then((document) => {
+        const graphics = d3.select(document).select("svg").html();
+        console.log(graphics);
+        // ventaglio.html(graphics);
+        const g = credits.append("g").html(graphics);
+        const ccBBox = g.node().getBBox();
+        g.attr("transform", `scale(${15 / ccBBox.width})`);
+      });
+
+      d3.svg(imageBY.src).then((document) => {
+        const graphics = d3.select(document).select("svg").html();
+        console.log(graphics);
+        // ventaglio.html(graphics);
+        const g = credits.append("g").html(graphics);
+        const ccBBox = g.node().getBBox();
+        g.attr("transform", `translate(20,0) scale(${15 / ccBBox.width})`);
+      });
 
       credits
         .append("text")
@@ -749,11 +752,13 @@ export default class MapClass {
                 .append("tspan")
                 .attr("x", 21)
                 .attr("dy", 10)
-                .text(d3.format("~s")(max));
+                .text(d3.format("~s")(max) + " ");
             }
             superSpan
               .append("tspan")
-              .text(` (+${d3.format("~s")(max - min)} new)`);
+              .attr("x", params.showDelta ? 21 : 0)
+              .attr("dy", params.showDelta ? 10 : 0)
+              .text(`(+${d3.format("~s")(max - min)} new)`);
             superSpan
               .append("tspan")
               .attr("x", 0)
@@ -773,6 +778,27 @@ export default class MapClass {
               .attr("rx", 3);
           });
         }
+
+        const noDataMobile = howToRead
+          .append("tspan")
+          .attr("x", 21)
+          .attr("dy", 14)
+          .text("No data to display");
+
+        const noDataBBoxMobile = noDataMobile.node().getBBox();
+
+        selection
+          .append("path")
+          .attr(
+            "d",
+            describeArc(0, 0, 10, -50, 50).replace("M", "M0,0 ") + " Z"
+          )
+          .attr(
+            "transform",
+            `translate(${this.legendMargin + 7}, ${noDataBBoxMobile.y + 31})`
+          )
+          .attr("stroke", "#adb5bd")
+          .attr("fill", "url(#tick-background)");
 
         const textTimeline = howToRead2.append("tspan");
         textTimeline
@@ -869,23 +895,24 @@ export default class MapClass {
               })`
             : `translate(${this.legendMargin} -23)`;
         });
-      simple_credits
-        .append("image")
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr(
-          "href",
-          "https://mirrors.creativecommons.org/presskit/icons/cc.svg"
-        );
-      simple_credits
-        .append("image")
-        .attr("x", 20)
-        .attr("width", 15)
-        .attr("height", 15)
-        .attr(
-          "href",
-          "https://mirrors.creativecommons.org/presskit/icons/by.svg"
-        );
+
+      d3.svg(imageCC.src).then((document) => {
+        const graphics = d3.select(document).select("svg").html();
+        console.log(graphics);
+        // ventaglio.html(graphics);
+        const g = simple_credits.append("g").html(graphics);
+        const ccBBox = g.node().getBBox();
+        g.attr("transform", `scale(${15 / ccBBox.width})`);
+      });
+
+      d3.svg(imageBY.src).then((document) => {
+        const graphics = d3.select(document).select("svg").html();
+        console.log(graphics);
+        // ventaglio.html(graphics);
+        const g = simple_credits.append("g").html(graphics);
+        const ccBBox = g.node().getBBox();
+        g.attr("transform", `translate(20,0) scale(${15 / ccBBox.width})`);
+      });
 
       const sc_text = simple_credits
         .append("text")
