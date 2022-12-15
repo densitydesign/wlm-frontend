@@ -678,7 +678,7 @@ export default class MapClass {
       credits.attr(
         "transform",
         `translate(${this.legendMargin}, ${
-          this.height - creditsbbox.height - this.legendMargin
+          this.height - creditsbbox.height - this.legendMargin * 2.5
         })`
       );
     } else if (viewbox?.value === "mobile" && overlay.label !== "clean") {
@@ -756,8 +756,8 @@ export default class MapClass {
             }
             superSpan
               .append("tspan")
-              .attr("x", params.showDelta ? 21 : 0)
-              .attr("dy", params.showDelta ? 10 : 0)
+              .attr("x", params.showDelta ? 21 : null)
+              .attr("dy", params.showDelta ? 10 : null)
               .text(`(+${d3.format("~s")(max - min)} new)`);
             superSpan
               .append("tspan")
