@@ -7,6 +7,7 @@ import { groups as d3_groups } from "d3";
 export default function DropdownUI({
   label,
   boldLabel,
+  header,
   items,
   value,
   setValue,
@@ -43,6 +44,7 @@ export default function DropdownUI({
         </Dropdown.Toggle>
 
         <Dropdown.Menu style={{ maxHeight: "50vh", overflowY: "auto" }}>
+          {header && <Dropdown.Header>{header}</Dropdown.Header>}
           {d3_groups(items, (d) => d.group).map((d, i) => (
             <span key={"span" + i}>
               {d[0] && (
@@ -58,7 +60,6 @@ export default function DropdownUI({
                   >
                     Group {d[0]}
                   </Dropdown.Header>
-                  {/* <Dropdown.Divider key={"d" + i} className="my-0" /> */}
                 </>
               )}
               {d[1].map((dd, ii) => (
@@ -86,7 +87,7 @@ export default function DropdownUI({
           }}
           disabled={disabled}
         >
-          <CloseIcon style={{position: "relative", top: -2}} />
+          <CloseIcon style={{ position: "relative", top: -2 }} />
         </Button>
       )}
     </div>

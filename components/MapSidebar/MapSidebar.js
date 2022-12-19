@@ -219,7 +219,7 @@ export default function MapSidebar({
   };
 
   return (
-    <div className={classNames(styles.mapSideBar ,"d-flex", "flex-column")}>
+    <div className={classNames(styles.mapSideBar, "d-flex", "flex-column")}>
       <DropdownUI
         label="Explore"
         items={explorationModes}
@@ -229,46 +229,11 @@ export default function MapSidebar({
         boldLabel
         classNameProp="mb-2"
       />
-      <span className="text-uppercase" style={{ fontWeight: 600 }}>
-        Monuments locations
-      </span>
-      <DropdownUI
-        label="Region"
-        items={regions.items}
-        value={selectedRegion}
-        setValue={setSelectedRegion}
-        defaultLabel="Select a region"
-        disabled={regions.disabled || selectedProvince}
-      />
-      <DropdownUI
-        label="Province"
-        items={provinces.items}
-        value={selectedProvince}
-        setValue={setSelectedProvince}
-        defaultLabel="Select a province"
-        disabled={provinces.disabled || selectedMunicipality}
-      />
-      <DropdownUI
-        label="Municipality"
-        items={municipalities.items}
-        value={selectedMunicipality}
-        setValue={setSelectedMunicipality}
-        defaultLabel="Select a municipality"
-        disabled={municipalities.disabled}
-        classNameProp="mb-2"
-      />
-      <DropdownUI
-        label="Monuments type"
-        items={typologiesList}
-        value={typology}
-        setValue={setTypology}
-        disabled={!typologiesList}
-        boldLabel
-        classNameProp="mb-2"
-      />
+
       <div className="mb-3 TIME FRAME">
         <DropdownUI
           label="Time frame"
+          header={`Data updated on ${maxDate}`}
           items={timeFrameData.items}
           value={selectedTimeFrame}
           setValue={setSelectedTimeFrame}
@@ -282,11 +247,19 @@ export default function MapSidebar({
             <p className={classNames("text-small", "mb-2")}>
               From{" "}
               <Badge bg="light-gray" text="dark">
-                {dateFrom || "..."}
+                {dateFrom
+                  ? timeStep.toUpperCase() === "1 DAY"
+                    ? dateFrom
+                    : dateFrom.split("-").slice(0, -1).join("-")
+                  : "..."}
               </Badge>{" "}
               to{" "}
               <Badge bg="light-gray" text="dark">
-                {dateTo || "..."}
+                {dateTo
+                  ? timeStep.toUpperCase() === "1 DAY"
+                    ? dateTo
+                    : dateTo.split("-").slice(0, -1).join("-")
+                  : "..."}
               </Badge>
             </p>
           </>
@@ -323,15 +296,43 @@ export default function MapSidebar({
           </>
         )}
 
-        <div className="mb-3">
-          <AreaChart
-            data={data?.parentData}
-            filterData={filterData}
-            showDelta={showDelta}
-            timeStep={timeStep}
-            isFetching={isFetching}
-          />
-        </div>
+        <span className="text-uppercase" style={{ fontWeight: 600 }}>
+          Monuments locations
+        </span>
+        <DropdownUI
+          label="Region"
+          items={regions.items}
+          value={selectedRegion}
+          setValue={setSelectedRegion}
+          defaultLabel="Select a region"
+          disabled={regions.disabled || selectedProvince}
+        />
+        <DropdownUI
+          label="Province"
+          items={provinces.items}
+          value={selectedProvince}
+          setValue={setSelectedProvince}
+          defaultLabel="Select a province"
+          disabled={provinces.disabled || selectedMunicipality}
+        />
+        <DropdownUI
+          label="Municipality"
+          items={municipalities.items}
+          value={selectedMunicipality}
+          setValue={setSelectedMunicipality}
+          defaultLabel="Select a municipality"
+          disabled={municipalities.disabled}
+          classNameProp="mb-2"
+        />
+        <DropdownUI
+          label="Monuments type"
+          items={typologiesList}
+          value={typology}
+          setValue={setTypology}
+          disabled={!typologiesList}
+          boldLabel
+          classNameProp="mb-2"
+        />
 
         <span className="text-uppercase mb-2" style={{ fontWeight: 600 }}>
           Monuments Status
@@ -346,6 +347,15 @@ export default function MapSidebar({
           />
         )}
         {!data || (!filterData && <p>Loading...</p>)}
+        <div className="mb-0 mt-3">
+          <AreaChart
+            data={data?.parentData}
+            filterData={filterData}
+            showDelta={showDelta}
+            timeStep={timeStep}
+            isFetching={isFetching}
+          />
+        </div>
       </div>
       <>
         <ButtonUI

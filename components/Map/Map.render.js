@@ -449,7 +449,15 @@ export default class MapClass {
         .attr("dy", 14)
         .attr("fill", "#0978AB")
         .attr("font-weight", "600")
-        .text(dateFrom);
+        .text(() => {
+          if (timeStep?.toUpperCase() === "1 DAY") {
+            return dateFrom;
+          } else {
+            const arr = dateFrom.split("-")
+            arr.pop()
+            return arr.join("-")
+          }
+        });
 
       howToRead
         .append("tspan")
@@ -465,7 +473,15 @@ export default class MapClass {
         .attr("text-anchor", "end")
         .attr("fill", "#0978AB")
         .attr("font-weight", "600")
-        .text(dateTo);
+        .text(() => {
+          if (timeStep?.toUpperCase() === "1 DAY") {
+            return dateTo;
+          } else {
+            const arr = dateTo.split("-")
+            arr.pop()
+            return arr.join("-")
+          }
+        });
 
       if ((!viewbox && !overlay) || overlay?.label === "complete") {
         ventaglio = selection
@@ -831,7 +847,15 @@ export default class MapClass {
           .attr("dy", 14)
           .attr("fill", "#0978AB")
           .attr("font-weight", "600")
-          .text(dateFrom);
+          .text(() => {
+            if (timeStep?.toUpperCase() === "1 DAY") {
+              return dateFrom;
+            } else {
+              const arr = dateFrom.split("-")
+              arr.pop()
+              return arr.join("-")
+            }
+          });
 
         howToRead2
           .append("tspan")
@@ -847,7 +871,15 @@ export default class MapClass {
           .attr("text-anchor", "end")
           .attr("fill", "#0978AB")
           .attr("font-weight", "600")
-          .text(dateTo);
+          .text(() => {
+            if (timeStep?.toUpperCase() === "1 DAY") {
+              return dateTo;
+            } else {
+              const arr = dateTo.split("-")
+              arr.pop()
+              return arr.join("-")
+            }
+          });
       } else if (overlay.label === "compact") {
         howToRead
           .append("tspan")
@@ -864,13 +896,29 @@ export default class MapClass {
           .append("tspan")
           .attr("fill", "#0978AB")
           .attr("font-weight", "600")
-          .text(" " + dateFrom);
+          .text(() => {
+            if (timeStep?.toUpperCase() === "1 DAY") {
+              return " "+ dateFrom;
+            } else {
+              const arr = dateFrom.split("-")
+              arr.pop()
+              return " "+ arr.join("-")
+            }
+          });
         howToRead.append("tspan").text(" to");
         howToRead
           .append("tspan")
           .attr("fill", "#0978AB")
           .attr("font-weight", "600")
-          .text(" " + dateTo);
+          .text(() => {
+            if (timeStep?.toUpperCase() === "1 DAY") {
+              return " " + dateTo;
+            } else {
+              const arr = dateTo.split("-")
+              arr.pop()
+              return " "+arr.join("-")
+            }
+          });
       }
 
       selection
