@@ -646,20 +646,26 @@ export default class MapClass {
 
       const credits = selection.append("g");
 
-      d3.svg(imageCC.src).then((document) => {
-        const graphics = d3.select(document).select("svg").html();
-        // ventaglio.html(graphics);
-        const g = credits.append("g").html(graphics);
-        const ccBBox = g.node().getBBox();
-        g.attr("transform", `scale(${15 / ccBBox.width})`);
+      d3.svg(imageCC.src).then((importedDocument) => {
+        const g = credits.append("g");
+        g.node().appendChild(importedDocument.querySelector("svg"));
+        const bbox = g.node().getBBox();
+        if (bbox.width !== 0) {
+          g.attr("transform", `scale(${15 / bbox.width})`);
+        } else {
+          g.attr("transform", `scale(0)`);
+        }
       });
 
-      d3.svg(imageBY.src).then((document) => {
-        const graphics = d3.select(document).select("svg").html();
-        // ventaglio.html(graphics);
-        const g = credits.append("g").html(graphics);
-        const ccBBox = g.node().getBBox();
-        g.attr("transform", `translate(20,0) scale(${15 / ccBBox.width})`);
+      d3.svg(imageBY.src).then((importedDocument) => {
+        const g = credits.append("g");
+        g.node().appendChild(importedDocument.querySelector("svg"));
+        const bbox = g.node().getBBox();
+        if (bbox.width !== 0) {
+          g.attr("transform", `translate(20,0) scale(${15 / bbox.width})`);
+        } else {
+          g.attr("transform", `scale(0)`);
+        }
       });
 
       credits
