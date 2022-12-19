@@ -648,7 +648,6 @@ export default class MapClass {
 
       d3.svg(imageCC.src).then((document) => {
         const graphics = d3.select(document).select("svg").html();
-        console.log(graphics);
         // ventaglio.html(graphics);
         const g = credits.append("g").html(graphics);
         const ccBBox = g.node().getBBox();
@@ -657,7 +656,6 @@ export default class MapClass {
 
       d3.svg(imageBY.src).then((document) => {
         const graphics = d3.select(document).select("svg").html();
-        console.log(graphics);
         // ventaglio.html(graphics);
         const g = credits.append("g").html(graphics);
         const ccBBox = g.node().getBBox();
@@ -884,7 +882,6 @@ export default class MapClass {
     }
 
     if (overlay?.label === "clean") {
-      console.log("simple credits");
       const simple_credits = selection
         .append("g")
         .attr("class", "simple-credits")
@@ -898,7 +895,6 @@ export default class MapClass {
 
       d3.svg(imageCC.src).then((document) => {
         const graphics = d3.select(document).select("svg").html();
-        console.log(graphics);
         // ventaglio.html(graphics);
         const g = simple_credits.append("g").html(graphics);
         const ccBBox = g.node().getBBox();
@@ -907,7 +903,6 @@ export default class MapClass {
 
       d3.svg(imageBY.src).then((document) => {
         const graphics = d3.select(document).select("svg").html();
-        console.log(graphics);
         // ventaglio.html(graphics);
         const g = simple_credits.append("g").html(graphics);
         const ccBBox = g.node().getBBox();
