@@ -1,7 +1,7 @@
 const { DateTime, Interval } = require("luxon");
 import { json } from "d3";
 
-const apiBaseUrl = "https://wlm.inmagik.com";
+const apiBaseUrl = "https://wlm-it-visual.wmcloud.org"; // previously "https://wlm.inmagik.com"
 const dataCacheMode = "default";
 const geoCacheMode = "default";
 
