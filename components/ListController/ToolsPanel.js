@@ -142,6 +142,10 @@ export default function ToolsPanel({
               }}
             >
               <p className="mb-1">
+                <span className="fw-bold">OSM link</span>: location of the
+                monument on OSM (only if coordinates are available)
+              </p>
+              <p className="mb-1">
                 <span className="fw-bold">WLM Coverage</span>: photographic
                 coverage of monuments in relation to the contest
               </p>
@@ -171,16 +175,17 @@ export default function ToolsPanel({
                 upload of the first image taken in the contest
               </p>
               <p className="mb-1">
-                <span className="fw-bold">Most Recent WLM image</span>: date of the
-                most recent image taken in the contest
+                <span className="fw-bold">Most Recent WLM image</span>: date of
+                the most recent image taken in the contest
               </p>
               <p className="mb-1">
                 <span className="fw-bold">First Commons image</span>: date of
                 the upload of the first image, among all the traceable ones
               </p>
               <p className="mb-1">
-                <span className="fw-bold">Most Recent Commons image</span>: date of
-                the most recent image, among all the ones traceable on Commons
+                <span className="fw-bold">Most Recent Commons image</span>: date
+                of the most recent image, among all the ones traceable on
+                Commons
               </p>
             </div>
           </Accordion.Body>

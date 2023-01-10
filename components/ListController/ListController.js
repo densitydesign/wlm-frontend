@@ -74,8 +74,8 @@ export default function ListController() {
     Promise.all(requests).then(([regions, domain]) => {
       const unknownRegion = {
         code: 0,
-        label: "Unknown region",
-        name: "Unknown region",
+        label: "Unknown location",
+        name: "Unknown location",
         centroid: null,
       };
       const _statusFilter = availableStatuses.map((mode) => {
