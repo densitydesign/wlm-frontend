@@ -4,6 +4,8 @@
 
 The project is a data-driven observatory for the Italian Wiki Loves Monument contest. Its goal it to show how many monuments (cultural properties) have been photographed, at least once, by the community of Wikimedia. Additionally it can show how many of them we can find on Wikidata and the portion that is participating into the contest.
 
+The project is built upon data extracted from Wikidata, that is aggregated, stored and API-served via a [dedicated backend](https://github.com/densitydesign/wlm-backend). The API is publicly accessible, see [here](https://wlm-it-visual.wmcloud.org/api/schema/swagger-ui/#/) for more information.
+
 ### Installation
 
 In case required, add the `basePath` property to the `next.config.js` file (more info [here](https://nextjs.org/docs/api-reference/next.config.js/basepath))
