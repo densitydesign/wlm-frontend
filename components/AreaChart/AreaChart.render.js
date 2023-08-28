@@ -129,7 +129,14 @@ const update = (data, filterData, showDelta, timeStep) => {
     .axisBottom(timeScale)
     .tickValues(timeScale.ticks(5))
     .tickFormat(
-      timeScale.tickFormat(5, timeStep.includes("day") ? "%d/%m" : "%m/%y")
+      timeScale.tickFormat(
+        5,
+        timeStep.includes("day")
+          ? "%m-%d"
+          : timeStep.includes("month")
+          ? "%Y-%m"
+          : "%Y"
+      )
     );
   timeAxisGroup
     .attr("transform", `translate(0, ${height - margin.bottom})`)
