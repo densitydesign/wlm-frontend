@@ -66,6 +66,23 @@ let rotation;
 const initLabelSize = 11;
 const initAxisLabelSize = 7;
 
+const locales = {
+  en: {
+    decimal: ".",
+    thousands: ",",
+    grouping: [3],
+    currency: ["$", ""],
+  },
+  it: {
+    decimal: ",",
+    thousands: ".",
+    grouping: [3],
+    currency: ["€", ""],
+  },
+};
+let locale = d3.formatDefaultLocale(locales.en);
+const numberFormatting = locale.format(",~f");
+
 const drawVentaglio = (datum, ventaglio, showDelta) => {
   const data = [datum];
 
@@ -256,8 +273,8 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .join("tspan")
     .text((d) => {
       return showDelta
-        ? "+" + d.value?.toLocaleString()
-        : d.value?.toLocaleString();
+        ? "+" + numberFormatting(d.value)
+        : numberFormatting(d.value);
     });
   tick
     .selectAll(".axisLabel")
@@ -285,7 +302,7 @@ const drawVentaglio = (datum, ventaglio, showDelta) => {
     .attr("fill", "url(#tick-background)")
     .style("display", "none")
     .classed("tickBg", true);
-  
+
   // reset appearence
   // set appearence according to data
   if (showDelta) {
@@ -442,4 +459,6 @@ export {
   describeArc,
   labelsDict,
   availableStatuses,
+  locale,
+  numberFormatting,
 };

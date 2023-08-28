@@ -7,6 +7,7 @@ import {
   drawVentaglio,
   labelsDict,
   describeArc,
+  numberFormatting,
 } from "../../utils/ventagli.utils";
 import ventaglioSvg from "./ventaglio.svg";
 import ventaglioSmallSvg from "./ventaglioSmall.svg";
@@ -157,7 +158,7 @@ export default class MapClass {
           if (params.overlay.label === "compact") {
             this.legendHeight = 60;
           } else if (params.overlay.label === "complete") {
-            this.legendHeight = 120;
+            this.legendHeight = 135;
           }
         }
       }
@@ -576,7 +577,7 @@ export default class MapClass {
                 .append("tspan")
                 .attr("x", 21)
                 .attr("dy", 14)
-                .text(d3.format("~s")(max));
+                .text(numberFormatting(max));
             superSpan
               .append("tspan")
               .attr("font-weight", "600")
@@ -586,7 +587,7 @@ export default class MapClass {
               .append("tspan")
               .attr("x", 21)
               .attr("dy", 14)
-              .text(`(+${d3.format("~s")(max - min)} new)`);
+              .text(`(+${numberFormatting(max - min)} new)`);
             superSpan
               .append("tspan")
               .attr("x", 0)
@@ -772,13 +773,13 @@ export default class MapClass {
                 .append("tspan")
                 .attr("x", 21)
                 .attr("dy", 10)
-                .text(d3.format("~s")(max) + " ");
+                .text(numberFormatting(max) + " ");
             }
             superSpan
               .append("tspan")
               .attr("x", params.showDelta ? 21 : null)
               .attr("dy", params.showDelta ? 10 : null)
-              .text(`(+${d3.format("~s")(max - min)} new)`);
+              .text(`(+${numberFormatting(max - min)} new)`);
             superSpan
               .append("tspan")
               .attr("x", 0)
