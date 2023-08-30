@@ -64,6 +64,13 @@ export default function DataViewerController() {
     ]).then(([domain, regionsGeojson]) => {
       setMinDate("2012-01-01");
       setMaxDate(domain.last_snapshot);
+
+      const firstYear = DateTime.fromISO("2012-01-01").year;
+      const latestYear = DateTime.fromISO(domain.last_snapshot).year;
+      const years = [];
+      for (var year = firstYear; year <= latestYear; year++) years.push(year);
+      dateRanges.years = years;
+
       setTypologiesList(domain.themes);
       setLvl4(regionsGeojson.features);
       const _regionsList = regionsGeojson.features.map((d) => ({
@@ -487,12 +494,14 @@ export default function DataViewerController() {
         <Col className={classNames("h-100", "p-2")} lg={3}>
           <NavMenu />
           <QuickLinks />
-          <MapSidebar {...allStates} data={_cloneDeep(allStates.data)}  />
+          <MapSidebar {...allStates} data={_cloneDeep(allStates.data)} />
         </Col>
         <Col
           className={classNames("h-100", "position-relative", "p-2", "px-0")}
         >
-          {initialized && <Map {...allStates} data={_cloneDeep(allStates.data)} />}
+          {initialized && (
+            <Map {...allStates} data={_cloneDeep(allStates.data)} />
+          )}
           {!initialized && <Fetching />}
         </Col>
       </Row>
