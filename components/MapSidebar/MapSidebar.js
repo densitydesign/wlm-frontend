@@ -94,7 +94,7 @@ export default function MapSidebar({
             year: +startYear?.label,
             month: +d,
           }).startOf("month");
-          const isBefore = startDate <= endDate;
+          const isBefore = startDate.endOf("month") < endDate;
           return { label: d, disabled: !isBefore };
         }),
       },
@@ -107,7 +107,7 @@ export default function MapSidebar({
             year: +d,
             month: +startMonth?.label,
           }).startOf("month");
-          const isBefore = startDate <= endDate && startDate <= _maxDate;
+          const isBefore = startDate.endOf("month") < endDate && startDate.endOf("month") < _maxDate;
           return { label: d, disabled: !isBefore };
         }),
       },
@@ -135,7 +135,7 @@ export default function MapSidebar({
             year: +endYear?.label,
             month: +d,
           }).startOf("month");
-          const isAfter = endDate >= startDate && endDate <= _maxDate;
+          const isAfter = endDate > startDate.endOf("month") && endDate <= _maxDate;
           return { label: d, disabled: !isAfter };
         }),
       },
@@ -148,7 +148,7 @@ export default function MapSidebar({
             year: +d,
             month: +endMonth?.label,
           }).startOf("month");
-          const isAfter = endDate >= startDate;
+          const isAfter = endDate > startDate.endOf("month");
           return { label: d, disabled: !isAfter };
         }),
       },
