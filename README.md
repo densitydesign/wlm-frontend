@@ -1,3 +1,5 @@
+⚠️ Project moved to [https://gitlab.wikimedia.org/repos/wikimedia-it/wlm/wlm-data-frontend](https://gitlab.wikimedia.org/repos/wikimedia-it/wlm/wlm-data-frontend) ⚠️
+
 # Observatory for Italian Wiki Loves Monuments
 
 ![The main screen of the application, a map of Italy with data-driven fans](public/images/map.png)
